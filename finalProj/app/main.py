@@ -2,8 +2,8 @@
 import customtkinter as ctk
 
 # our modules/libs
-from features.edit_page.edit import Edit
-from features.sidebar import Sidebar
+from frontend.features.edit import Edit
+from frontend.features.sidebar import Sidebar
 
 
 class Home(ctk.CTkFrame):

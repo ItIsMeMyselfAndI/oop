@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from PIL import Image
 
-icons_folder = "./assets/icons"
+icons_folder = "./frontend/assets/icons"
 
 class Sidebar(ctk.CTkFrame):
     def __init__(self, pages, master, **kwargs):

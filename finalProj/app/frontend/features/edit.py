@@ -2,27 +2,10 @@
 import customtkinter as ctk
 
 # our modules/libs
-from features.edit_page.tabs import Tabs
-from features.edit_page.selections import Selection
-
-
-class Title(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
-        self.font = ctk.CTkFont(family="Bodoni MT", size=40, slant="italic", weight="normal")
-        self.label = ctk.CTkLabel(self, text="Edit Transaction", font=self.font, text_color="#545454")
-        self.label.pack(side="left", padx=(20,0))
-
-
-class Save(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
-        self.font = ctk.CTkFont(family="Bodoni MT", size=20, slant="italic", weight="normal")
-        self.btn = ctk.CTkButton(self, width=270, height=40, text="Save Changes",
-                                 font=self.font, text_color="white",
-                                 fg_color="#559eef", hover_color="#427cbd",
-                                 corner_radius=10)
-        self.btn.pack(pady=(10,10))
+from frontend.features.edit_components.title import Title
+from frontend.features.edit_components.tabs import Tabs
+from frontend.features.edit_components.selections import Selection
+from frontend.features.edit_components.save import Save
 
 
 class Edit(ctk.CTkFrame):
