@@ -45,12 +45,18 @@ class App(ctk.CTk):
         # self.geometry("1080x600")
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1) 
+        # create scrollable screen
+        self.yScroll = ctk.CTkScrollableFrame(self, orientation="vertical",
+                                              corner_radius=0,fg_color="#cef2ff")
+        self.yScroll.grid(row=0, column=1, sticky="nsew")
+        # self.xyScroll = ctk.CTkScrollableFrame(self.yScroll, orientation="horizontal")
+        # self.xyScroll.pack(fill="x", expand=True)
         # create app pages
-        self.profilePage = Profile(self, fg_color="#cef2ff", corner_radius=0) 
-        self.homePage = Home(self, fg_color="#cef2ff", corner_radius=0) 
-        self.editPage = Edit(self, fg_color="#cef2ff", corner_radius=0) 
-        self.historyPage = History(self, fg_color="#cef2ff", corner_radius=0) 
-        self.addPage = Add(self, fg_color="#cef2ff", corner_radius=0) 
+        self.profilePage = Profile(self.yScroll, fg_color="#cef2ff", corner_radius=0) 
+        self.homePage = Home(self.yScroll, fg_color="#cef2ff", corner_radius=0) 
+        self.editPage = Edit(self.yScroll, fg_color="#cef2ff", corner_radius=0) 
+        self.historyPage = History(self.yScroll, fg_color="#cef2ff", corner_radius=0) 
+        self.addPage = Add(self.yScroll, fg_color="#cef2ff", corner_radius=0) 
         self.pages = {
             "profile":self.profilePage, "home":self.homePage,
             "edit":self.editPage, "history":self.historyPage,

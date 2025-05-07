@@ -1,8 +1,8 @@
 import customtkinter as ctk
 
+# our modules/libs
 from features.edit_page.tabs import Tabs
-from features.edit_page.selections import Selection1
-from features.edit_page.selections import Income
+from features.edit_page.selections import Selection
 
 
 class Title(ctk.CTkFrame):
@@ -33,10 +33,10 @@ class Edit(ctk.CTkFrame):
         self.selection = ctk.CTkFrame(self, fg_color="#cef2ff", corner_radius=10)
         self.save = Save(self, fg_color="#cef2ff", corner_radius=10)
         # create edit sub-pages
-        self.expensePage = Selection1(self.selection, fg_color="white", corner_radius=10)
-        self.savingsPage = Selection1(self.selection, fg_color="white", corner_radius=10)
-        self.investmentPage = Selection1(self.selection, fg_color="white", corner_radius=10)
-        self.incomePage = Income(self.selection, fg_color="white", corner_radius=10)
+        self.expensePage = Selection(self.selection, fg_color="white", corner_radius=10)
+        self.savingsPage = Selection(self.selection, fg_color="white", corner_radius=10)
+        self.investmentPage = Selection(self.selection, fg_color="white", corner_radius=10)
+        self.incomePage = Selection(self.selection, fg_color="white", corner_radius=10)
         self.pages = {
             "expense":self.expensePage, "savings":self.savingsPage,
             "investment":self.investmentPage, "income":self.incomePage

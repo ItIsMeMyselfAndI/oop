@@ -1,7 +1,7 @@
 import customtkinter as ctk
 
 
-class Selection1(ctk.CTkFrame):
+class Selection(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
@@ -76,10 +76,3 @@ class Selection1(ctk.CTkFrame):
         # display frame 3 components
         self.amountLabel.pack(anchor="w", pady=(20,0), padx=(20,0))
         self.amountEntry.pack(anchor="w", pady=(20,20), padx=(20,20))
-
-
-class Income(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
-        label = ctk.CTkLabel(self, text="Income Page", text_color="#545454", font=("Arial", 24))
-        label.pack(pady=50)
