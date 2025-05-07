@@ -1,5 +1,7 @@
+# external/built-in modules/libs
 import customtkinter as ctk
 
+# our modules/libs
 from features.edit_page.edit import Edit
 from features.sidebar import Sidebar
 
