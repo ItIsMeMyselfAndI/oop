@@ -3,7 +3,7 @@ import customtkinter as ctk
 
 # our modules/libs
 from frontend.features.edit import Edit # edit page
-from frontend.features.sidebar import Sidebar
+from frontend.features.sidebar import Sidebar # navigation page-tabs
 
 
 class Home(ctk.CTkFrame): #nicolas
