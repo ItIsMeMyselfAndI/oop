@@ -1,4 +1,6 @@
-# external/built-in modules/libs
+# built-in modules
+
+# external modules
 import customtkinter as ctk
 
 # our modules/libs

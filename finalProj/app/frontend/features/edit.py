@@ -7,7 +7,6 @@ from frontend.features.edit_components.tabs import Tabs
 from frontend.features.edit_components.selections import Selection
 from frontend.features.edit_components.save import Save
 
-
 class Edit(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)

@@ -18,7 +18,9 @@ class Save(ctk.CTkFrame):
             if selection.isCurrentSelection == True:
                 selection_type = name
                 transaction = selection.transactionMenu.get()
-                date = selection.dateMenu.get()
+                day = selection.dateMenu.day.get()
+                month = selection.dateMenu.month.get()
+                year = selection.dateMenu.year.get()
                 category = selection.categoryMenu.get()
                 description = selection.descriptionEntry.get()
                 amount = selection.amountEntry.get()
@@ -26,7 +28,7 @@ class Save(ctk.CTkFrame):
         print()
         print(f"{selection_type = }")
         print(f"{transaction = }")
-        print(f"{date = }")
-        print(f"{category = }")
-        print(f"{description = }")
-        print(f"{amount = }")
+        print(f"new date = {day} {month} {year}")
+        print(f"new {category = }")
+        print(f"new {description = }")
+        print(f"new {amount = }")
