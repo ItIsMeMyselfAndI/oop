@@ -32,7 +32,7 @@ class Tabs(ctk.CTkFrame):
         self.savingsBtn.grid(row=0, column=1, padx=(20, 0))
         self.investmentBtn.grid(row=0, column=2, padx=(20, 0))
         self.incomeBtn.grid(row=0, column=3, padx=(20, 20))
-        # open default tab
+        # open default tab (expense)
         self.selections["expense"].grid(row=2, column=0, sticky="nsew")
         self.selections["expense"].isCurrentSelection = True
         self.expenseBtn.configure(fg_color="#559eef", hover_color="#427cbd", text_color="white")

@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from datetime import datetime
 
+
 class DatePicker(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
@@ -10,8 +11,7 @@ class DatePicker(ctk.CTkFrame):
         # create date options
         self.months = ["January", "February", "March", "April",
                        "May", "June", "July", "August",
-                       "September", "October", "November", "December"
-                      ]
+                       "September", "October", "November", "December"]
         self.days = [f"{str(i):0<2}" for i in range(1, 32)]
         current_year = datetime.now().year
         self.years = [str(i) for i in range(current_year, 1800, -1)]
@@ -44,9 +44,8 @@ class DatePicker(ctk.CTkFrame):
 
 
 class Selection(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
+    def __init__(self, categories, transactions, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.options = ["Option 1", "Option 2", "Option 3"]
         self.isCurrentSelection = False
         # initialize fonts
         self.font1 = ctk.CTkFont(family="Bodoni MT", size=30, slant="italic", weight="normal")
@@ -58,7 +57,7 @@ class Selection(ctk.CTkFrame):
         # create frame 1 components
         self.transactionLabel = ctk.CTkLabel(self.frame1, text="Select Transaction",
                                              font=self.font1, text_color="#545454")
-        self.transactionMenu = ctk.CTkOptionMenu(self.frame1, values=self.options,
+        self.transactionMenu = ctk.CTkOptionMenu(self.frame1, values=transactions,
                                                  font=self.font2, text_color="#545454",
                                                  fg_color="#559eef", dropdown_font=self.font2,
                                                  dropdown_fg_color="#559eef",
@@ -69,18 +68,18 @@ class Selection(ctk.CTkFrame):
                                       font=self.font1, text_color="#545454")
         self.dateMenu = DatePicker(self.frame1, fg_color="white")
         # create frame 2 components
-        self.categoryLabel = ctk.CTkLabel(self.frame2, text="Select Category",
-                                             font=self.font1, text_color="#545454")
-        self.categoryMenu = ctk.CTkOptionMenu(self.frame2, values=self.options,
-                                                 font=self.font2, text_color="#545454",
-                                                 width=680, fg_color="#559eef",
-                                                 dropdown_font=self.font2,
-                                                 dropdown_fg_color="#559eef",
-                                                 dropdown_hover_color="#427cbd",
-                                                 dropdown_text_color="#545454",
-                                                 corner_radius=10, height=40)
+        self.categoryLabel = ctk.CTkLabel(self.frame2, text="Select New Category",
+                                          font=self.font1, text_color="#545454")
+        self.categoryMenu = ctk.CTkOptionMenu(self.frame2, values=categories,
+                                                font=self.font2, text_color="#545454",
+                                                width=680, fg_color="#559eef",
+                                                dropdown_font=self.font2,
+                                                dropdown_fg_color="#559eef",
+                                                dropdown_hover_color="#427cbd",
+                                                dropdown_text_color="#545454",
+                                                corner_radius=10, height=40)
         self.descriptionLabel = ctk.CTkLabel(self.frame2, text="New Description",
-                                      font=self.font1, text_color="#545454")
+                                             font=self.font1, text_color="#545454")
         self.descriptionEntry = ctk.CTkEntry(self.frame2, font=self.font2,
                                              text_color="#545454", fg_color="#559eef",
                                              corner_radius=10, width=400, height=40,
