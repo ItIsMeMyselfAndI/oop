@@ -63,15 +63,14 @@ class App(ctk.CTk): #mirasol
         # disable resize window (temporary)
         self.resizable(width=False, height=False)
         # create scrollable screen (vertical)
-        self.yScroll = ctk.CTkScrollableFrame(self, orientation="vertical",
+        self.content = ctk.CTkScrollableFrame(self, orientation="vertical",
                                               corner_radius=0,fg_color="#cef2ff")
-        self.yScroll.grid(row=0, column=1, sticky="nsew")
         # create app pages
-        self.profilePage = Profile(self.yScroll, fg_color="#cef2ff", corner_radius=0) 
-        self.homePage = Home(self.yScroll, fg_color="#cef2ff", corner_radius=0) 
-        self.editPage = Edit(self.yScroll, fg_color="#cef2ff", corner_radius=0) 
-        self.historyPage = History(self.yScroll, fg_color="#cef2ff", corner_radius=0) 
-        self.addPage = Add(self.yScroll, fg_color="#cef2ff", corner_radius=0) 
+        self.profilePage = Profile(self.content, fg_color="#cef2ff", corner_radius=0) 
+        self.homePage = Home(self.content, fg_color="#cef2ff", corner_radius=0) 
+        self.editPage = Edit(self.content, fg_color="#cef2ff", corner_radius=0) 
+        self.historyPage = History(self.content, fg_color="#cef2ff", corner_radius=0) 
+        self.addPage = Add(self.content, fg_color="#cef2ff", corner_radius=0) 
         self.pages = {
             "profile":self.profilePage, "home":self.homePage,
             "edit":self.editPage, "history":self.historyPage,
@@ -79,8 +78,9 @@ class App(ctk.CTk): #mirasol
         }
         # create sidebar tabs
         self.sidebar = Sidebar(pages=self.pages, master=self, fg_color="#ffffff", corner_radius=0)
-        # display sidebar/page-tabs
-        self.sidebar.grid(row=0, column=0, sticky="ns")
+        # display sidebar/page-tabs and content[profile, home, edit, history, add]
+        self.sidebar.pack(side="left", fill="y")
+        self.content.pack(side="left", fill="both", expand=True)
 
 
 if __name__ == "__main__":
