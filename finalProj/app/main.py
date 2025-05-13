@@ -1,11 +1,17 @@
-# built-in modules
-
-# external modules
+# built-in/external modules/libs
 import customtkinter as ctk
 
+
 # our modules/libs
-from frontend.features.edit import Edit # edit page
 from frontend.features.sidebar import Sidebar # navigation page-tabs
+from frontend.features.profile import Profile # profile page
+from frontend.features.edit import Edit # edit page
+from frontend.features.history import History # history page
+
+
+# class Profile():      -> azcarraga
+# oks na toh, d na kailangna gumawa ulit ng class
+# since imported na ung Profile class from profile.py
 
 
 class Home(ctk.CTkFrame): #nicolas
@@ -20,16 +26,14 @@ class Home(ctk.CTkFrame): #nicolas
         label.pack(pady=50)
 
 
-class Profile(ctk.CTkFrame): #azcarraa
-    def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
-        # edit nyo nlng dito inyo
-        # pag mahaba gawa nyo, pede nyo sya gawin sa 
-        # separate file tas import nyo nlng dito,
-        # lalo na kung kailangan nyo gumawa ng ibang classes
-        # (gaya nung edit page & sidebar)
-        label = ctk.CTkLabel(self, text="Profile Page", text_color="#545454", font=("Arial", 24))
-        label.pack(pady=50)
+# class Edit():         -> mirasol
+# oks na toh, d na kailangna gumawa ulit ng class
+# since imported na ung Edit class from edit.py
+
+
+# class History():      -> azcarraga
+# oks na toh, d na kailangna gumawa ulit ng class
+# since imported na ung History class from history.py
 
 
 class Add(ctk.CTkFrame): #nicolas
@@ -40,22 +44,12 @@ class Add(ctk.CTkFrame): #nicolas
         # separate file tas import nyo nlng dito,
         # lalo na kung kailangan nyo gumawa ng ibang classes
         # (gaya nung edit page & sidebar)
+        # then burahin tong func na class
         label = ctk.CTkLabel(self, text="Add Page", text_color="#545454", font=("Arial", 24))
         label.pack(pady=50)
 
 
-class History(ctk.CTkFrame): #azcarraga
-    def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
-        # edit nyo nlng dito inyo
-        # pag mahaba gawa nyo, pede nyo sya gawin sa 
-        # separate file tas import nyo nlng dito,
-        # lalo na kung kailangan nyo gumawa ng ibang classes
-        # (gaya nung edit page & sidebar)
-        label = ctk.CTkLabel(self, text="History Page", text_color="#545454", font=("Arial", 24))
-        label.pack(pady=50)
-
-
+# main app class
 class App(ctk.CTk): #mirasol
     def __init__(self):
         super().__init__()
