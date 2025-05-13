@@ -6,6 +6,17 @@ class Profile(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, ** kwargs)
         
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+
+        if screen_width == 1920 and screen_height == 1080:
+            self.padx = 20
+            self.pady_large = 96
+        else:
+            self.padx = 0
+            self.pady_large = 20  #reduced spacing
+
+        
         # Extract keyword arguments with defaults
         self.savings = kwargs.get('Savings', 0)
         self.investment = kwargs.get('Investments', 0)
@@ -13,13 +24,13 @@ class Profile(ctk.CTkFrame):
 
         # Top bar
         top_frame = ctk.CTkFrame(self, 
-                                 height=1000, 
+                                 height=100, 
                                  fg_color="#2d6ca7", 
                                  corner_radius=0)
         top_frame.pack(fill="x", side="top")
         self.total_label = ctk.CTkLabel(top_frame,
                                          text="", 
-                                         font=("Arial", 100, "bold"), 
+                                         font=("Arial", 50, "bold"), 
                                          text_color="white")
         self.total_label.pack(side="right", 
                               padx=20, 
@@ -27,14 +38,14 @@ class Profile(ctk.CTkFrame):
 
        # Profile section and finance rows 
         content_frame = ctk.CTkFrame(self, fg_color='transparent')
-        content_frame.pack(fill='x', padx=20, pady=20)
+        content_frame.pack(fill='x', padx=self.padx, pady=self.padx)
 
         # Profile row
         profile_row = ctk.CTkFrame(content_frame, fg_color='transparent')
-        profile_row.pack(fill='x', pady=(0, 96))
+        profile_row.pack(fill='x', pady=(0, self.pady_large))
 
         profile_pic_path = './frontend/assets/icons/profile.png'
-        profile_img_size = 300
+        profile_img_size = 150
 
         profile_image_with_border = self.create_circular_image_with_border(
             profile_pic_path,
@@ -48,19 +59,20 @@ class Profile(ctk.CTkFrame):
                                         text='',
                                         fg_color='transparent')
         profile_img_label.image = profile_image_with_border
-        profile_img_label.pack(side='left')
+        profile_img_label.pack(side='left', padx=(30, 10), pady=(10, 0))
+
 
         name_label = ctk.CTkLabel(profile_row,
                                 text=self.name,
                                 font=("Bodoni MT", 40, "italic"),
                                 text_color='#545454',
                                 fg_color='transparent')
-        name_label.pack(side='left', padx=15)
+        name_label.pack(side='left', padx=self.padx)
 
 
         # Savings section 
         savings_row = ctk.CTkFrame(content_frame, fg_color='transparent')
-        savings_row.pack(fill='x', pady=(0, 96))  # 1 inch below profile
+        savings_row.pack(fill='x', pady=(0, self.pady_large))
 
         # Ico big enough to cover both lines of text
         savings_image = Image.open('./frontend/assets/icons/savings.png').resize((150, 150))
@@ -70,7 +82,8 @@ class Profile(ctk.CTkFrame):
                                         text='',
                                         fg_color='transparent')
         savings_image_label.image = savings_circular_img
-        savings_image_label.pack(side='left', padx=20)
+        savings_image_label.pack(side='left', padx=(30, 10), pady=(10, 0))
+
 
         # Text container (Label + Amount stacked vertically)
         savings_text_frame = ctk.CTkFrame(savings_row, fg_color='transparent')
@@ -93,7 +106,7 @@ class Profile(ctk.CTkFrame):
 
         # Investment section
         invest_row = ctk.CTkFrame(content_frame, fg_color='transparent')
-        invest_row.pack(fill='x')
+        invest_row.pack(fill='x', pady=(0, self.pady_large))
 
         invest_image = Image.open('./frontend/assets/icons/investment.png').resize((150, 150))
         invest_circular_img = ImageTk.PhotoImage(invest_image)
@@ -102,7 +115,8 @@ class Profile(ctk.CTkFrame):
                                         text='',
                                         fg_color='transparent')
         invest_image_label.image = invest_circular_img
-        invest_image_label.pack(side='left', padx=20)
+        invest_image_label.pack(side='left', padx=(30, 10), pady=(10, 0))
+
 
         invest_text_frame = ctk.CTkFrame(invest_row, fg_color='transparent')
         invest_text_frame.pack(side='left')
