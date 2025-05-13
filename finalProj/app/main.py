@@ -3,10 +3,10 @@ import customtkinter as ctk
 
 
 # our modules/libs
-from frontend.features.sidebar import Sidebar # navigation page-tabs
-from frontend.features.profile import Profile # profile page
-from frontend.features.edit import Edit # edit page
-from frontend.features.history import History # history page
+from frontend.utilities.sidebar import Sidebar # navigation page-tabs
+from frontend.pages.profile import Profile # profile page
+from frontend.pages.edit import Edit # edit page
+from frontend.pages.history import History # history page
 
 
 # class Profile():      -> azcarraga
