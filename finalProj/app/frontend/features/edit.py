@@ -3,7 +3,7 @@ import customtkinter as ctk
 
 
 # our modules/libs
-from frontend.features.DatePicker.date_picker import DatePicker 
+from frontend.features.date_picker.date_picker import DatePicker 
 
 
 # title section of the page
