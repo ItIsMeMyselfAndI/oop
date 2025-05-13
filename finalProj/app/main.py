@@ -53,12 +53,15 @@ class Add(ctk.CTkFrame): #nicolas
 class App(ctk.CTk): #mirasol
     def __init__(self):
         super().__init__()
-        # initialize dimensions
         self.title("Personal Finance Tracker")
-        self.geometry("1920x1080")
-        # self.geometry("1080x600")
+        # initialize dimensions
+        width, height = 1920, 1080
+        self.geometry(f"{width}x{height}")
+        self.wm_maxsize(width, height) #max window size
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1) 
+        # disable resize window (temporary)
+        self.resizable(width=False, height=False)
         # create scrollable screen (vertical)
         self.yScroll = ctk.CTkScrollableFrame(self, orientation="vertical",
                                               corner_radius=0,fg_color="#cef2ff")

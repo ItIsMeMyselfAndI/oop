@@ -14,7 +14,7 @@ class DatePicker(ctk.CTkFrame):
         self.months = ["January", "February", "March", "April",
                        "May", "June", "July", "August",
                        "September", "October", "November", "December"]
-        self.days = [f"{str(i):0<2}" for i in range(1, 32)]
+        self.days = [f"{str(i):0>2}" for i in range(1, 32)]
         current_year = datetime.now().year
         self.years = [str(i) for i in range(current_year, 1800, -1)]
         # create date menu

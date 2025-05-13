@@ -38,7 +38,7 @@ class Selection(ctk.CTkFrame):
                                                  dropdown_hover_color="#427cbd",
                                                  dropdown_text_color="#545454",
                                                  corner_radius=10, width=680, height=40)
-        self.dateLabel = ctk.CTkLabel(self.frame1, text="New Date",
+        self.dateLabel = ctk.CTkLabel(self.frame1, text="Select New Date",
                                       font=self.font1, text_color="#545454")
         self.dateMenu = DatePicker(picker_height=40, spacing=10,
                                    day_width=120, month_width=140, year_width=120, 
@@ -54,7 +54,7 @@ class Selection(ctk.CTkFrame):
                                                 dropdown_hover_color="#427cbd",
                                                 dropdown_text_color="#545454",
                                                 corner_radius=10, height=40)
-        self.descriptionLabel = ctk.CTkLabel(self.frame2, text="New Description",
+        self.descriptionLabel = ctk.CTkLabel(self.frame2, text="Enter New Description",
                                              font=self.font1, text_color="#545454")
         self.descriptionEntry = ctk.CTkEntry(self.frame2, font=self.font2,
                                              text_color="#545454", fg_color="#559eef",
@@ -63,7 +63,7 @@ class Selection(ctk.CTkFrame):
                                              placeholder_text_color="grey",
                                              border_width=0)
         # create frame 3 components
-        self.amountLabel = ctk.CTkLabel(self.frame3, text="New Amount",
+        self.amountLabel = ctk.CTkLabel(self.frame3, text="Enter New Amount",
                                         font=self.font1, text_color="#545454")
         self.amountEntry = ctk.CTkEntry(self.frame3, font=self.font2,
                                         text_color="#545454", fg_color="#559eef",
