@@ -7,7 +7,7 @@ from frontend.utilities.sidebar import Sidebar # navigation page-tabs
 from frontend.pages.profile import Profile # profile page
 from frontend.pages.edit import Edit # edit page
 from frontend.pages.history import History # history page
-
+from frontend.pages.add import Add # edit page
 
 # class Profile():      -> azcarraga
 # oks na toh, d na kailangna gumawa ulit ng class
@@ -34,20 +34,6 @@ class Home(ctk.CTkFrame): #nicolas
 # class History():      -> azcarraga
 # oks na toh, d na kailangna gumawa ulit ng class
 # since imported na ung History class from history.py
-
-
-class Add(ctk.CTkFrame): #nicolas
-    def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
-        # edit nyo nlng dito inyo
-        # pag mahaba gawa nyo, pede nyo sya gawin sa 
-        # separate file tas import nyo nlng dito,
-        # lalo na kung kailangan nyo gumawa ng ibang classes
-        # (gaya nung edit page & sidebar)
-        # then burahin tong func na class
-        label = ctk.CTkLabel(self, text="Add Page", text_color="#545454", font=("Arial", 24))
-        label.pack(pady=50)
-
 
 # main app class
 class App(ctk.CTk): #mirasol
