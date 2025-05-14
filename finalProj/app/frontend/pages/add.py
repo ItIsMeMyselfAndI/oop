@@ -91,24 +91,30 @@ class AddPageTabs(ctk.CTkFrame):
         self.font = ctk.CTkFont(family="Bodoni MT", size=20, slant="italic", weight="normal")
       
         self.expenseBtn = ctk.CTkButton(self, text="Expense", text_color="#545454",
-                                       height=40, width=366,
+                                       height=40, width=270,
                                        font=self.font, corner_radius=10,
                                        fg_color="white", hover_color="#c4c4c4",
                                        command=self.on_click_expense)
         self.savingsBtn = ctk.CTkButton(self, text="Savings", text_color="#545454",
-                                       height=40, width=366,
+                                       height=40, width=270,
                                        font=self.font, corner_radius=10,
                                        fg_color="white", hover_color="#c4c4c4",
                                        command=self.on_click_savings)
         self.investmentBtn = ctk.CTkButton(self, text="Investment", text_color="#545454",
-                                          height=40, width=366,
+                                          height=40, width=270,
                                           font=self.font, corner_radius=10,
                                           fg_color="white", hover_color="#c4c4c4",
                                           command=self.on_click_investment)
+        self.incomeBtn = ctk.CTkButton(self, text="Income", text_color="#545454",
+                                          height=40, width=270,
+                                          font=self.font, corner_radius=10,
+                                          fg_color="white", hover_color="#c4c4c4",
+                                          command=self.on_click_income)
         
         self.expenseBtn.grid(row=0, column=0, padx=(20, 0))
         self.savingsBtn.grid(row=0, column=1, padx=(20, 0))
-        self.investmentBtn.grid(row=0, column=2, padx=(20, 20))
+        self.investmentBtn.grid(row=0, column=2, padx=(20, 0))
+        self.incomeBtn.grid(row=0, column=3, padx=(20, 20))
         
         self.selections["expense"].grid(row=2, column=0, sticky="nsew")
         self.selections["expense"].isCurrentSelection = True
@@ -123,6 +129,9 @@ class AddPageTabs(ctk.CTkFrame):
     def on_click_investment(self):
         self._switch_tab("investment", self.investmentBtn)
 
+    def on_click_income(self):
+        self._switch_tab("income", self.incomeBtn)
+
     # method for switching between tabs
     def _switch_tab(self, tab_name, button):
         # closes other selections
@@ -132,7 +141,7 @@ class AddPageTabs(ctk.CTkFrame):
                 selection.isCurrentSelection = False
         
         # reset all buttons
-        for btn in [self.expenseBtn, self.savingsBtn, self.investmentBtn]:
+        for btn in [self.expenseBtn, self.savingsBtn, self.investmentBtn, self.incomeBtn]:
             btn.configure(fg_color="white", hover_color="#c4c4c4", text_color="#545454")
         
         # open selected tab and style its button
@@ -184,6 +193,7 @@ class Add(ctk.CTkFrame):
                              "Transportation", "Wellness", "Other"]
         savings_categories = ["Monthly Allowance", "Change", "Miscellaneous"]
         investment_categories = ["Stocks", "Crypto", "Bonds", "Real Estate"]
+        income_categories = ["Salary", "Bonus", "Side-hustles", "Tips"]
         
         self.title = AddTitle(self, fg_color="#cef2ff", corner_radius=10)
         self.selection = ctk.CTkFrame(self, fg_color="#cef2ff", corner_radius=10)
@@ -194,11 +204,14 @@ class Add(ctk.CTkFrame):
                                       master=self.selection, fg_color="white", corner_radius=10)
         self.investmentPage = InputSection(categories=investment_categories,
                                          master=self.selection, fg_color="white", corner_radius=10)
+        self.incomePage = InputSection(categories=income_categories,
+                                         master=self.selection, fg_color="white", corner_radius=10)
         
         self.selections = {
             "expense": self.expensePage,
             "savings": self.savingsPage,
-            "investment": self.investmentPage
+            "investment": self.investmentPage,
+            "income": self.incomePage
         }
         
         self.tabs = AddPageTabs(selections=self.selections, master=self, fg_color="#cef2ff", corner_radius=0)

@@ -235,11 +235,11 @@ class Edit(ctk.CTkFrame):
         self.grid_columnconfigure(2, weight=1) # whole screen
         # valid categories
         expense_categories = ["Bills", "Education", "Entertainment", "Food & Drinks",
-                              "Grocery", "Healthcare", "House", "Shopping",
-                              "Transportation", "Wellness", "Other"]
-        other_categories = ["Savings (unchangeable)",
-                            "Investment (unchangeable)",
-                            "Income (unchangeable)"]
+                             "Grocery", "Healthcare", "House", "Shopping",
+                             "Transportation", "Wellness", "Other"]
+        savings_categories = ["Monthly Allowance", "Change", "Miscellaneous"]
+        investment_categories = ["Stocks", "Crypto", "Bonds", "Real Estate"]
+        income_categories = ["Salary", "Bonus", "Side-hustles", "Tips"]
         # sample expense transactions 
         expense_transactions = ["01 January 2023  |  Food  |  P100",
                                 "02 February 2024  |  Bills  |  P100",
@@ -254,11 +254,11 @@ class Edit(ctk.CTkFrame):
         # create sub-pages
         self.expensePage = Selection(categories=expense_categories, transactions=expense_transactions,
                                      master=self.selection, fg_color="white", corner_radius=10)
-        self.savingsPage = Selection(categories=other_categories[0:1], transactions=other_transactions,
+        self.savingsPage = Selection(categories=savings_categories, transactions=other_transactions,
                                      master=self.selection, fg_color="white", corner_radius=10)
-        self.investmentPage = Selection(categories=other_categories[1:2], transactions=other_transactions,
+        self.investmentPage = Selection(categories=investment_categories, transactions=other_transactions,
                                         master=self.selection, fg_color="white", corner_radius=10)
-        self.incomePage = Selection(categories=other_categories[2:3], transactions=other_transactions,
+        self.incomePage = Selection(categories=income_categories, transactions=other_transactions,
                                     master=self.selection, fg_color="white", corner_radius=10)
         self.selections = {
             "expense":self.expensePage, "savings":self.savingsPage,
