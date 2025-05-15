@@ -14,9 +14,8 @@ class Transaction:
 
 
 class TransactionRepository:
-    def __init__(self):
-        database = "../db/transactions.db"
-        self.connection = sqlite3.connect(database)
+    def __init__(self, db_path):
+        self.connection = sqlite3.connect(db_path)
         self.cursor = self.connection.cursor()
 
     def getAllTransactions(self, user_id: int) -> list[Transaction]:
@@ -75,7 +74,7 @@ class TransactionRepository:
 
 
 class TransactionManager:
-    def __init__(self):
+    def __init__(self, db_path):
         self.user_id: int = 1
         # self.categories_by_type = {
         #     "expense": ["Bills", "Education", "Entertainment",
@@ -92,12 +91,12 @@ class TransactionManager:
         # self.monthly_finances: list<Finance]
         # self.quarterly_finances: list<Finance]
         # self.overall_balance: float
-        self.repo = TransactionRepository()
+        self.repo = TransactionRepository(db_path)
 
     def testMirasol(self):
         all_transactions = self.repo.getAllTransactions(user_id=self.user_id)
         type_transactions = self.repo.getTransactionsByType(user_id=self.user_id,
-                                                                        t_type='expense')
+                                                            t_type='expense')
         # display results
         print("\n[All Transactions]\n")
         for t in all_transactions:
@@ -142,9 +141,10 @@ class TransactionManager:
     
         
 if __name__ == "__main__":
-    tm = TransactionManager()
+    db_path = "../db/transactions.db"
+    tm = TransactionManager(db_path)
     # uncomment nyo if mag sasample run kayo
-    tm.testMirasol()
+    # tm.testMirasol()
     # tm.testNicolas()
     # tm.testAzcarraga()
     tm.repo.connection.close()

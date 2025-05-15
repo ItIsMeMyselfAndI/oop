@@ -8,10 +8,7 @@ from frontend.pages.profile import Profile # profile page
 from frontend.pages.edit import Edit # edit page
 from frontend.pages.history import History # history page
 from frontend.pages.add import Add # edit page
-
-# class Profile():      -> azcarraga
-# oks na toh, d na kailangna gumawa ulit ng class
-# since imported na ung Profile class from profile.py
+from backend.transaction_manager import TransactionManager
 
 
 class Home(ctk.CTkFrame): #nicolas
@@ -26,19 +23,14 @@ class Home(ctk.CTkFrame): #nicolas
         label.pack(pady=50)
 
 
-# class Edit():         -> mirasol
-# oks na toh, d na kailangna gumawa ulit ng class
-# since imported na ung Edit class from edit.py
-
-
-# class History():      -> azcarraga
-# oks na toh, d na kailangna gumawa ulit ng class
-# since imported na ung History class from history.py
-
 # main app class
 class App(ctk.CTk): #mirasol
     def __init__(self):
         super().__init__()
+        # create transaction manager
+        db_path = "db/transactions.db"
+        self.tm = TransactionManager(db_path)
+        # set app title
         self.title("Personal Finance Tracker")
         # initialize dimensions
         width, height = 1920, 1080
@@ -54,7 +46,7 @@ class App(ctk.CTk): #mirasol
         # create app pages
         self.profilePage = Profile(self.content, fg_color="#cef2ff", corner_radius=0) 
         self.homePage = Home(self.content, fg_color="#cef2ff", corner_radius=0) 
-        self.editPage = Edit(self.content, fg_color="#cef2ff", corner_radius=0) 
+        self.editPage = Edit(tm=self.tm, master=self.content, fg_color="#cef2ff", corner_radius=0) 
         self.historyPage = History(self.content, fg_color="#cef2ff", corner_radius=0) 
         self.addPage = Add(self.content, fg_color="#cef2ff", corner_radius=0) 
         self.pages = {

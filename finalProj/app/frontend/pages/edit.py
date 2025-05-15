@@ -123,9 +123,10 @@ class Tabs(ctk.CTkFrame):
         self.investmentBtn.grid(row=0, column=2, padx=(20, 0))
         self.incomeBtn.grid(row=0, column=3, padx=(20, 20))
         # open default tab (expense)
-        self.selections["expense"].grid(row=2, column=0, sticky="nsew")
-        self.selections["expense"].isCurrentSelection = True
-        self.expenseBtn.configure(fg_color="#559eef", hover_color="#427cbd", text_color="white")
+        self.on_click_expense()
+        # self.selections["expense"].grid(row=2, column=0, sticky="nsew")
+        # self.selections["expense"].isCurrentSelection = True
+        # self.expenseBtn.configure(fg_color="#559eef", hover_color="#427cbd", text_color="white")
 
     def on_click_expense(self):
         # close other selections
@@ -208,57 +209,67 @@ class Save(ctk.CTkFrame):
         self.btn.pack(pady=(10,10))
 
     def on_click_save(self):
-        for name, selection in self.selections.items():
+        month_2_numeric = {"January":"01", "February":"02", "March":"03", "April":"04",
+                           "May":"05", "June":"06", "July":"07", "August":"08",
+                           "September":"09", "October":"10", "November":"11", "December":"12"}
+        for transaction_type, selection in self.selections.items():
             if selection.isCurrentSelection == True:
-                selection_type = name
-                transaction = selection.transactionMenu.get()
-                day = selection.dateMenu.day.get()
-                month = selection.dateMenu.month.get()
+                old_transaction = selection.transactionMenu.get().strip()
+                transaction_id = int(old_transaction.split()[0])
                 year = selection.dateMenu.year.get()
-                category = selection.categoryMenu.get()
-                description = selection.descriptionEntry.get()
-                amount = selection.amountEntry.get()
+                month = month_2_numeric[selection.dateMenu.month.get()]
+                day = selection.dateMenu.day.get()
+                new_date = f"{year}-{month}-{day}"
+                new_category = selection.categoryMenu.get()
+                new_description = selection.descriptionEntry.get()
+                new_amount = selection.amountEntry.get()
                 break
         print()
-        print(f"{selection_type = }")
-        print(f"{transaction = }")
-        print(f"new date = {day} {month} {year}")
-        print(f"new {category = }")
-        print(f"new {description = }")
-        print(f"new {amount = }")
+        print(f"{old_transaction = }")
+        print(f"{transaction_type = }")
+        print(f"{transaction_id = }")
+        print(f"{new_date = }")
+        print(f"{new_category = }")
+        print(f"{new_description = }")
+        print(f"{new_amount = }")
 
 
 # main edit page
 class Edit(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
+    def __init__(self, tm, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.grid_columnconfigure(2, weight=1) # whole screen
         # valid categories
         expense_categories = ["Bills", "Education", "Entertainment", "Food & Drinks",
-                             "Grocery", "Healthcare", "House", "Shopping",
-                             "Transportation", "Wellness", "Other"]
+                              "Grocery", "Healthcare", "House", "Shopping",
+                              "Transportation", "Wellness", "Other"]
         savings_categories = ["Monthly Allowance", "Change", "Miscellaneous"]
         investment_categories = ["Stocks", "Crypto", "Bonds", "Real Estate"]
         income_categories = ["Salary", "Bonus", "Side-hustles", "Tips"]
-        # sample expense transactions 
-        expense_transactions = ["01 January 2023  |  Food  |  P100",
-                                "02 February 2024  |  Bills  |  P100",
-                                "03 March 2024  |  Education  |  P100"]
-        # sample savings/investment/income expense transactions 
-        other_transactions = ["01 January 2023  |  P100  |  Description 1",
-                              "02 February 2024  |  P100  |  Description 2",
-                              "03 March 2024  |  P100  |  Description 3"]
+        # get all transactions by type from the db
+        self.tm = tm
+        self.all_type_transactions = self.getAllTransactionsByType()
+        # format transactions for display ("f_" = "formatted_")
+        self.f_all_type_transactions = {}
+        for t_type, transactions in self.all_type_transactions.items():
+            f_transactions = self.formatTransactions(transactions)
+            self.f_all_type_transactions[t_type] = f_transactions
+        # whole screen
+        self.grid_columnconfigure(2, weight=1)
         # create page components
         self.title = Title(self, fg_color="#cef2ff", corner_radius=10)
         self.selection = ctk.CTkFrame(self, fg_color="#cef2ff", corner_radius=10)
         # create sub-pages
-        self.expensePage = Selection(categories=expense_categories, transactions=expense_transactions,
+        self.expensePage = Selection(categories=expense_categories,
+                                     transactions=self.f_all_type_transactions["expense"],
                                      master=self.selection, fg_color="white", corner_radius=10)
-        self.savingsPage = Selection(categories=savings_categories, transactions=other_transactions,
+        self.savingsPage = Selection(categories=savings_categories,
+                                     transactions=self.f_all_type_transactions["savings"],
                                      master=self.selection, fg_color="white", corner_radius=10)
-        self.investmentPage = Selection(categories=investment_categories, transactions=other_transactions,
+        self.investmentPage = Selection(categories=investment_categories,
+                                        transactions=self.f_all_type_transactions["investment"],
                                         master=self.selection, fg_color="white", corner_radius=10)
-        self.incomePage = Selection(categories=income_categories, transactions=other_transactions,
+        self.incomePage = Selection(categories=income_categories,
+                                    transactions=self.f_all_type_transactions["income"],
                                     master=self.selection, fg_color="white", corner_radius=10)
         self.selections = {
             "expense":self.expensePage, "savings":self.savingsPage,
@@ -273,3 +284,23 @@ class Edit(ctk.CTkFrame):
         self.tabs.pack(pady=(10,10))
         self.selection.pack(pady=(10,10), padx=(20,20))
         self.save.pack(pady=(10,20))
+
+    def getAllTransactionsByType(self):
+        expense_transactions = self.tm.repo.getTransactionsByType(user_id=1, t_type='expense')
+        savings_transactions = self.tm.repo.getTransactionsByType(user_id=1, t_type='savings')
+        investment_transactions = self.tm.repo.getTransactionsByType(user_id=1, t_type='investment')
+        income_transactions = self.tm.repo.getTransactionsByType(user_id=1, t_type='income')
+        return {
+            "expense": expense_transactions,
+            "savings": savings_transactions,
+            "investment": investment_transactions,
+            "income": income_transactions
+        }
+    
+    def formatTransactions(self, transactions):
+        # "f_" = "formatted_"
+        f_transactions = []
+        for t in transactions:
+            f_t = f" {t.t_id} | {t.t_date} | {t.t_category} | {t.t_amount} | {t.t_description} "
+            f_transactions.append(f_t)
+        return f_transactions
