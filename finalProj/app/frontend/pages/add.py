@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from frontend.utilities.date_picker import DatePicker
 
+
 LIGHT_BLUE = "#cef2ff"
 BLUE = "#559eef"
 DARK_BLUE = "#427cbd"
@@ -8,6 +9,7 @@ LIGHT_GREY = "#c4c4c4"
 GREY = "grey"
 DARK_GREY = "#545454"
 WHITE= "white"
+
 
 class AddTitle(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
@@ -35,10 +37,10 @@ class InputSection(ctk.CTkFrame):
         # create frame 1 for date
         self.dateLabel = ctk.CTkLabel(self.frame1, text="Select Date",
                                     font=self.font1, text_color=DARK_GREY)
-        self.dateMenu = DatePicker(picker_height=40, spacing=10,
+        self.dateMenu = DatePicker(picker_height=40, spacing=10, rad=10,
                                    day_width=344, month_width=390, 
                                    year_width=344, master=self.frame1, 
-                                   fg_color=WHITE)
+                                   ctk_font=self.font2, fg_color=WHITE)
         
         # create frame 2 for category and description
         self.categoryLabel = ctk.CTkLabel(self.frame2, text="Select Category",

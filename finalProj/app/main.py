@@ -8,6 +8,8 @@ from frontend.pages.history import History # history page
 from frontend.pages.add import Add # edit page
 from backend.transaction_manager import TransactionManager
 
+ctk.set_window_scaling(1.0)
+ctk.set_widget_scaling(1.0)
 
 LIGHT_BLUE = "#cef2ff"
 BLUE = "#559eef"
@@ -42,13 +44,12 @@ class App(ctk.CTk): #mirasol
         # set app title
         self.title("Personal Finance Tracker")
         # initialize dimensions
-        width, height = 1920, 1080
-        self.geometry(f"{width}x{height}")
-        self.wm_maxsize(width, height) #max window size
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=1) 
-        # disable resize window (temporary)
-        self.resizable(width=False, height=False)
+        self.screen_w = self.winfo_screenwidth()
+        self.screen_h = self.winfo_screenheight()
+        print(self.screen_w, self.screen_h)
+        self.geometry(f"{self.screen_w}x{self.screen_h}")
+        # self.wm_maxsize(width, height) #max window size
+        self.resizable(width=False, height=False) #disable resize window (temporary)
         # create scrollable screen (vertical)
         self.content = ctk.CTkScrollableFrame(self, orientation="vertical",
                                               corner_radius=0,fg_color=LIGHT_BLUE)
@@ -68,6 +69,7 @@ class App(ctk.CTk): #mirasol
         # display sidebar/page-tabs and content[profile, home, edit, history, add]
         self.sidebar.pack(side="left", fill="y")
         self.content.pack(side="left", fill="both", expand=True)
+
 
 
 if __name__ == "__main__":
