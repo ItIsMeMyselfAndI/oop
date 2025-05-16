@@ -52,6 +52,18 @@ class TransactionRepository:
         # return list of transaction obj
         return type_transactions
     
+    def getAllTransactionsByType(self, user_id) -> dict[str, list[Transaction]]:
+        expense_transactions = self.getTransactionsByType(user_id, t_type='expense')
+        savings_transactions = self.getTransactionsByType(user_id, t_type='savings')
+        investment_transactions = self.getTransactionsByType(user_id, t_type='investment')
+        income_transactions = self.getTransactionsByType(user_id, t_type='income')
+        return {
+            "expense": expense_transactions,
+            "savings": savings_transactions,
+            "investment": investment_transactions,
+            "income": income_transactions
+        }
+    
     def getTransactionsByCategory(self, user_id: int, t_category: str) -> list[Transaction]:
         pass
     

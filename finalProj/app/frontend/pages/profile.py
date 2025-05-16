@@ -1,6 +1,13 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk, ImageDraw
 
+LIGHT_BLUE = "#cef2ff"
+BLUE = "#559eef"
+DARK_BLUE = "#427cbd"
+LIGHT_GREY = "#c4c4c4"
+GREY = "grey"
+DARK_GREY = "#545454"
+WHITE= "white"
 
 class Profile(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
@@ -25,13 +32,13 @@ class Profile(ctk.CTkFrame):
         # Top bar
         top_frame = ctk.CTkFrame(self, 
                                  height=100, 
-                                 fg_color="#2d6ca7", 
+                                 fg_color=BLUE, 
                                  corner_radius=0)
         top_frame.pack(fill="x", side="top")
         self.total_label = ctk.CTkLabel(top_frame,
                                          text="", 
                                          font=("Arial", 50, "bold"), 
-                                         text_color="white")
+                                         text_color=WHITE)
         self.total_label.pack(side="right", 
                               padx=20, 
                               pady=10)
@@ -65,7 +72,7 @@ class Profile(ctk.CTkFrame):
         name_label = ctk.CTkLabel(profile_row,
                                 text=self.name,
                                 font=("Bodoni MT", 40, "italic"),
-                                text_color='#545454',
+                                text_color=DARK_GREY,
                                 fg_color='transparent')
         name_label.pack(side='left', padx=self.padx)
 
@@ -92,14 +99,14 @@ class Profile(ctk.CTkFrame):
         self.savings_label = ctk.CTkLabel(savings_text_frame,
                                         text="Savings",
                                         font=("Bodoni MT", 50, 'italic'),
-                                        text_color='#545454',
+                                        text_color=DARK_GREY,
                                         fg_color='transparent')
         self.savings_label.pack()
 
         self.savings_amount_label = ctk.CTkLabel(savings_text_frame,
                                                 text="",  # Will be set dynamically
                                                 font=("Bodoni MT", 50, "italic"),
-                                                text_color='#545454',
+                                                text_color=DARK_GREY,
                                                 fg_color='transparent')
         self.savings_amount_label.pack()
 
@@ -124,14 +131,14 @@ class Profile(ctk.CTkFrame):
         self.investment_label = ctk.CTkLabel(invest_text_frame,
                                             text="Investments",
                                             font=("Bodoni MT", 50, 'italic'),
-                                            text_color='#545454',
+                                            text_color=DARK_GREY,
                                             fg_color='transparent')
         self.investment_label.pack()
 
         self.investment_amount_label = ctk.CTkLabel(invest_text_frame,
                                                     text="",  # Will be set dynamically
                                                     font=("Bodoni MT", 50, "italic"),
-                                                    text_color='#545454',
+                                                    text_color=DARK_GREY,
                                                     fg_color='transparent')
         self.investment_amount_label.pack()
 
