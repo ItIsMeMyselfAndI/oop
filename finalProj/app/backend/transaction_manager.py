@@ -52,35 +52,41 @@ class TransactionRepository:
         # return list of transaction obj
         return type_transactions
     
-    def getAllTransactionsByType(self, user_id) -> dict[str, list[Transaction]]:
-        expense_transactions = self.getTransactionsByType(user_id, t_type='expense')
-        savings_transactions = self.getTransactionsByType(user_id, t_type='savings')
-        investment_transactions = self.getTransactionsByType(user_id, t_type='investment')
-        income_transactions = self.getTransactionsByType(user_id, t_type='income')
-        return {
-            "expense": expense_transactions,
-            "savings": savings_transactions,
-            "investment": investment_transactions,
-            "income": income_transactions
-        }
-    
     def getTransactionsByCategory(self, user_id: int, t_category: str) -> list[Transaction]:
         pass
     
     def addTransaction(self, user_id: int, transaction: Transaction) -> None:
-        # wag mo pla sama ung {t_id} sa pag insert sa database
-        # since c database na mag gegenerate nun automatically.
+        # wag mo pla sama ung {t_id} ni {new_transaction} sa pag insert sa database
+        # since None lng laman netoh at c database na mag gegenerate nun automatically.
         # and since wla tong display at diretso sa database
-        # add mo sa req nito ung pag return ng tuple version ng transaction obj
+        # add mo sa req nito ung pag return ng tuple version na nanggaling sa database
+        # para makita kung nagreflect sya
         pass
     
-    def modifyTransaction(self, user_id: int, t_id: int, transaction: Transaction) -> None:
-        # wag mo pla galawin ung {t_id} sa row na momodify mo sa database
-        # gamitin mo lng {t_id} as condition
-        # and since wla tong display at diretso sa database
-        # add mo sa req nito ung pag return ng tuple version ng transaction obj
-        pass
-    
+    def modifyTransaction(self, user_id: int, t_id: int, updated_transaction: Transaction) -> tuple:
+        command = (
+            "UPDATE transactions SET "
+            "transaction_date = ?, "
+            "transaction_type = ?, "
+            "transaction_category = ?, "
+            "transaction_amount = ?, "
+            "transaction_description = ? "
+            "WHERE user_id = ? AND transaction_id = ?"  # Use the column name
+        )
+        values = (
+            updated_transaction.t_date, 
+            updated_transaction.t_type,
+            updated_transaction.t_category,
+            updated_transaction.t_amount,
+            updated_transaction.t_description,
+            user_id,
+            t_id
+        )
+        self.cursor.execute(command, values)
+        self.connection.commit()
+        return values
+
+
     def deleteTransaction(self, user_id: int, t_id: int) -> None:
         pass
 
@@ -138,18 +144,18 @@ class TransactionManager:
         
     def testAzcarraga(self):
         # updated Transaction obj sample
-        updated_transaction = Transaction(t_date='2025-05-15', t_type='expense',
-                                          t_category='Bills', t_amount=3000.0,
-                                          t_description='sample description')
+        updated_transaction = Transaction(t_date='2025-05-15', t_type='expense', t_category='Education',
+                                          t_amount=3000.0, t_description='sample description')
         # modify last row
-        transaction_tuple = self.repo.modifyTransaction(user_id=self.user_id, t_id=1440,
-                                                        transaction=updated_transaction)
+        transaction_tuple = self.repo.modifyTransaction(user_id=self.user_id, t_id=1440, updated_transaction=updated_transaction)
         # delete last row
         self.repo.deleteTransaction(user_id=self.user_id, t_id=1440)
         
         # display results
         print("\n[Tuple version of Transaction obj]")
         print(f"\n{transaction_tuple}")
+        # pang check kung na update sa db; dat pareho toh sa tuple moh
+        print(self.repo.cursor.execute("SELECT * FROM transactions WHERE transaction_id = 1440").fetchone())    
     
         
 if __name__ == "__main__":
