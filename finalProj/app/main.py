@@ -20,7 +20,7 @@ DARK_GREY = "#545454"
 WHITE= "white"
 
 
-class Home(ctk.CTkFrame): #nicolas
+class Home(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
         # edit nyo nlng dito inyo
@@ -33,7 +33,7 @@ class Home(ctk.CTkFrame): #nicolas
 
 
 # main app class
-class App(ctk.CTk): #mirasol
+class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         # user
@@ -58,7 +58,7 @@ class App(ctk.CTk): #mirasol
         self.homePage = Home(self.content, fg_color=LIGHT_BLUE, corner_radius=0) 
         self.editPage = Edit(self.user_id, tm=self.tm, master=self.content, fg_color=LIGHT_BLUE, corner_radius=0) 
         self.historyPage = History(self.content, fg_color=LIGHT_BLUE, corner_radius=0) 
-        self.addPage = Add(self.content, fg_color=LIGHT_BLUE, corner_radius=0) 
+        self.addPage = Add(self.user_id, tm=self.tm, master=self.content, fg_color=LIGHT_BLUE, corner_radius=0) 
         self.pages = {
             "profile":self.profilePage, "home":self.homePage,
             "edit":self.editPage, "history":self.historyPage,

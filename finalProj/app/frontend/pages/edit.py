@@ -49,7 +49,7 @@ RAD = 20
 
 
 # header section
-class Header(ctk.CTkFrame):
+class EditHeader(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
         self.font = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_5, slant="italic", weight="normal")
@@ -151,7 +151,7 @@ class EditTransactionForm(ctk.CTkFrame):
 
 
 # tabs section of the page
-class Tabs(ctk.CTkFrame):
+class EditPageTabs(ctk.CTkFrame):
     def __init__(self, transactionForms, master, **kwargs):
         super().__init__(master, **kwargs)
         self.transactionForms = transactionForms
@@ -192,14 +192,14 @@ class Tabs(ctk.CTkFrame):
             form.grid_forget()
             # reset fg, hover & text color of all buttons
             self.tabBTNs[t_type].configure(fg_color=WHITE, hover_color=LIGHT_GREY, text_color=DARK_GREY)
-        # open expense form and change fg, hover & text color
+        # open selected and change fg, hover & text color
         self.transactionForms[transaction_type].isCurrentEditTransactionForm = True
         self.transactionForms[transaction_type].grid(row=2, column=0, sticky="nsew")
         self.tabBTNs[transaction_type].configure(fg_color=BLUE, hover_color=DARK_BLUE, text_color=WHITE)
 
 
 # save section of the page
-class Save(ctk.CTkFrame):
+class EditSave(ctk.CTkFrame):
     def __init__(self, tm, user_id, transactionForms, master, **kwargs):
         super().__init__(master, **kwargs)
         self.tm = tm
@@ -230,7 +230,7 @@ class Save(ctk.CTkFrame):
             if form.isCurrentEditTransactionForm == True:
                 # create updated transaction obj
                 updated_transaction = Transaction(t_date=new_date, t_type=transaction_type, t_category=new_category,
-                                                t_amount=float(new_amount), t_description=new_description)
+                                                  t_amount=float(new_amount), t_description=new_description)
                 # update db with updated transaction
                 result = self.tm.repo.modifyTransaction(user_id=self.user_id, t_id=transaction_id,
                                                         updated_transaction=updated_transaction)
@@ -258,7 +258,7 @@ class Edit(ctk.CTkFrame):
         self.user_id = user_id
         self.tm = tm
         # create page sections 
-        self.header_section = Header(self, fg_color=LIGHT_BLUE, corner_radius=0)
+        self.header_section = EditHeader(self, fg_color=LIGHT_BLUE, corner_radius=0)
         self.forms_section = ctk.CTkFrame(self, fg_color=LIGHT_BLUE, corner_radius=RAD)
         # create transaction forms
         self.expenseForm = self.createEditTransactionForm("expense")
@@ -270,10 +270,10 @@ class Edit(ctk.CTkFrame):
             "investment":self.investmentForm, "income":self.incomeForm
         }
         # create sub-pages tabs
-        self.tabs = Tabs(transactionForms=self.transactionForms, master=self,
+        self.tabs = EditPageTabs(transactionForms=self.transactionForms, master=self,
                          fg_color=LIGHT_BLUE, corner_radius=0)
         # create save button
-        self.save = Save(tm=self.tm, user_id=self.user_id, transactionForms=self.transactionForms, master=self,
+        self.save = EditSave(tm=self.tm, user_id=self.user_id, transactionForms=self.transactionForms, master=self,
                          fg_color=LIGHT_BLUE, corner_radius=0)
         # show page sections 
         self.header_section.pack(anchor="w", padx=PAD_X5+PAD_X5, pady=(PAD_Y5+PAD_Y5,0))
