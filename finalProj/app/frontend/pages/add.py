@@ -40,7 +40,8 @@ class InputSection(ctk.CTkFrame):
         self.dateMenu = DatePicker(picker_height=40, spacing=10, rad=10,
                                    day_width=344, month_width=390, 
                                    year_width=344, master=self.frame1, 
-                                   ctk_font=self.font2, fg_color=WHITE)
+                                   ctk_font=self.font2, dropdown_ctk_font=self.font2,
+                                   fg_color=WHITE)
         
         # create frame 2 for category and description
         self.categoryLabel = ctk.CTkLabel(self.frame2, text="Select Category",

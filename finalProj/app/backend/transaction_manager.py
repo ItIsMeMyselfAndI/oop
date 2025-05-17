@@ -29,8 +29,7 @@ class TransactionRepository:
         # convert transaction tuple to obj
         all_transactions: list[Transaction] = []
         for row in rows:
-            t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2],
-                            t_category=row[3], t_amount=row[4], t_description=row[5])
+            t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2], t_category=row[3], t_amount=row[4], t_description=row[5])
             all_transactions.append(t)
         # return list of transaction obj
         return all_transactions
@@ -46,8 +45,7 @@ class TransactionRepository:
         # convert transaction tuple to obj
         type_transactions: list[Transaction] = []
         for row in rows:
-            t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2],
-                            t_category=row[3], t_amount=row[4], t_description=row[5])
+            t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2], t_category=row[3], t_amount=row[4], t_description=row[5])
             type_transactions.append(t)
         # return list of transaction obj
         return type_transactions
@@ -113,8 +111,7 @@ class TransactionManager:
 
     def testMirasol(self):
         all_transactions = self.repo.getAllTransactions(user_id=self.user_id)
-        type_transactions = self.repo.getTransactionsByType(user_id=self.user_id,
-                                                            t_type='expense')
+        type_transactions = self.repo.getTransactionsByType(user_id=self.user_id, t_type='expense')
         # display results
         print("\n[All Transactions]\n")
         for t in all_transactions:
@@ -126,14 +123,11 @@ class TransactionManager:
     
     def testNicolas(self):
         # new Transaction obj sample
-        new_transaction = Transaction(t_date='2025-05-15', t_type='expense',
-                                      t_category='Bills', t_amount=3000.0,
-                                      t_description='sample description')
-        category_transactions = self.repo.getTransactionsByCategory(user_id=self.user_id,
-                                                                    t_category='Salary')
+        new_transaction = Transaction(t_date='2025-05-15', t_type='expense', t_category='Bills',
+                                      t_amount=3000.0, t_description='sample description')
+        category_transactions = self.repo.getTransactionsByCategory(user_id=self.user_id, t_category='Salary')
         # add new row to transaction table
-        transaction_tuple = self.repo.addTransaction(user_id=self.user_id,
-                                                     transaction=new_transaction)
+        transaction_tuple = self.repo.addTransaction(user_id=self.user_id, transaction=new_transaction)
         # display results
         print("\n[Category (Salary) Transactions]\n")
         for t in category_transactions:
@@ -161,7 +155,7 @@ class TransactionManager:
 if __name__ == "__main__":
     db_path = "../db/transactions.db"
     tm = TransactionManager(db_path)
-    # uncomment nyo if mag sasample run kayo
+    # uncomment nyo inyo if mag sasample run kayo
     # tm.testMirasol()
     # tm.testNicolas()
     # tm.testAzcarraga()
