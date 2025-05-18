@@ -60,10 +60,10 @@ class Save(ctk.CTkFrame):
         self.btn.pack()
 
     def onClickSave(self):
-        for name, page in self.pages.items():
-            if page.isCurrentPage == True and name == "edit":
+        for page_name, page in self.pages.items():
+            if page.isCurrentPage == True and page_name == "edit":
                 self.saveEditedTransactionToDatabase()
-            elif page.isCurrentPage == True and name == "add":
+            elif page.isCurrentPage == True and page_name == "add":
                 self.saveNewTransactionToDatabase()
         self.updateAppMemory()
 

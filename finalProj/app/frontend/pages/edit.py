@@ -191,7 +191,7 @@ class EditPageTabs(ctk.CTkFrame):
             form.isCurrentEditTransactionForm = False
             # close all transaction forms
             form.grid_forget()
-            # reset fg, hover & text color of all buttons
+            # reset all buttons
             self.tabBTNs[t_type].configure(fg_color=WHITE, hover_color=LIGHT_GREY, text_color=DARK_GREY)
         # open selected and change fg, hover & text color
         self.transactionForms[transaction_type].isCurrentEditTransactionForm = True
