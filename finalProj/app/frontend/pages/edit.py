@@ -86,7 +86,7 @@ class EditTransactionForm(ctk.CTkFrame):
         self.transactionMenu = ctk.CTkOptionMenu(self.frame1, values=self.transaction_options,
                                                  font=self.font3, text_color=DARK_GREY,
                                                  fg_color=BLUE, dropdown_font=self.font2,
-                                                 dropdown_fg_color=BLUE,
+                                                 dropdown_fg_color=WHITE,
                                                  dropdown_hover_color=DARK_BLUE,
                                                  dropdown_text_color=DARK_GREY,
                                                  corner_radius=RAD, width=MENU_W1, height=MENU_H)
@@ -95,7 +95,7 @@ class EditTransactionForm(ctk.CTkFrame):
         self.dateMenu = DatePicker(picker_height=MENU_H, spacing=PAD_X1, rad=RAD,
                                    day_width=DAY_MENU_W, month_width=MONTH_MENU_W, year_width=YEAR_MENU_W, 
                                    master=self.frame1, ctk_font=self.font3, dropdown_ctk_font=self.font2,
-                                   fg_color=WHITE)
+                                   dropdown_fg_color=WHITE, fg_color=WHITE)
         # create frame 2 components
         self.categoryLabel = ctk.CTkLabel(self.frame2, text="Select New Category",
                                           font=self.font1, text_color=DARK_GREY)
@@ -103,7 +103,7 @@ class EditTransactionForm(ctk.CTkFrame):
                                                 font=self.font3, text_color=DARK_GREY,
                                                 width=MENU_W1, fg_color=BLUE,
                                                 dropdown_font=self.font2,
-                                                dropdown_fg_color=BLUE,
+                                                dropdown_fg_color=WHITE,
                                                 dropdown_hover_color=DARK_BLUE,
                                                 dropdown_text_color=DARK_GREY,
                                                 corner_radius=RAD, height=MENU_H)

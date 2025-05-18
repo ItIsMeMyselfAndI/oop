@@ -2,7 +2,7 @@ import customtkinter as ctk
 from PIL import Image
 
 
-ICONS_FOLDER = "./frontend/assets/icons"
+ICONS_FOLDER = "./assets/icons"
 
 FONT_SIZE_1 = 25
 FONT_SIZE_2 = 30

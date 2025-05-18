@@ -83,13 +83,12 @@ class App(ctk.CTk):
         # set app title
         self.title("Personal Finance Tracker")
         # initialize dimensions
-        self.attributes("-fullscreen", True)
-        # self.screen_w = self.winfo_screenwidth()
-        # self.screen_h = self.winfo_screenheight()
-        # print(self.screen_w, self.screen_h)
-        # self.geometry(f"{self.screen_w}x{self.screen_h}")
-        # self.wm_maxsize(width, height) #max window size
-        # self.resizable(width=False, height=False) #disable resize window (temporary)
+        # self.attributes("-fullscreen", True)
+        self.screen_w = self.winfo_screenwidth()
+        self.screen_h = self.winfo_screenheight()
+        print(self.screen_w, self.screen_h)
+        self.geometry(f"{self.screen_w}x{self.screen_h}")
+        self.resizable(width=False, height=False) #disable resize window (temporary)
         # create scrollable screen (vertical)
         self.content = ctk.CTkScrollableFrame(self, orientation="vertical", corner_radius=0,fg_color=SKY_BLUE)
         # create app pages
