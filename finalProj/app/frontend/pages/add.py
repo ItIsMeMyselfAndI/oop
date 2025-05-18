@@ -11,6 +11,7 @@ FONT_SIZE_3 = 40
 FONT_SIZE_4 = 50
 FONT_SIZE_5 = 60
 
+LIGHT_BLUE = "#bcd4fe"
 SKY_BLUE = "#cef2ff"
 BLUE = "#559eef"
 DARK_BLUE = "#427cbd"
@@ -101,7 +102,7 @@ class AddTransactionForm(ctk.CTkFrame):
         self.descriptionLabel = ctk.CTkLabel(self.frame2, text="Enter Description",
                                              font=self.font1, text_color=DARK_GREY)
         self.descriptionEntry = ctk.CTkEntry(self.frame2, font=self.font3,
-                                             text_color=DARK_GREY, fg_color=BLUE,
+                                             text_color=DARK_GREY, fg_color=LIGHT_BLUE,
                                              corner_radius=RAD, width=ENTRY_W2, height=ENTRY_H,
                                              placeholder_text="Description",
                                              placeholder_text_color=GREY,
@@ -110,7 +111,7 @@ class AddTransactionForm(ctk.CTkFrame):
         self.amountLabel = ctk.CTkLabel(self.frame3, text="Enter Amount",
                                         font=self.font1, text_color=DARK_GREY)
         self.amountEntry = ctk.CTkEntry(self.frame3, font=self.font3,
-                                        text_color=DARK_GREY, fg_color=BLUE,
+                                        text_color=DARK_GREY, fg_color=LIGHT_BLUE,
                                         corner_radius=RAD, width=ENTRY_W1, height=ENTRY_H,
                                         placeholder_text="Philippine Peso",
                                         placeholder_text_color=GREY,

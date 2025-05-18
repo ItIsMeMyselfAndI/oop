@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from PIL import Image#, ImageTk, ImageDraw
+from PIL import Image
 
 
 ICONS_FOLDER = "./frontend/assets/icons"

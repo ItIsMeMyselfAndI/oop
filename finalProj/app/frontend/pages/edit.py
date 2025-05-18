@@ -2,7 +2,6 @@
 import customtkinter as ctk
 # our modules/libs
 from frontend.utilities.date_picker import DatePicker
-from backend.transaction_manager import Transaction
 
 
 FONT_SIZE_1 = 25
@@ -13,6 +12,7 @@ FONT_SIZE_5 = 60
 
 SKY_BLUE = "#cef2ff"
 BLUE = "#559eef"
+LIGHT_BLUE = "#bcd4fe"
 DARK_BLUE = "#427cbd"
 LIGHT_GREY = "#c4c4c4"
 GREY = "grey"
@@ -110,7 +110,7 @@ class EditTransactionForm(ctk.CTkFrame):
         self.descriptionLabel = ctk.CTkLabel(self.frame2, text="Enter New Description",
                                              font=self.font1, text_color=DARK_GREY)
         self.descriptionEntry = ctk.CTkEntry(self.frame2, font=self.font3,
-                                             text_color=DARK_GREY, fg_color=BLUE,
+                                             text_color=DARK_GREY, fg_color=LIGHT_BLUE,
                                              corner_radius=RAD, width=ENTRY_W2, height=ENTRY_H,
                                              placeholder_text="Description",
                                              placeholder_text_color=GREY,
@@ -119,7 +119,7 @@ class EditTransactionForm(ctk.CTkFrame):
         self.amountLabel = ctk.CTkLabel(self.frame3, text="Enter New Amount",
                                         font=self.font1, text_color=DARK_GREY)
         self.amountEntry = ctk.CTkEntry(self.frame3, font=self.font3,
-                                        text_color=DARK_GREY, fg_color=BLUE,
+                                        text_color=DARK_GREY, fg_color=LIGHT_BLUE,
                                         corner_radius=RAD, width=ENTRY_W1, height=ENTRY_H,
                                         placeholder_text="Philippine Peso",
                                         placeholder_text_color=GREY,
