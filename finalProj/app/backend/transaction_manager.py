@@ -13,6 +13,15 @@ class Transaction:
         self.t_description: str = t_description
 
 
+class Finance:
+    def __init__(self, total_income:float, total_expenses:float,
+                 total_savings:float, total_investment:float):
+        self.total_income = total_income
+        self.total_expenses = total_expenses
+        self.total_savings = total_savings
+        self.total_investment = total_investment
+
+
 class TransactionRepository:
     def __init__(self, db_path):
         self.connection = sqlite3.connect(db_path)
@@ -131,13 +140,24 @@ class TransactionManager:
         #     "investment": ["Stocks", "Crypto", "Bonds", "Real Estate"],
         #     "income": ["Salary", "Bonus", "Side-hustles", "Tips"]
         # }
-        # self.transaction_id: int
-        # self.transaction: Transaction
-        # self.overall_finance: Finance
-        # self.monthly_finances: list<Finance]
-        # self.quarterly_finances: list<Finance]
-        # self.overall_balance: float
         self.repo = TransactionRepository(db_path)
+
+    def calculateOverallFinance() -> Finance:
+        pass
+    def calculateOverallBalance(overall_finance: Finance) -> float:
+        pass
+    def calculateMonthlyFinances() -> list[Finance]:
+        pass
+    def calculateQuarterlyFinances() -> list[Finance]:
+        pass
+    def createMonthlyGraph(monthly_finances: list[Finance]) -> matplotlib.Figure:
+        pass
+    def createQuarterlyGraph(quarterly_finances: list[Finance]) -> matplotlib.Figure:
+        pass
+
+    
+    #--------------------------------------# for testing
+
 
     def testMirasolGetAllTransactions(self):
         all_transactions = self.repo.getAllTransactions(user_id=self.user_id)
@@ -186,7 +206,6 @@ class TransactionManager:
     def testAzcarragaDeleteTransaction(self):
         # delete last row
         self.repo.deleteTransaction(user_id=self.user_id, t_id=1445)
-        
     
         
 if __name__ == "__main__":

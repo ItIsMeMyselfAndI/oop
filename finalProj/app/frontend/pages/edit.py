@@ -224,14 +224,10 @@ class Edit(ctk.CTkFrame):
         # create sub-pages tabs
         self.tabs = EditPageTabs(transactionForms=self.transactionForms, master=self,
                          fg_color=SKY_BLUE, corner_radius=0)
-        # create save button
-        # self.save = EditSave(tm=self.tm, user_id=self.user_id, transactionForms=self.transactionForms, master=self,
-        #                  fg_color=SKY_BLUE, corner_radius=0)
         # show page sections 
         self.header_section.pack(anchor="w", padx=PAD_X4+PAD_X4, pady=(PAD_Y4+PAD_Y4,0))
         self.tabs.pack(padx=PAD_X3, pady=(PAD_Y4,0))
         self.forms_section.pack(padx=PAD_X3, pady=(PAD_Y3,0))
-        # self.save.pack(pady=PAD_Y4)
 
     def createEditTransactionForm(self, transaction_type):
         # valid categories
