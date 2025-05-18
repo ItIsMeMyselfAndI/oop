@@ -155,6 +155,7 @@ class EditPageTabs(ctk.CTkFrame):
     def __init__(self, transactionForms, master, **kwargs):
         super().__init__(master, **kwargs)
         self.transactionForms = transactionForms
+        # initialize ctk font
         self.font = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_2, slant="italic", weight="normal")
         # create buttons/tabs
         self.expenseBTN = self.createTabButton(text="Expense", command=self.onClickExpenseTab)
@@ -198,65 +199,14 @@ class EditPageTabs(ctk.CTkFrame):
         self.tabBTNs[transaction_type].configure(fg_color=BLUE, hover_color=DARK_BLUE, text_color=WHITE)
 
 
-# save section of the page
-class EditSave(ctk.CTkFrame):
-    def __init__(self, tm, user_id, transactionForms, master, **kwargs):
-        super().__init__(master, **kwargs)
-        self.tm = tm
-        self.user_id = user_id
-        self.transactionForms = transactionForms 
-        self.font = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_2, slant="italic", weight="normal")
-        self.btn = ctk.CTkButton(self, width=BTN_W, height=BTN_H, text="Save Changes",
-                                 font=self.font, text_color=WHITE,
-                                 fg_color=BLUE, hover_color=DARK_BLUE,
-                                 corner_radius=RAD, command=self.saveTransactionChanges)
-        self.btn.pack()
-
-    def saveTransactionChanges(self):
-        month_2_numeric = {"January":"01", "February":"02", "March":"03", "April":"04",
-                           "May":"05", "June":"06", "July":"07", "August":"08",
-                           "September":"09", "October":"10", "November":"11", "December":"12"}
-        for transaction_type, form in self.transactionForms.items():
-            # retrieve user inputs from the UI
-            original_transaction = form.transactionMenu.get().strip()
-            transaction_id = int(original_transaction.split()[0])
-            year = form.dateMenu.year.get()
-            month = month_2_numeric[form.dateMenu.month.get()]
-            day = form.dateMenu.day.get()
-            new_date = f"{year}-{month}-{day}"
-            new_category = form.categoryMenu.get()
-            new_description = form.descriptionEntry.get()
-            new_amount = form.amountEntry.get()
-            if form.isCurrentEditTransactionForm == True:
-                # create updated transaction obj
-                updated_transaction = Transaction(t_date=new_date, t_type=transaction_type, t_category=new_category,
-                                                  t_amount=float(new_amount), t_description=new_description)
-                # update db with updated transaction
-                result = self.tm.repo.modifyTransaction(user_id=self.user_id, t_id=transaction_id,
-                                                        updated_transaction=updated_transaction)
-                # display result for debugging
-                print("\n", result)
-                print()
-                print(len(original_transaction)+3)
-                print(f"{original_transaction = }")
-                print(f"{transaction_type = }")
-                print(f"{transaction_id = }")
-                print(f"{new_date = }")
-                print(f"{new_category = }")
-                print(f"{new_description = }")
-                print(f"{new_amount = }")
-            # update all transaction forms
-            form.updateTransactionMenuOptionsByType()
-            form.transactionMenu.configure(values=form.transaction_options)
-            form.transactionMenu.set(form.transaction_options[0])
-
-
 # main edit page
 class Edit(ctk.CTkFrame):
     def __init__(self, user_id, tm, master, **kwargs):
         super().__init__(master, **kwargs)
         self.user_id = user_id
         self.tm = tm
+        # initialize state
+        self.isCurrentPage = False
         # create page sections 
         self.header_section = EditHeader(self, fg_color=LIGHT_BLUE, corner_radius=0)
         self.forms_section = ctk.CTkFrame(self, fg_color=LIGHT_BLUE, corner_radius=RAD)
@@ -273,13 +223,13 @@ class Edit(ctk.CTkFrame):
         self.tabs = EditPageTabs(transactionForms=self.transactionForms, master=self,
                          fg_color=LIGHT_BLUE, corner_radius=0)
         # create save button
-        self.save = EditSave(tm=self.tm, user_id=self.user_id, transactionForms=self.transactionForms, master=self,
-                         fg_color=LIGHT_BLUE, corner_radius=0)
+        # self.save = EditSave(tm=self.tm, user_id=self.user_id, transactionForms=self.transactionForms, master=self,
+        #                  fg_color=LIGHT_BLUE, corner_radius=0)
         # show page sections 
         self.header_section.pack(anchor="w", padx=PAD_X5+PAD_X5, pady=(PAD_Y5+PAD_Y5,0))
         self.tabs.pack(padx=PAD_X4, pady=(PAD_Y5,0))
         self.forms_section.pack(padx=PAD_X4, pady=(PAD_Y4,0))
-        self.save.pack(pady=PAD_Y5)
+        # self.save.pack(pady=PAD_Y5)
 
     def createEditTransactionForm(self, transaction_type):
         # valid categories

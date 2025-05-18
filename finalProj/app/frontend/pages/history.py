@@ -4,6 +4,8 @@ import customtkinter as ctk
 class History(ctk.CTkFrame):
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
+        # initialize state
+        self.isCurrentPage = False
 
         self.transaction_data = []
 

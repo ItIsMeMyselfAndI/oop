@@ -25,31 +25,11 @@ class Sidebar(ctk.CTkFrame):
         self.history_icon = ctk.CTkImage(
             light_image=Image.open(f"{icons_folder}/history.png"), size=(IMG_W,IMG_H))
         # create page buttons/tabs
-        self.profileBtn = ctk.CTkButton(self, text="", corner_radius=10,
-                                           fg_color="white", hover_color="#c4c4c4",
-                                           image=self.profile_icon,
-                                           height=BTN_H, width=BTN_W,
-                                           command=self.on_click_profile)
-        self.homeBtn = ctk.CTkButton(self, text="", corner_radius=10,
-                                        fg_color="white", hover_color="#c4c4c4",
-                                        image=self.home_icon,
-                                        height=BTN_H, width=BTN_W,
-                                        command=self.on_click_home)
-        self.editBtn = ctk.CTkButton(self, text="", corner_radius=10,
-                                        fg_color="white", hover_color="#c4c4c4",
-                                        image=self.edit_icon,
-                                        height=BTN_H, width=BTN_W,
-                                        command=self.on_click_edit)
-        self.historyBtn = ctk.CTkButton(self, text="", corner_radius=10,
-                                           fg_color="white", hover_color="#c4c4c4",
-                                           image=self.history_icon,
-                                           height=BTN_H, width=BTN_W,
-                                           command=self.on_click_history)
-        self.addBtn = ctk.CTkButton(self, text="", corner_radius=10,
-                                       fg_color="white", hover_color="#c4c4c4",
-                                       image=self.add_icon,
-                                       height=BTN_H, width=BTN_W,
-                                       command=self.on_click_add)
+        self.profileBtn = self.createTabBtn(image=self.profile_icon, command=self.on_click_profile)
+        self.homeBtn = self.createTabBtn(image=self.home_icon, command=self.on_click_home)
+        self.editBtn = self.createTabBtn(image=self.edit_icon, command=self.on_click_edit)
+        self.historyBtn = self.createTabBtn(image=self.history_icon, command=self.on_click_history)
+        self.addBtn = self.createTabBtn(image=self.add_icon, command=self.on_click_add)
         # display page buttons/tabs
         self.profileBtn.pack(pady=(PAD_Y,0), padx=PAD_X)
         self.homeBtn.pack(pady=(PAD_Y,0), padx=PAD_X)
@@ -57,9 +37,13 @@ class Sidebar(ctk.CTkFrame):
         self.historyBtn.pack(pady=(PAD_Y,0), padx=PAD_X)
         self.addBtn.pack(pady=PAD_Y, padx=PAD_X)
         # open default page
-        # self.pages["profile"].pack(fill="both", expand=True)
-        self.pages["edit"].pack(fill="both", expand=True)
-        self.editBtn.configure(fg_color="#559eef", hover_color="#427cbd")
+        self.on_click_edit()
+
+    def createTabBtn(self, image, command):
+        btn = ctk.CTkButton(self, text="", corner_radius=10, fg_color="white", hover_color="#c4c4c4",
+                            image=image, height=BTN_H, width=BTN_W, command=command)
+        return btn
+
 
     def on_click_profile(self):
         # close other pages
@@ -72,7 +56,13 @@ class Sidebar(ctk.CTkFrame):
         self.editBtn.configure(fg_color="white", hover_color="#c4c4c4")
         self.historyBtn.configure(fg_color="white", hover_color="#c4c4c4")
         self.addBtn.configure(fg_color="white", hover_color="#c4c4c4")
+        # set other page to not current page
+        self.pages["home"].isCurrentPage = False 
+        self.pages["edit"].isCurrentPage = False 
+        self.pages["history"].isCurrentPage = False 
+        self.pages["add"].isCurrentPage = False 
         # open profile and change fg & hover color
+        self.pages["profile"].isCurrentPage = True
         self.pages["profile"].pack(fill="both", expand=True)
         self.profileBtn.configure(fg_color="#559eef", hover_color="#427cbd")
 
@@ -87,7 +77,13 @@ class Sidebar(ctk.CTkFrame):
         self.editBtn.configure(fg_color="white", hover_color="#c4c4c4")
         self.historyBtn.configure(fg_color="white", hover_color="#c4c4c4")
         self.addBtn.configure(fg_color="white", hover_color="#c4c4c4")
+        # set other page to not current page
+        self.pages["profile"].isCurrentPage = False 
+        self.pages["edit"].isCurrentPage = False 
+        self.pages["history"].isCurrentPage = False 
+        self.pages["add"].isCurrentPage = False 
         # open home 
+        self.pages["home"].isCurrentPage = True
         self.pages["home"].pack(fill="both", expand=True)
         self.homeBtn.configure(fg_color="#559eef", hover_color="#427cbd")
 
@@ -102,7 +98,13 @@ class Sidebar(ctk.CTkFrame):
         self.homeBtn.configure(fg_color="white", hover_color="#c4c4c4")
         self.historyBtn.configure(fg_color="white", hover_color="#c4c4c4")
         self.addBtn.configure(fg_color="white", hover_color="#c4c4c4")
+        # set other page to not current page
+        self.pages["profile"].isCurrentPage = False 
+        self.pages["home"].isCurrentPage = False 
+        self.pages["history"].isCurrentPage = False 
+        self.pages["add"].isCurrentPage = False 
         # open edit 
+        self.pages["edit"].isCurrentPage = True
         self.pages["edit"].pack(fill="both", expand=True)
         self.editBtn.configure(fg_color="#559eef", hover_color="#427cbd")
 
@@ -117,7 +119,13 @@ class Sidebar(ctk.CTkFrame):
         self.homeBtn.configure(fg_color="white", hover_color="#c4c4c4")
         self.editBtn.configure(fg_color="white", hover_color="#c4c4c4")
         self.addBtn.configure(fg_color="white", hover_color="#c4c4c4")
+        # set other page to not current page
+        self.pages["profile"].isCurrentPage = False 
+        self.pages["home"].isCurrentPage = False 
+        self.pages["edit"].isCurrentPage = False 
+        self.pages["add"].isCurrentPage = False 
         # open history 
+        self.pages["history"].isCurrentPage = True
         self.pages["history"].pack(fill="both", expand=True)
         self.historyBtn.configure(fg_color="#559eef", hover_color="#427cbd")
 
@@ -132,6 +140,12 @@ class Sidebar(ctk.CTkFrame):
         self.homeBtn.configure(fg_color="white", hover_color="#c4c4c4")
         self.editBtn.configure(fg_color="white", hover_color="#c4c4c4")
         self.historyBtn.configure(fg_color="white", hover_color="#c4c4c4")
+        # set other page to not current page
+        self.pages["profile"].isCurrentPage = False 
+        self.pages["home"].isCurrentPage = False 
+        self.pages["edit"].isCurrentPage = False 
+        self.pages["history"].isCurrentPage = False 
         # open add 
+        self.pages["add"].isCurrentPage = True
         self.pages["add"].pack(fill="both", expand=True)
         self.addBtn.configure(fg_color="#559eef", hover_color="#427cbd")

@@ -44,6 +44,8 @@ class Investment(ctk.CTkFrame):
 class Profile(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, ** kwargs)
+        # initialize state
+        self.isCurrentPage = False
         # create page sections
         self.profile = Balance(self, fg_color=BLUE, corner_radius=10, height=250) # (1080-20-20-20)/3
         self.summary = ctk.CTkFrame(self, fg_color=WHITE, corner_radius=10, height=680) # [(1080-20-20-20)/3]*2
