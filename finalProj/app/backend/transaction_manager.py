@@ -22,10 +22,11 @@ class TransactionRepository:
         # retrieve transaction data
         table_name = "transactions"
         command = (
-            f"SELECT * FROM {table_name}\n"
-            f"WHERE user_id = {user_id}"
+            f"SELECT * FROM {table_name} "
+            f"WHERE user_id = ?"
         )
-        rows: list[tuple] = self.cursor.execute(command)
+        values = (user_id,)
+        rows: list[tuple] = self.cursor.execute(command, values).fetchall()
         # convert transaction tuple to obj
         all_transactions: list[Transaction] = []
         for row in rows:
@@ -38,10 +39,11 @@ class TransactionRepository:
         # retrieve transaction data
         table_name = "transactions"
         command = (
-            f"SELECT * FROM {table_name}\n"
-            f"WHERE user_id = {user_id} AND transaction_type = '{t_type}'"
+            f"SELECT * FROM {table_name} "
+            "WHERE user_id = ? AND transaction_type = ? "
         )
-        rows: list[tuple] = self.cursor.execute(command)
+        values = (user_id, t_type)
+        rows: list[tuple] = self.cursor.execute(command, values).fetchall()
         # convert transaction tuple to obj
         type_transactions: list[Transaction] = []
         for row in rows:
@@ -53,13 +55,42 @@ class TransactionRepository:
     def getTransactionsByCategory(self, user_id: int, t_category: str) -> list[Transaction]:
         pass
     
-    def addTransaction(self, user_id: int, transaction: Transaction) -> None:
-        # wag mo pla sama ung {t_id} ni {new_transaction} sa pag insert sa database
-        # since None lng laman netoh at c database na mag gegenerate nun automatically.
-        # and since wla tong display at diretso sa database
-        # add mo sa req nito ung pag return ng tuple version na nanggaling sa database
-        # para makita kung nagreflect sya
-        pass
+    def addTransaction(self, user_id: int, new_transaction: Transaction) -> None:
+        command = """
+            INSERT INTO transactions (
+                transaction_date,
+                transaction_type,
+                transaction_category,
+                transaction_amount,
+                transaction_description,
+                user_id
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+        """
+        values = (
+            new_transaction.t_date,
+            new_transaction.t_type,
+            new_transaction.t_category,
+            new_transaction.t_amount,
+            new_transaction.t_description,
+            user_id
+        )
+        self.cursor.execute(command, values)
+        self.connection.commit()
+
+        # get the auto-generated transaction_id
+        new_id = self.cursor.lastrowid
+
+        # return "tuple version" of the transaction object
+        transaction_tuple = (
+            new_id,
+            new_transaction.t_date,
+            new_transaction.t_type,
+            new_transaction.t_category,
+            new_transaction.t_amount,
+            new_transaction.t_description
+        )
+        return transaction_tuple
     
     def modifyTransaction(self, user_id: int, t_id: int, updated_transaction: Transaction) -> tuple:
         command = (
@@ -83,7 +114,6 @@ class TransactionRepository:
         self.cursor.execute(command, values)
         self.connection.commit()
         return values
-
 
     def deleteTransaction(self, user_id: int, t_id: int) -> None:
         pass
@@ -109,54 +139,64 @@ class TransactionManager:
         # self.overall_balance: float
         self.repo = TransactionRepository(db_path)
 
-    def testMirasol(self):
+    def testMirasolGetAllTransactions(self):
         all_transactions = self.repo.getAllTransactions(user_id=self.user_id)
-        type_transactions = self.repo.getTransactionsByType(user_id=self.user_id, t_type='expense')
         # display results
         print("\n[All Transactions]\n")
         for t in all_transactions:
             print(f" {t.t_id:<10} | {t.t_date:<12} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description}")
+    
+    def testMirasolGetTransactionByType(self):
+        type_transactions = self.repo.getTransactionsByType(user_id=self.user_id, t_type='expense')
+        # display results
         print("\n\n[Type (expense) Transactions]\n")
         for t in type_transactions:
             print(f" {t.t_id:<10} | {t.t_date:<12} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description}")
     
-    
-    def testNicolas(self):
-        # new Transaction obj sample
-        new_transaction = Transaction(t_date='2025-05-15', t_type='expense', t_category='Bills',
-                                      t_amount=3000.0, t_description='sample description')
+    def testNicolasGetTransactionsByCategory(self):
         category_transactions = self.repo.getTransactionsByCategory(user_id=self.user_id, t_category='Salary')
-        # add new row to transaction table
-        transaction_tuple = self.repo.addTransaction(user_id=self.user_id, transaction=new_transaction)
         # display results
         print("\n[Category (Salary) Transactions]\n")
         for t in category_transactions:
             print(f" {t.t_id:<10} | {t.t_date:<13} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description}")
+    
+    def testNicolasAddTransaction(self):
+        # new Transaction obj sample
+        new_transaction = Transaction(t_date='2025-05-15', t_type='expense', t_category='Shopping',
+                                      t_amount=3000.0, t_description='sample description')
+        # add new row to transaction table
+        transaction_tuple = self.repo.addTransaction(user_id=self.user_id, new_transaction=new_transaction)
         print("\n\n[Tuple version of Transaction obj]\n")
         print(f"\t{transaction_tuple}")
-
+        # pang check kung na update sa db; dat pareho toh sa tuple moh
+        print(self.repo.cursor.execute("SELECT * FROM transactions WHERE transaction_id = 1445").fetchone())
         
-    def testAzcarraga(self):
+    def testAzcarragaModifyTransaction(self):
         # updated Transaction obj sample
         updated_transaction = Transaction(t_date='2025-05-15', t_type='expense', t_category='Education',
                                           t_amount=3000.0, t_description='sample description')
         # modify last row
         transaction_tuple = self.repo.modifyTransaction(user_id=self.user_id, t_id=1440, updated_transaction=updated_transaction)
-        # delete last row
-        self.repo.deleteTransaction(user_id=self.user_id, t_id=1440)
-        
         # display results
         print("\n[Tuple version of Transaction obj]")
         print(f"\n{transaction_tuple}")
         # pang check kung na update sa db; dat pareho toh sa tuple moh
         print(self.repo.cursor.execute("SELECT * FROM transactions WHERE transaction_id = 1440").fetchone())    
+
+    def testAzcarragaDeleteTransaction(self):
+        # delete last row
+        self.repo.deleteTransaction(user_id=self.user_id, t_id=1445)
+        
     
         
 if __name__ == "__main__":
     db_path = "../db/transactions.db"
     tm = TransactionManager(db_path)
     # uncomment nyo inyo if mag sasample run kayo
-    # tm.testMirasol()
-    # tm.testNicolas()
-    # tm.testAzcarraga()
+    # tm.testMirasolGetAllTransactions()
+    # tm.testMirasolGetTransactionByType()
+    # tm.testNicolasGetTransactionsByCategory()
+    tm.testNicolasAddTransaction()
+    # tm.testAzcarragaModifyTransaction()
+    # tm.testAzcarragaDeleteTransaction()
     tm.repo.connection.close()
