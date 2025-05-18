@@ -11,7 +11,7 @@ FONT_SIZE_3 = 40
 FONT_SIZE_4 = 50
 FONT_SIZE_5 = 60
 
-LIGHT_BLUE = "#cef2ff"
+SKY_BLUE = "#cef2ff"
 BLUE = "#559eef"
 DARK_BLUE = "#427cbd"
 LIGHT_GREY = "#c4c4c4"
@@ -33,18 +33,21 @@ DAY_MENU_W = 450
 
 PAD_X1 = 10
 PAD_X2 = 20
-PAD_X3 = 20
-PAD_X4 = 30
-PAD_X5 = 40
+PAD_X3 = 30
+PAD_X4 = 40
+PAD_X5 = 50
 
-PAD_Y5 = 40
-PAD_Y4 = 30
-PAD_Y3 = 20
-PAD_Y2 = 20
 PAD_Y1 = 10
+PAD_Y2 = 20
+PAD_Y3 = 30
+PAD_Y4 = 40
+PAD_Y5 = 50
 
-BTN_W = 350
-BTN_H = 60
+BTN_W1 = 70
+BTN_W2 = 350
+
+BTN_H1 = 70
+BTN_H2 = 60
 
 RAD = 20
 
@@ -113,20 +116,20 @@ class AddTransactionForm(ctk.CTkFrame):
                                         placeholder_text_color=GREY,
                                         border_width=0)
         # display guide frames
-        self.frame1.pack(fill="both", pady=(PAD_Y5,0))
-        self.frame2.pack(fill="both", pady=(PAD_Y5,0))
-        self.frame3.pack(fill="both", pady=PAD_Y5)
+        self.frame1.pack(fill="both", pady=(PAD_Y4,0))
+        self.frame2.pack(fill="both", pady=(PAD_Y4,0))
+        self.frame3.pack(fill="both", pady=PAD_Y4)
         # display frame 1 
-        self.dateLabel.grid(row=0, column=0, sticky="w", padx=PAD_X4, pady=(0,PAD_Y4))
-        self.dateMenu.grid(row=1, column=0, sticky="w", padx=PAD_X4, pady=0)
+        self.dateLabel.grid(row=0, column=0, sticky="w", padx=PAD_X3, pady=(0,PAD_Y3))
+        self.dateMenu.grid(row=1, column=0, sticky="w", padx=PAD_X3, pady=0)
         # display frame 2 
-        self.categoryLabel.grid(row=0, column=0, sticky="w", padx=(PAD_X4,0), pady=(0,PAD_Y4))
-        self.categoryMenu.grid(row=1, column=0, sticky="w", padx=(PAD_X4,0), pady=0)
-        self.descriptionLabel.grid(row=0, column=1, sticky="w", padx=PAD_X4, pady=(0,PAD_Y4))
-        self.descriptionEntry.grid(row=1, column=1, sticky="w", padx=PAD_X4, pady=0)
+        self.categoryLabel.grid(row=0, column=0, sticky="w", padx=(PAD_X3,0), pady=(0,PAD_Y3))
+        self.categoryMenu.grid(row=1, column=0, sticky="w", padx=(PAD_X3,0), pady=0)
+        self.descriptionLabel.grid(row=0, column=1, sticky="w", padx=PAD_X3, pady=(0,PAD_Y3))
+        self.descriptionEntry.grid(row=1, column=1, sticky="w", padx=PAD_X3, pady=0)
         # display frame 3 
-        self.amountLabel.pack(anchor="w", padx=PAD_X4, pady=(0,PAD_Y4))
-        self.amountEntry.pack(anchor="w", padx=PAD_X4, pady=0)
+        self.amountLabel.pack(anchor="w", padx=PAD_X3, pady=(0,PAD_Y3))
+        self.amountEntry.pack(anchor="w", padx=PAD_X3, pady=0)
     
 
 class AddPageTabs(ctk.CTkFrame):
@@ -145,14 +148,14 @@ class AddPageTabs(ctk.CTkFrame):
         }
         # show buttons/tabs
         self.expenseBTN.grid(row=0, column=0, padx=(0, 0))
-        self.savingsBTN.grid(row=0, column=1, padx=(PAD_X4, 0))
-        self.investmentBTN.grid(row=0, column=2, padx=(PAD_X4, 0))
-        self.incomeBTN.grid(row=0, column=3, padx=(PAD_X4,0))
+        self.savingsBTN.grid(row=0, column=1, padx=(PAD_X3, 0))
+        self.investmentBTN.grid(row=0, column=2, padx=(PAD_X3, 0))
+        self.incomeBTN.grid(row=0, column=3, padx=(PAD_X3,0))
         # open default tab (expense)
         self._switchPageTo("expense")
 
     def createTabButton(self, text, command):
-        btn = ctk.CTkButton(self, text=text, text_color=DARK_GREY, height=BTN_H, width=BTN_W,
+        btn = ctk.CTkButton(self, text=text, text_color=DARK_GREY, height=BTN_H2, width=BTN_W2,
                             font=self.font, corner_radius=RAD, fg_color=WHITE, hover_color=LIGHT_GREY,
                             command=command)
         return btn
@@ -186,8 +189,8 @@ class Add(ctk.CTkFrame):
         # initialize state
         self.isCurrentPage = False
         # create page sections 
-        self.title = AddHeader(self, fg_color=LIGHT_BLUE, corner_radius=0)
-        self.forms_section = ctk.CTkFrame(self, fg_color=LIGHT_BLUE, corner_radius=RAD)
+        self.title = AddHeader(self, fg_color=SKY_BLUE, corner_radius=0)
+        self.forms_section = ctk.CTkFrame(self, fg_color=SKY_BLUE, corner_radius=RAD)
         # create transaction forms
         self.expenseForm = self.createAddTransactionForm("expense")
         self.savingsForm = self.createAddTransactionForm("savings")
@@ -199,11 +202,11 @@ class Add(ctk.CTkFrame):
         }
         # create sub-pages tabs
         self.tabs = AddPageTabs(transactionForms=self.transactionForms, master=self,
-                         fg_color=LIGHT_BLUE, corner_radius=0)
+                         fg_color=SKY_BLUE, corner_radius=0)
         # show page sections 
-        self.title.pack(anchor="w", padx=PAD_X5+PAD_X5, pady=(PAD_Y5+PAD_Y5,0))
-        self.tabs.pack(padx=PAD_X4, pady=(PAD_Y5,0))
-        self.forms_section.pack(padx=PAD_X4, pady=(PAD_Y4,0))
+        self.title.pack(anchor="w", padx=PAD_X4+PAD_X4, pady=(PAD_Y4+PAD_Y4,0))
+        self.tabs.pack(padx=PAD_X3, pady=(PAD_Y4,0))
+        self.forms_section.pack(padx=PAD_X3, pady=(PAD_Y3,0))
 
     def createAddTransactionForm(self, transaction_type):
         # valid categories

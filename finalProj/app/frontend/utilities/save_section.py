@@ -8,7 +8,7 @@ FONT_SIZE_3 = 40
 FONT_SIZE_4 = 50
 FONT_SIZE_5 = 60
 
-LIGHT_BLUE = "#cef2ff"
+SKY_BLUE = "#cef2ff"
 BLUE = "#559eef"
 DARK_BLUE = "#427cbd"
 LIGHT_GREY = "#c4c4c4"
@@ -29,15 +29,15 @@ DAY_MENU_W = 180
 
 PAD_X1 = 10
 PAD_X2 = 20
-PAD_X3 = 20
-PAD_X4 = 30
-PAD_X5 = 40
+PAD_X3 = 30
+PAD_X4 = 40
+PAD_X5 = 50
 
-PAD_Y5 = 40
-PAD_Y4 = 30
-PAD_Y3 = 20
-PAD_Y2 = 20
 PAD_Y1 = 10
+PAD_Y2 = 20
+PAD_Y3 = 30
+PAD_Y4 = 40
+PAD_Y5 = 50
 
 BTN_W = 350
 BTN_H = 60
@@ -61,9 +61,9 @@ class Save(ctk.CTkFrame):
 
     def onClickSave(self):
         for page_name, page in self.pages.items():
-            if page.isCurrentPage == True and page_name == "edit":
+            if page_name == "edit" and page.isCurrentPage == True:
                 self.saveEditedTransactionToDatabase()
-            elif page.isCurrentPage == True and page_name == "add":
+            elif page_name == "add" and page.isCurrentPage == True:
                 self.saveNewTransactionToDatabase()
         self.updateAppMemory()
 

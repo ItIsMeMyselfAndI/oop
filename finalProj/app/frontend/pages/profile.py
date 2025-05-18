@@ -1,14 +1,32 @@
 import customtkinter as ctk
-# from PIL import Image, ImageTk, ImageDraw
+from PIL import Image#, ImageTk, ImageDraw
+
+
+ICONS_FOLDER = "./frontend/assets/icons"
+
+FONT_SIZE_1 = 25
+FONT_SIZE_2 = 30
+FONT_SIZE_3 = 40
+FONT_SIZE_4 = 50
+FONT_SIZE_5 = 60
 
 WHITE= "white"
 
-WHITE_BLUE = "#ebf2fe"
 WHITE_RED = "#fdecec"
-WHITE_GREEN = "#e7f8f2"
-WHITE_PURPLE = "#f3eefe"
+LIGHT_RED = "#ffc7c7"
+RED = "#e14242"
 
-LIGHT_BLUE = "#cef2ff"
+WHITE_GREEN = "#dafbf0"
+LIGHT_GREEN = "#b2fee3"
+GREEN = "#28ab58"
+
+WHITE_PURPLE = "#f3eefe"
+LIGHT_PURPLE =  "#d6c5fb"
+PURPLE = "#ceb9fe"
+
+WHITE_BLUE = "#ebf2fe"
+SKY_BLUE = "#cef2ff"
+LIGHT_BLUE = "#bcd4fe"
 BLUE = "#559eef"
 DARK_BLUE = "#427cbd"
 
@@ -16,29 +34,108 @@ LIGHT_GREY = "#c4c4c4"
 GREY = "grey"
 DARK_GREY = "#545454"
 
-class Balance(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
+ENTRY_W1 = 1430
+ENTRY_W2 = 600
+ENTRY_H = 60
+
+MENU_W1 = 800
+MENU_W2 = 1360 
+MENU_H = 60
+YEAR_MENU_W = 180
+MONTH_MENU_W = 220
+DAY_MENU_W = 180
+
+PAD_X1 = 10
+PAD_X2 = 20
+PAD_X3 = 30
+PAD_X4 = 40
+PAD_X5 = 50
+
+PAD_Y1 = 10
+PAD_Y2 = 20
+PAD_Y3 = 30
+PAD_Y4 = 40
+PAD_Y5 = 50
+
+BTN_W1 = 70
+BTN_W2 = 350
+
+BTN_H1 = 70
+BTN_H2 = 60
+
+RAD = 20
+
+PROFILE_H = 280
+PROFILE_W = 1630
+
+PROFILE_IMG_W = 200
+PROFILE_IMG_H = 200
+
+PROFILE_LABEL_W = 645
+
+# SUMMARY_H = 560
+# SUMMARY_W = 1630
+SUMMARY_ELEM_H = 220
+SUMMARY_ELEM_W = 755
+
+SUMMARY_IMG_W = 50
+SUMMARY_IMG_H = 50
+
+SUMMARY_IMG_FRAME_W = 120
+SUMMARY_IMG_FRAME_H = 120
+
+SUMMARY_LABEL_W = 500
+
+
+class ProfileElement(ctk.CTkFrame):
+    def __init__(self, img, uname, summary_type, master, **kwargs):
         super().__init__(master, ** kwargs)
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_3, slant="italic", weight="normal")
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_5, slant="italic", weight="normal")
+        self.img = img
+        # create guide frames
+        self.img_bg = ctk.CTkLabel(self, corner_radius=RAD, image=img, text="")
+        self.uname_frame = ctk.CTkFrame(self, corner_radius=RAD, fg_color="transparent", width=SUMMARY_IMG_FRAME_W)
+        self.balance_frame = ctk.CTkFrame(self, corner_radius=RAD, fg_color="transparent", width=SUMMARY_IMG_FRAME_W)
+        # create labels
+        self.uname_label = ctk.CTkLabel(self.uname_frame, text=uname, font=self.font2, text_color=WHITE,
+                                        anchor="w", width=PROFILE_LABEL_W)
+        self.summary_type_label = ctk.CTkLabel(self.balance_frame, text=summary_type, font=self.font1, text_color=WHITE,
+                                        anchor="e")
+        self.amount_label = ctk.CTkLabel(self.balance_frame, text="₱ 0.0", font=self.font2, text_color=WHITE,
+                                         width=PROFILE_LABEL_W, anchor="e")
+        # display guide frames
+        self.img_bg.grid(row=0, column=0, pady=PAD_Y4, padx=(PAD_X4,0))
+        self.uname_frame.grid(row=0, column=1, padx=(0,PAD_X2))
+        self.balance_frame.grid(row=0, column=2, padx=(0,PAD_X4))
+        # display labels
+        self.uname_label.pack(anchor="w")
+        self.summary_type_label.pack(anchor="e")
+        self.amount_label.pack(anchor="e")
 
 
-class Income(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
+
+class SummaryElement(ctk.CTkFrame):
+    def __init__(self, img, img_bg_color, summary_type, master, **kwargs):
         super().__init__(master, ** kwargs)
-        
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_3, slant="italic", weight="normal")
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_5, slant="italic", weight="normal")
+        self.img = img
+        # create guide frames
+        self.img_bg = ctk.CTkLabel(self, height=SUMMARY_IMG_FRAME_H, width=SUMMARY_IMG_FRAME_W,
+                                   corner_radius=RAD, fg_color=img_bg_color, image=img, text="")
+        self.details_frame = ctk.CTkFrame(self, width=SUMMARY_IMG_FRAME_W, corner_radius=RAD, fg_color="transparent")
+        # create labels
+        self.summary_type_label = ctk.CTkLabel(self.details_frame, text=summary_type, font=self.font1, text_color=DARK_GREY, anchor="w")
+        self.amount_label = ctk.CTkLabel(self.details_frame, text="₱ 0.0", font=self.font2, text_color=DARK_GREY,
+                                         width=SUMMARY_LABEL_W, anchor="w")
+        # display guide frames
+        self.img_bg.grid(row=0, column=0, padx=(PAD_X5, 0), pady=PAD_Y5)
+        self.details_frame.grid(row=0, column=1, padx=(PAD_X3, PAD_X5), pady=PAD_Y1)
+        # display labels
+        self.summary_type_label.pack(anchor="w")
+        self.amount_label.pack(anchor="w")
 
-class Expense(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
-        super().__init__(master, ** kwargs)
-
-
-class Savings(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
-        super().__init__(master, ** kwargs)
-
-
-class Investment(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
-        super().__init__(master, ** kwargs)
 
 
 class Profile(ctk.CTkFrame):
@@ -46,178 +143,40 @@ class Profile(ctk.CTkFrame):
         super().__init__(master, ** kwargs)
         # initialize state
         self.isCurrentPage = False
+        # load imgs
+        profile_icon, income_icon, savings_icon, expense_icon, investment_icon = self.loadIcons()
         # create page sections
-        self.profile = Balance(self, fg_color=BLUE, corner_radius=10, height=250) # (1080-20-20-20)/3
-        self.summary = ctk.CTkFrame(self, fg_color=WHITE, corner_radius=10, height=680) # [(1080-20-20-20)/3]*2
+        self.profile_section = ProfileElement(img=profile_icon, uname="Username", master=self, fg_color=BLUE,
+                                              summary_type="Total Balance:", corner_radius=RAD, height=PROFILE_H,
+                                              width=PROFILE_W)
+        self.summary_section = ctk.CTkFrame(self, fg_color=WHITE, corner_radius=RAD)
         # create summary sub-sections
-        self.income = Income(self.summary, fg_color=WHITE_BLUE, corner_radius=10)
-        self.expense = Expense(self.summary, fg_color=WHITE_RED, corner_radius=10)
-        self.savings = Savings(self.summary, fg_color=WHITE_GREEN, corner_radius=10)
-        self.investment = Investment(self.summary, fg_color=WHITE_PURPLE, corner_radius=10)
+        self.income = SummaryElement(img=income_icon, master=self.summary_section, fg_color=WHITE_BLUE,
+                                     summary_type="Total Income:", corner_radius=RAD, height=SUMMARY_ELEM_H,
+                                     width=SUMMARY_ELEM_W, img_bg_color=LIGHT_BLUE)
+        self.expense = SummaryElement(img=expense_icon, master=self.summary_section, fg_color=WHITE_RED,
+                                     summary_type="Total Expenses:", corner_radius=RAD, height=SUMMARY_ELEM_H,
+                                     width=SUMMARY_ELEM_W, img_bg_color=LIGHT_RED)
+        self.savings = SummaryElement(img=savings_icon, master=self.summary_section, fg_color=WHITE_GREEN,
+                                     summary_type="Total Savings:", corner_radius=RAD, height=SUMMARY_ELEM_H,
+                                     width=SUMMARY_ELEM_W, img_bg_color=LIGHT_GREEN)
+        self.investment = SummaryElement(img=investment_icon, master=self.summary_section, fg_color=WHITE_PURPLE,
+                                     summary_type="Total Investment:", corner_radius=RAD, height=SUMMARY_ELEM_H,
+                                     width=SUMMARY_ELEM_W, img_bg_color=LIGHT_PURPLE)
         # display page sections
-        self.profile.pack(pady=(20,0), padx=(20,20))
-        self.summary.pack(pady=(20,0), padx=(20,20))
+        self.profile_section.pack(padx=PAD_X5+PAD_X5, pady=(PAD_Y5+PAD_Y5,0))
+        self.summary_section.pack(padx=PAD_X5, pady=(PAD_Y4, PAD_Y5+PAD_Y5))
         # display summary sections
-        self.income.grid(row=0, column=0, pady=(20,0), padx=(20,0))
-        self.expense.grid(row=0, column=1, pady=(20,0), padx=(20,20))
-        self.savings.grid(row=1, column=0, pady=(20,20), padx=(20,0))
-        self.investment.grid(row=1, column=1, pady=(20,20), padx=(20,20))
-
-        # self.padx = 20
-        # self.pady_large = 96
-
-        
-        # # Extract keyword arguments with defaults
-        # self.savings = kwargs.get('Savings', 0)
-        # self.investment = kwargs.get('Investments', 0)
-        # self.name = kwargs.get('Username', 'Username')
-
-        # # Top bar
-        # profile_balance_frame = ctk.CTkFrame(self, height=100, fg_color=BLUE, corner_radius=0)
-        # profile_balance_frame.pack(fill="both", anchor="ne")
-        # self.total_label = ctk.CTkLabel(profile_balance_frame,
-        #                                  text="", 
-        #                                  font=("Arial", 50, "bold"), 
-        #                                  text_color=WHITE)
-        # self.total_label.pack(side="right", 
-        #                       padx=20, 
-        #                       pady=10)
-
-        # # Profile row
-        # profile_row = ctk.CTkFrame(self, fg_color='green')
-        # profile_row.pack(fill='both')
-
-        # profile_pic_path = './frontend/assets/icons/profile.png'
-        # profile_img_size = 150
-
-        # profile_image_with_border = self.create_circular_image_with_border(
-        #     profile_pic_path,
-        #     size=profile_img_size,
-        #     border_size=10,
-        #     border_color="#7fbcd2"
-        # )
-
-        # profile_img_label = ctk.CTkLabel(profile_row,
-        #                                 image=profile_image_with_border,
-        #                                 text='',
-        #                                 fg_color='transparent')
-        # profile_img_label.image = profile_image_with_border
-        # profile_img_label.pack(side='left', padx=(30, 10), pady=(10, 0))
+        self.income.grid(row=0, column=0, padx=(PAD_X4,0), pady=(PAD_Y4,0), sticky="nsew")
+        self.expense.grid(row=0, column=1, padx=PAD_X4, pady=(PAD_Y4,0), sticky="nsew")
+        self.savings.grid(row=1, column=0, padx=(PAD_Y4,0), pady=PAD_Y4, sticky="nsew")
+        self.investment.grid(row=1, column=1, pady=PAD_Y4, padx=PAD_X4, sticky="nsew")
 
 
-        # name_label = ctk.CTkLabel(profile_row,
-        #                         text=self.name,
-        #                         font=("Bodoni MT", 40, "italic"),
-        #                         text_color=DARK_GREY,
-        #                         fg_color='transparent')
-        # name_label.pack(side='left', padx=self.padx)
-
-
-        # Savings section 
-        # savings_row = ctk.CTkFrame(self, fg_color='transparent')
-        # savings_row.pack(fill='x', pady=(0, self.pady_large))
-
-        # Ico big enough to cover both lines of text
-        # savings_image = Image.open('./frontend/assets/icons/savings.png').resize((150, 150))
-        # savings_circular_img = ImageTk.PhotoImage(savings_image)
-        # savings_image_label = ctk.CTkLabel(savings_row,
-        #                                 image=savings_circular_img,
-        #                                 text='',
-        #                                 fg_color='transparent')
-        # savings_image_label.image = savings_circular_img
-        # savings_image_label.pack(side='left', padx=(30, 10), pady=(10, 0))
-
-
-        # # Text container (Label + Amount stacked vertically)
-        # savings_text_frame = ctk.CTkFrame(savings_row, fg_color='transparent')
-        # savings_text_frame.pack(side='left')
-
-        # self.savings_label = ctk.CTkLabel(savings_text_frame,
-        #                                 text="Savings",
-        #                                 font=("Bodoni MT", 50, 'italic'),
-        #                                 text_color=DARK_GREY,
-        #                                 fg_color='transparent')
-        # self.savings_label.pack()
-
-        # self.savings_amount_label = ctk.CTkLabel(savings_text_frame,
-        #                                         text="",  # Will be set dynamically
-        #                                         font=("Bodoni MT", 50, "italic"),
-        #                                         text_color=DARK_GREY,
-        #                                         fg_color='transparent')
-        # self.savings_amount_label.pack()
-
-
-        # Investment section
-        # invest_row = ctk.CTkFrame(self, fg_color='transparent')
-        # invest_row.pack(fill='x', pady=(0, self.pady_large))
-
-        # invest_image = Image.open('./frontend/assets/icons/investment.png').resize((150, 150))
-        # invest_circular_img = ImageTk.PhotoImage(invest_image)
-        # invest_image_label = ctk.CTkLabel(invest_row,
-        #                                 image=invest_circular_img,
-        #                                 text='',
-        #                                 fg_color='transparent')
-        # invest_image_label.image = invest_circular_img
-        # invest_image_label.pack(side='left', padx=(30, 10), pady=(10, 0))
-
-
-        # invest_text_frame = ctk.CTkFrame(invest_row, fg_color='transparent')
-        # invest_text_frame.pack(side='left')
-
-        # self.investment_label = ctk.CTkLabel(invest_text_frame,
-        #                                     text="Investments",
-        #                                     font=("Bodoni MT", 50, 'italic'),
-        #                                     text_color=DARK_GREY,
-        #                                     fg_color='transparent')
-        # self.investment_label.pack()
-
-        # self.investment_amount_label = ctk.CTkLabel(invest_text_frame,
-        #                                             text="",  # Will be set dynamically
-        #                                             font=("Bodoni MT", 50, "italic"),
-        #                                             text_color=DARK_GREY,
-        #                                             fg_color='transparent')
-        # self.investment_amount_label.pack()
-
-        # self.update_financial_display()
-    
-    # def create_circular_image_with_border(self, img_path, size, border_size, border_color):
-
-    #     # Resize original image
-    #     img = Image.open(img_path).resize((size, size))
-
-    #     # Create circular mask for the profile image
-    #     mask = Image.new("L", (size, size), 0)
-    #     draw = ImageDraw.Draw(mask)
-    #     draw.ellipse((0, 0, size, size), fill=255)
-
-    #     circular_img = Image.new("RGBA", (size, size))
-    #     circular_img.paste(img, (0, 0), mask=mask)
-
-    #     # Create bordered image
-    #     total_size = size + 2 * border_size
-    #     bordered_img = Image.new("RGBA", (total_size, total_size), border_color)
-    #     bordered_img.paste(circular_img, (border_size, border_size), mask=mask)
-
-    #     # Final circular mask for entire bordered image
-    #     final_mask = Image.new("L", (total_size, total_size), 0)
-    #     draw = ImageDraw.Draw(final_mask)
-    #     draw.ellipse((0, 0, total_size, total_size), fill=255)
-
-    #     final_img = Image.new("RGBA", (total_size, total_size))
-    #     final_img.paste(bordered_img, (0, 0), mask=final_mask)
-    #     return ImageTk.PhotoImage(final_img)
-
-    # def update_financial_display(self):
-    #     savings_str = f"₱ {self.savings:,.2f}"
-    #     investment_str = f"₱ {self.investment:,.2f}"
-    #     total_str = f"₱ {self.savings + self.investment:,.2f}"
-
-    #     self.savings_amount_label.configure(text=savings_str)
-    #     self.investment_amount_label.configure(text=investment_str)
-    #     self.total_label.configure(text=total_str)
-
-    # def set_financial_data(self, savings, investment):
-    #     self.savings = savings
-    #     self.investment = investment
-    #     self.update_financial_display()
-
+    def loadIcons(self):
+        profile_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/profile1.png"), size=(PROFILE_IMG_H, PROFILE_IMG_W))
+        income_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/income.png"), size=(SUMMARY_IMG_H, SUMMARY_IMG_W))
+        savings_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/savings.png"), size=(SUMMARY_IMG_H, SUMMARY_IMG_W))
+        expense_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/expense.png"), size=(SUMMARY_IMG_H, SUMMARY_IMG_W))
+        investment_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/investment.png"), size=(SUMMARY_IMG_H, SUMMARY_IMG_W))
+        return profile_icon, income_icon, savings_icon, expense_icon, investment_icon

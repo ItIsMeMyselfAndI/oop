@@ -2,7 +2,7 @@ import customtkinter as ctk
 from datetime import datetime
 
 
-LIGHT_BLUE = "#cef2ff"
+SKY_BLUE = "#cef2ff"
 BLUE = "#559eef"
 DARK_BLUE = "#427cbd"
 LIGHT_GREY = "#c4c4c4"
@@ -27,21 +27,21 @@ class DatePicker(ctk.CTkFrame):
         # create date menu
         self.year = ctk.CTkOptionMenu(self, values=years,
                                       font=ctk_font, text_color=DARK_GREY,
-                                      fg_color=BLUE, dropdown_font=ctk_font,
+                                      fg_color=BLUE, dropdown_font=dropdown_ctk_font,
                                       dropdown_fg_color=BLUE,
                                       dropdown_hover_color=DARK_BLUE,
                                       dropdown_text_color=DARK_GREY,
                                       corner_radius=rad, width=year_width, height=picker_height)
         self.month = ctk.CTkOptionMenu(self, values=months,
                                        font=ctk_font, text_color=DARK_GREY,
-                                       fg_color=BLUE, dropdown_font=ctk_font,
+                                       fg_color=BLUE, dropdown_font=dropdown_ctk_font,
                                        dropdown_fg_color=BLUE,
                                        dropdown_hover_color=DARK_BLUE,
                                        dropdown_text_color=DARK_GREY,
                                        corner_radius=rad, width=month_width, height=picker_height)
         self.day = ctk.CTkOptionMenu(self, values=days,
                                      font=ctk_font, text_color=DARK_GREY,
-                                     fg_color=BLUE, dropdown_font=ctk_font,
+                                     fg_color=BLUE, dropdown_font=dropdown_ctk_font,
                                      dropdown_fg_color=BLUE,
                                      dropdown_hover_color=DARK_BLUE,
                                      dropdown_text_color=DARK_GREY,

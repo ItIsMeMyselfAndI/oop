@@ -16,7 +16,7 @@ FONT_SIZE_3 = 40
 FONT_SIZE_4 = 50
 FONT_SIZE_5 = 60
 
-LIGHT_BLUE = "#cef2ff"
+SKY_BLUE = "#cef2ff"
 BLUE = "#559eef"
 DARK_BLUE = "#427cbd"
 LIGHT_GREY = "#c4c4c4"
@@ -48,8 +48,11 @@ PAD_Y3 = 20
 PAD_Y2 = 20
 PAD_Y1 = 10
 
-BTN_W = 350
-BTN_H = 60
+BTN_W1 = 70
+BTN_W2 = 350
+
+BTN_H1 = 70
+BTN_H2 = 60
 
 RAD = 20
 
@@ -80,20 +83,21 @@ class App(ctk.CTk):
         # set app title
         self.title("Personal Finance Tracker")
         # initialize dimensions
-        self.screen_w = self.winfo_screenwidth()
-        self.screen_h = self.winfo_screenheight()
-        print(self.screen_w, self.screen_h)
-        self.geometry(f"{self.screen_w}x{self.screen_h}")
+        self.attributes("-fullscreen", True)
+        # self.screen_w = self.winfo_screenwidth()
+        # self.screen_h = self.winfo_screenheight()
+        # print(self.screen_w, self.screen_h)
+        # self.geometry(f"{self.screen_w}x{self.screen_h}")
         # self.wm_maxsize(width, height) #max window size
-        self.resizable(width=False, height=False) #disable resize window (temporary)
+        # self.resizable(width=False, height=False) #disable resize window (temporary)
         # create scrollable screen (vertical)
-        self.content = ctk.CTkScrollableFrame(self, orientation="vertical", corner_radius=0,fg_color=LIGHT_BLUE)
+        self.content = ctk.CTkScrollableFrame(self, orientation="vertical", corner_radius=0,fg_color=SKY_BLUE)
         # create app pages
-        self.profilePage = Profile(self.content, fg_color=LIGHT_BLUE, corner_radius=0) 
-        self.homePage = Home(self.content, fg_color=LIGHT_BLUE, corner_radius=0) 
-        self.editPage = Edit(self.user_id, tm=self.tm, master=self.content, fg_color=LIGHT_BLUE, corner_radius=0) 
-        self.historyPage = History(self.content, fg_color=LIGHT_BLUE, corner_radius=0) 
-        self.addPage = Add(self.user_id, tm=self.tm, master=self.content, fg_color=LIGHT_BLUE, corner_radius=0) 
+        self.profilePage = Profile(self.content, fg_color=SKY_BLUE, corner_radius=0) 
+        self.homePage = Home(self.content, fg_color=SKY_BLUE, corner_radius=0) 
+        self.editPage = Edit(self.user_id, tm=self.tm, master=self.content, fg_color=SKY_BLUE, corner_radius=0) 
+        self.historyPage = History(self.content, fg_color=SKY_BLUE, corner_radius=0) 
+        self.addPage = Add(self.user_id, tm=self.tm, master=self.content, fg_color=SKY_BLUE, corner_radius=0) 
         self.pages = {
             "profile":self.profilePage, "home":self.homePage,
             "edit":self.editPage, "history":self.historyPage,
@@ -103,9 +107,9 @@ class App(ctk.CTk):
         self.sidebar = Sidebar(pages=self.pages, master=self, fg_color="#ffffff", corner_radius=0)
         # create save btn
         self.editSaveBtn = Save(tm=self.tm, user_id=self.user_id, pages=self.pages,
-                                master=self.editPage, fg_color=LIGHT_BLUE)
+                                master=self.editPage, fg_color=SKY_BLUE)
         self.addSaveBtn = Save(tm=self.tm, user_id=self.user_id, pages=self.pages,
-                               master=self.addPage, fg_color=LIGHT_BLUE)
+                               master=self.addPage, fg_color=SKY_BLUE)
         # display sidebar/page-tabs and content[profile, home, edit, history, add]
         self.sidebar.pack(side="left", fill="y")
         self.content.pack(side="left", fill="both", expand=True)
