@@ -1,4 +1,8 @@
 import sqlite3
+import customtkinter as ctk
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 # data holder for a transaction
@@ -24,6 +28,7 @@ class Finance:
 
 class TransactionRepository:
     def __init__(self, db_path):
+        self.user_id: int = 1
         self.connection = sqlite3.connect(db_path)
         self.cursor = self.connection.cursor()
 
@@ -127,54 +132,24 @@ class TransactionRepository:
     def deleteTransaction(self, user_id: int, t_id: int) -> None:
         pass
 
-
-class TransactionManager:
-    def __init__(self, db_path):
-        self.user_id: int = 1
-        # self.categories_by_type = {
-        #     "expense": ["Bills", "Education", "Entertainment",
-        #                 "Food & Drinks", "Grocery", "Healthcare",
-        #                 "House", "Shopping", "Transportation",
-        #                 "Wellness", "Other"],
-        #     "savings": ["Monthly Allowance", "Change", "Miscellaneous"],
-        #     "investment": ["Stocks", "Crypto", "Bonds", "Real Estate"],
-        #     "income": ["Salary", "Bonus", "Side-hustles", "Tips"]
-        # }
-        self.repo = TransactionRepository(db_path)
-
-    def calculateOverallFinance() -> Finance:
-        pass
-    def calculateOverallBalance(overall_finance: Finance) -> float:
-        pass
-    def calculateMonthlyFinances() -> list[Finance]:
-        pass
-    def calculateQuarterlyFinances() -> list[Finance]:
-        pass
-    def createMonthlyGraph(monthly_finances: list[Finance]) -> matplotlib.Figure:
-        pass
-    def createQuarterlyGraph(quarterly_finances: list[Finance]) -> matplotlib.Figure:
-        pass
-
-    
-    #--------------------------------------# for testing
-
+# ------------------------------- Tests ------------------------------------------
 
     def testMirasolGetAllTransactions(self):
-        all_transactions = self.repo.getAllTransactions(user_id=self.user_id)
+        all_transactions = self.getAllTransactions(user_id=self.user_id)
         # display results
         print("\n[All Transactions]\n")
         for t in all_transactions:
             print(f" {t.t_id:<10} | {t.t_date:<12} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description}")
     
     def testMirasolGetTransactionByType(self):
-        type_transactions = self.repo.getTransactionsByType(user_id=self.user_id, t_type='expense')
+        type_transactions = self.getTransactionsByType(user_id=self.user_id, t_type='expense')
         # display results
         print("\n\n[Type (expense) Transactions]\n")
         for t in type_transactions:
             print(f" {t.t_id:<10} | {t.t_date:<12} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description}")
     
     def testNicolasGetTransactionsByCategory(self):
-        category_transactions = self.repo.getTransactionsByCategory(user_id=self.user_id, t_category='Salary')
+        category_transactions = self.getTransactionsByCategory(user_id=self.user_id, t_category='Salary')
         # display results
         print("\n[Category (Salary) Transactions]\n")
         for t in category_transactions:
@@ -182,40 +157,138 @@ class TransactionManager:
     
     def testNicolasAddTransaction(self):
         # new Transaction obj sample
-        new_transaction = Transaction(t_date='2025-05-15', t_type='expense', t_category='Shopping',
-                                      t_amount=3000.0, t_description='sample description')
+        new_transaction = Transaction(t_date='2025-05-19', t_type='Expense', t_category='luho',
+                                      t_amount=5500.0, t_description='sample description')
         # add new row to transaction table
-        transaction_tuple = self.repo.addTransaction(user_id=self.user_id, new_transaction=new_transaction)
+        transaction_tuple = self.addTransaction(user_id=self.user_id, new_transaction=new_transaction)
         print("\n\n[Tuple version of Transaction obj]\n")
         print(f"\t{transaction_tuple}")
         # pang check kung na update sa db; dat pareho toh sa tuple moh
-        print(self.repo.cursor.execute("SELECT * FROM transactions WHERE transaction_id = 1445").fetchone())
+        print("\t" + self.cursor.execute("SELECT * FROM transactions WHERE transaction_id = 1455").fetchone())
         
     def testAzcarragaModifyTransaction(self):
         # updated Transaction obj sample
         updated_transaction = Transaction(t_date='2025-05-15', t_type='expense', t_category='Education',
                                           t_amount=3000.0, t_description='sample description')
         # modify last row
-        transaction_tuple = self.repo.modifyTransaction(user_id=self.user_id, t_id=1440, updated_transaction=updated_transaction)
+        transaction_tuple = self.modifyTransaction(user_id=self.user_id, t_id=1440, updated_transaction=updated_transaction)
         # display results
         print("\n[Tuple version of Transaction obj]")
         print(f"\n{transaction_tuple}")
         # pang check kung na update sa db; dat pareho toh sa tuple moh
-        print(self.repo.cursor.execute("SELECT * FROM transactions WHERE transaction_id = 1440").fetchone())    
+        print(self.cursor.execute("SELECT * FROM transactions WHERE transaction_id = 1455").fetchone())    
 
     def testAzcarragaDeleteTransaction(self):
         # delete last row
-        self.repo.deleteTransaction(user_id=self.user_id, t_id=1445)
-    
+        self.deleteTransaction(user_id=self.user_id, t_id=1445)
+
+
+class TransactionManager:
+    def __init__(self, db_path):
+        self.user_id: int = 1
+        self.repo = TransactionRepository(db_path)
+
+    def calculateOverallFinance(self, user_id: int) -> Finance:
+        pass
+
+    def calculateOverallBalance(self, user_id: int) -> float:
+        pass
+
+    def calculateMonthlyFinances(self, user_id: int) -> list[Finance]:
+        pass
+
+    def calculateQuarterlyFinances(self, user_id: int) -> list[Finance]:
+        pass
+
+    def createMonthlyGraph(self, monthly_finances: list[Finance]) -> matplotlib.figure.Figure:
+        pass
+
+    def createQuarterlyGraph(self, quarterly_finances: list[Finance]) -> matplotlib.figure.Figure:
+        pass
+
+# ------------------------------- Tests ------------------------------------------
+
+    def testCalculateOverallFinance(self):
+        overall_finance = self.calculateOverallFinance(user_id=self.user_id)
+        # display result
+        print("\n\n[Overall Finance]\n")
+        print(f"\ttotal_income: {overall_finance.total_income}")
+        print(f"\ttotal_expenses: {overall_finance.total_expense}")
+        print(f"\ttotal_savings: {overall_finance.total_savings}")
+        print(f"\ttotal_investment: {overall_finance.total_investment}\n")
+
+    def testCalculateOverallBalance(self):
+        overall_balance = self.calculateOverallBalance(user_id=self.user_id)
+        # display result
+        print("\n\n[Overall Balance]\n")
+        print(overall_balance)
+
+    def testCalculateMonthlyFinances(self):
+        monthly_finances = self.calculateMonthlyFinances(user_id=self.user_id)
+        # display result
+        print("\n\n[Monthly Finances]\n")
+        for year_month, finance in monthly_finances.items():
+            print(f"\t{year_month}")
+            print(f"\t\ttotal_income: {finance.total_income}")
+            print(f"\t\ttotal_expenses: {finance.total_expense}")
+            print(f"\t\ttotal_savings: {finance.total_savings}")
+            print(f"\t\ttotal_investment: {finance.total_investment}\n")
+
+    def testCalculateQuarterlyFinance(self):
+        quarterly_finances = self.calculateQuarterlyFinances(user_id=self.user_id)
+        # display result
+        print("\n\n[Quarterly Finances]\n")
+        for year_quarter, finance in quarterly_finances.items():
+            print(f"\t{year_quarter}")
+            print(f"\t\ttotal_income: {finance.total_income}")
+            print(f"\t\ttotal_expenses: {finance.total_expense}")
+            print(f"\t\ttotal_savings: {finance.total_savings}")
+            print(f"\t\ttotal_investment: {finance.total_investment}\n")
+
+    def testCreateMonthlyGraph(self):
+        monthly_finances = self.calculateMonthlyFinances(user_id=self.user_id)
+        graph = self.createMonthlyGraph(monthly_finances=monthly_finances)
+        # display result
+        root = ctk.CTk()
+        root.title("Monthly Graph")
+        root.geometry("1920x1080")
+        canvas = FigureCanvasTkAgg(graph, master=root)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill="both", expand=True)
+        root.mainloop()
+
+    def testCreateQuarterlyGraph(self):
+        quarterly_finances = self.calculateQuarterlyFinances(user_id=self.user_id)
+        graph = self.createQuarterlyGraph(quarterly_finances=quarterly_finances)
+        # display result
+        root = ctk.CTk()
+        root.title("Quarterly Graph")
+        root.geometry("1920x1080")
+        canvas = FigureCanvasTkAgg(graph, master=root)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill="both", expand=True)
+        root.mainloop()
+
         
 if __name__ == "__main__":
     db_path = "../db/transactions.db"
     tm = TransactionManager(db_path)
-    # uncomment nyo inyo if mag sasample run kayo
-    # tm.testMirasolGetAllTransactions()
-    # tm.testMirasolGetTransactionByType()
-    # tm.testNicolasGetTransactionsByCategory()
-    tm.testNicolasAddTransaction()
-    # tm.testAzcarragaModifyTransaction()
-    # tm.testAzcarragaDeleteTransaction()
+    # uncomment nyo inyo if magsasample run kayo
+
+    # --- REPOSITORY tests ---
+    # tm.repo.testMirasolGetAllTransactions()
+    # tm.repo.testMirasolGetTransactionByType()
+    # tm.repo.testNicolasGetTransactionsByCategory()
+    # tm.repo.testNicolasAddTransaction()
+    # tm.repo.testAzcarragaModifyTransaction()
+    # tm.repo.testAzcarragaDeleteTransaction()
+
+    # --- MANAGER tests ---
+    # tm.testCalculateOverallFinance()
+    # tm.testCalculateOverallBalance()
+    # tm.testCalculateMonthlyFinances()
+    # tm.testCalculateQuarterlyFinance()
+    # tm.testCreateMonthlyGraph()
+    # tm.testCreateQuarterlyGraph()
+
     tm.repo.connection.close()
