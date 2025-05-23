@@ -3,6 +3,8 @@ import customtkinter as ctk
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from datetime import datetime, timedelta
+from collections import defaultdict
 
 
 # data holder for a transaction
@@ -189,13 +191,75 @@ class TransactionManager:
         self.repo = TransactionRepository(db_path)
 
     def calculateOverallFinance(self, user_id: int) -> Finance:
-        pass
+        transactions = self.repo.getAllTransactions(user_id)
+
+        total_income = 0.0
+        total_expenses = 0.0
+        total_savings = 0.0
+        total_investment = 0.0
+
+        for t in transactions:
+            t_type = t.t_type.lower()
+            if t_type == "income":
+                total_income += t.t_amount
+            elif t_type == "expense":
+                total_expenses += t.t_amount
+            elif t_type == "savings":
+                total_savings += t.t_amount
+            elif t_type == "investment":
+                total_investment += t.t_amount
+
+        return Finance(
+            total_income=total_income,
+            total_expenses=total_expenses,
+            total_savings=total_savings,
+            total_investment=total_investment
+        )
 
     def calculateOverallBalance(self, user_id: int) -> float:
         pass
 
     def calculateMonthlyFinances(self, user_id: int) -> list[Finance]:
-        pass
+        transactions = self.repo.getAllTransactions(user_id)
+        monthly_data = defaultdict(lambda: {"income": 0.0, "expense": 0.0, "savings": 0.0, "investment": 0.0})
+        month_keys = set()
+
+        # Process all transactions and gather unique months
+        for t in transactions:
+            try:
+                date_obj = datetime.strptime(t.t_date, "%Y-%m-%d")
+                month_key = date_obj.strftime("%Y-%m")
+                month_keys.add(month_key)
+            except ValueError:
+                continue  # skip invalid dates
+
+            t_type = t.t_type.lower()
+            if t_type in monthly_data[month_key]:
+                monthly_data[month_key][t_type] += t.t_amount
+        # Determine the full range of months (from earliest to latest transaction)
+        if month_keys:
+            first_month = min(datetime.strptime(k, "%Y-%m") for k in month_keys)
+            last_month = max(datetime.strptime(k, "%Y-%m") for k in month_keys)
+            current = first_month
+            while current <= last_month:
+                key = current.strftime("%Y-%m")
+                if key not in monthly_data:
+                    monthly_data[key]  # trigger default zero values
+                current += timedelta(days=32)
+                current = current.replace(day=1)
+
+        # Convert to dictionary of Finance objects, sorted
+        monthly_finances = {}
+        for month, values in sorted(monthly_data.items()):
+            finance = Finance(
+                total_income=values["income"],
+                total_expenses=values["expense"],
+                total_savings=values["savings"],
+                total_investment=values["investment"]
+            )
+            monthly_finances[month] = finance
+
+        return monthly_finances
 
     def calculateQuarterlyFinances(self, user_id: int) -> list[Finance]:
         pass
@@ -213,7 +277,7 @@ class TransactionManager:
         # display result
         print("\n\n[Overall Finance]\n")
         print(f"\ttotal_income: {overall_finance.total_income}")
-        print(f"\ttotal_expenses: {overall_finance.total_expense}")
+        print(f"\ttotal_expenses: {overall_finance.total_expenses}")
         print(f"\ttotal_savings: {overall_finance.total_savings}")
         print(f"\ttotal_investment: {overall_finance.total_investment}\n")
 
@@ -230,7 +294,7 @@ class TransactionManager:
         for year_month, finance in monthly_finances.items():
             print(f"\t{year_month}")
             print(f"\t\ttotal_income: {finance.total_income}")
-            print(f"\t\ttotal_expenses: {finance.total_expense}")
+            print(f"\t\ttotal_expenses: {finance.total_expenses}")
             print(f"\t\ttotal_savings: {finance.total_savings}")
             print(f"\t\ttotal_investment: {finance.total_investment}\n")
 
@@ -241,7 +305,7 @@ class TransactionManager:
         for year_quarter, finance in quarterly_finances.items():
             print(f"\t{year_quarter}")
             print(f"\t\ttotal_income: {finance.total_income}")
-            print(f"\t\ttotal_expenses: {finance.total_expense}")
+            print(f"\t\ttotal_expenses: {finance.total_expenses}")
             print(f"\t\ttotal_savings: {finance.total_savings}")
             print(f"\t\ttotal_investment: {finance.total_investment}\n")
 

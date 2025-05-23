@@ -65,8 +65,8 @@ BTN_H2 = 60
 
 RAD = 20
 
-PROFILE_H = 280
-PROFILE_W = 1630
+HEADER_H = 280
+HEADER_W = 1630
 
 PROFILE_IMG_W = 200
 PROFILE_IMG_H = 200
@@ -87,7 +87,7 @@ SUMMARY_IMG_FRAME_H = 120
 SUMMARY_LABEL_W = 500
 
 
-class ProfileElement(ctk.CTkFrame):
+class ProfileHeader(ctk.CTkFrame):
     def __init__(self, img, uname, summary_type, master, **kwargs):
         super().__init__(master, ** kwargs)
         self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_3, slant="italic", weight="normal")
@@ -146,9 +146,9 @@ class Profile(ctk.CTkFrame):
         # load imgs
         profile_icon, income_icon, savings_icon, expense_icon, investment_icon = self.loadIcons()
         # create page sections
-        self.profile_section = ProfileElement(img=profile_icon, uname="Username", master=self, fg_color=BLUE,
-                                              summary_type="Total Balance:", corner_radius=RAD, height=PROFILE_H,
-                                              width=PROFILE_W)
+        self.profile_header = ProfileHeader(img=profile_icon, uname="Username", master=self, fg_color=BLUE,
+                                              summary_type="Total Balance:", corner_radius=RAD, height=HEADER_H,
+                                              width=HEADER_W)
         self.summary_section = ctk.CTkFrame(self, fg_color=WHITE, corner_radius=RAD)
         # create summary sub-sections
         self.income = SummaryElement(img=income_icon, master=self.summary_section, fg_color=WHITE_BLUE,
@@ -164,7 +164,7 @@ class Profile(ctk.CTkFrame):
                                      summary_type="Total Investment:", corner_radius=RAD, height=SUMMARY_ELEM_H,
                                      width=SUMMARY_ELEM_W, img_bg_color=LIGHT_PURPLE)
         # display page sections
-        self.profile_section.pack(padx=PAD_X5+PAD_X5, pady=(PAD_Y5+PAD_Y5,0))
+        self.profile_header.pack(padx=PAD_X5+PAD_X5, pady=(PAD_Y5+PAD_Y5,0))
         self.summary_section.pack(padx=PAD_X5, pady=(PAD_Y4, PAD_Y5+PAD_Y5))
         # display summary sections
         self.income.grid(row=0, column=0, padx=(PAD_X4,0), pady=(PAD_Y4,0), sticky="nsew")
