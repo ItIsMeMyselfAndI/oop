@@ -63,71 +63,10 @@ class Save(ctk.CTkFrame):
         # save to database
         for page_name, page in self.pages.items():
             if page_name == "edit" and page.isCurrentPage == True:
-                self.saveEditedTransactionToDatabase()
+                self.pages["edit"].saveEditedTransactionToDatabase()
             elif page_name == "add" and page.isCurrentPage == True:
-                self.saveNewTransactionToDatabase()
+                self.pages["add"].saveNewTransactionToDatabase()
         # self.updateAppMemory()
         self.pages["edit"].updatePageDisplay()
         self.pages["profile"].updatePageDisplay()
 
-    def saveEditedTransactionToDatabase(self):
-        month_2_numeric = {"January":"01", "February":"02", "March":"03", "April":"04",
-                           "May":"05", "June":"06", "July":"07", "August":"08",
-                           "September":"09", "October":"10", "November":"11", "December":"12"}
-        for transaction_type, form in self.pages["edit"].transactionForms.items():
-            # retrieve user inputs from the UI
-            original_transaction = form.transactionMenu.get().strip()
-            transaction_id = int(original_transaction.split()[0])
-            year = form.dateMenu.year.get()
-            month = month_2_numeric[form.dateMenu.month.get()]
-            day = form.dateMenu.day.get()
-            new_date = f"{year}-{month}-{day}"
-            new_category = form.categoryMenu.get()
-            new_description = form.descriptionEntry.get()
-            new_amount = form.amountEntry.get()
-            if form.isCurrentEditTransactionForm == True:
-                # create updated_transaction obj
-                updated_transaction = Transaction(t_date=new_date, t_type=transaction_type, t_category=new_category,
-                                                  t_amount=float(new_amount), t_description=new_description)
-                # update db with updated_transaction
-                result = self.tm.repo.modifyTransaction(user_id=self.user_id, t_id=transaction_id,
-                                                        updated_transaction=updated_transaction)
-                # display result for debugging
-                print("\n", result)
-                print()
-                print(len(original_transaction)+3)
-                print(f"{original_transaction = }")
-                print(f"{transaction_type = }")
-                print(f"{transaction_id = }")
-                print(f"{new_date = }")
-                print(f"{new_category = }")
-                print(f"{new_description = }")
-                print(f"{new_amount = }")
-
-    def saveNewTransactionToDatabase(self):
-        month_2_numeric = {"January":"01", "February":"02", "March":"03", "April":"04",
-                           "May":"05", "June":"06", "July":"07", "August":"08",
-                           "September":"09", "October":"10", "November":"11", "December":"12"}
-        for transaction_type, form in self.pages["add"].transactionForms.items():
-            # retrieve user inputs from the UI
-            year = form.dateMenu.year.get()
-            month = month_2_numeric[form.dateMenu.month.get()]
-            day = form.dateMenu.day.get()
-            new_date = f"{year}-{month}-{day}"
-            new_category = form.categoryMenu.get()
-            new_description = form.descriptionEntry.get()
-            new_amount = form.amountEntry.get()
-            if form.isCurrentEditTransactionForm == True:
-                # create new_transaction obj
-                new_transaction = Transaction(t_date=new_date, t_type=transaction_type, t_category=new_category,
-                                                  t_amount=float(new_amount), t_description=new_description)
-                # update db with new_transaction
-                result = self.tm.repo.addTransaction(user_id=self.user_id, new_transaction=new_transaction)
-                # display result for debugging
-                print("\n", result)
-                print()
-                print(f"{transaction_type = }")
-                print(f"{new_date = }")
-                print(f"{new_category = }")
-                print(f"{new_description = }")
-                print(f"{new_amount = }")

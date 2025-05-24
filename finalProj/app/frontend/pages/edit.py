@@ -2,6 +2,7 @@
 import customtkinter as ctk
 # our modules/libs
 from frontend.utilities.date_picker import DatePicker
+from backend.transaction_manager import Transaction
 
 
 FONT_SIZE_1 = 25
@@ -244,6 +245,41 @@ class Edit(ctk.CTkFrame):
                                    categories=categories_by_type[transaction_type],
                                    master=self.forms_section, fg_color=WHITE, corner_radius=RAD)
         return form
+
+    def saveEditedTransactionToDatabase(self):
+        month_2_numeric = {"January":"01", "February":"02", "March":"03", "April":"04",
+                           "May":"05", "June":"06", "July":"07", "August":"08",
+                           "September":"09", "October":"10", "November":"11", "December":"12"}
+        for transaction_type, form in self.transactionForms.items():
+            # retrieve user inputs from the UI
+            original_transaction = form.transactionMenu.get().strip()
+            transaction_id = int(original_transaction.split()[0])
+            year = form.dateMenu.year.get()
+            month = month_2_numeric[form.dateMenu.month.get()]
+            day = form.dateMenu.day.get()
+            new_date = f"{year}-{month}-{day}"
+            new_category = form.categoryMenu.get()
+            new_description = form.descriptionEntry.get()
+            new_amount = form.amountEntry.get()
+            if form.isCurrentEditTransactionForm == True:
+                # create updated_transaction obj
+                updated_transaction = Transaction(t_date=new_date, t_type=transaction_type,
+                                                  t_category=new_category, t_amount=float(new_amount),
+                                                  t_description=new_description)
+                # update db with updated_transaction
+                result = self.tm.repo.modifyTransaction(user_id=self.user_id, t_id=transaction_id,
+                                                        updated_transaction=updated_transaction)
+                # display result for debugging
+                print("\n", result)
+                print()
+                print(len(original_transaction)+3)
+                print(f"{original_transaction = }")
+                print(f"{transaction_type = }")
+                print(f"{transaction_id = }")
+                print(f"{new_date = }")
+                print(f"{new_category = }")
+                print(f"{new_description = }")
+                print(f"{new_amount = }")
 
     # update edit transaction forms
     def updatePageDisplay(self):
