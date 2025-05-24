@@ -1,83 +1,10 @@
 # external/built-in modules/libs
 import customtkinter as ctk
 # our modules/libs
+from frontend.utilities.styles import * # contains paddings, dimensions, colors, etc
 from frontend.utilities.date_picker import DatePicker
 from backend.transaction_manager import Transaction
 
-# create global screen dimension
-temp_root = ctk.CTk()
-SCREEN_W = temp_root.winfo_screenwidth()
-temp_root.destroy()
-SCREEN_H = int(0.5625*SCREEN_W)
-print(SCREEN_W, SCREEN_H)
-
-FONT_SIZE_1 = int(0.0231*SCREEN_H) #25
-FONT_SIZE_2 = int(0.0278*SCREEN_H) #30
-FONT_SIZE_3 = int(0.0370*SCREEN_H) #40
-FONT_SIZE_4 = int(0.0463*SCREEN_H) #50
-FONT_SIZE_5 = int(0.0556*SCREEN_H) #60
-
-WHITE= "white"
-
-WHITE_RED = "#fdecec"
-LIGHT_RED = "#ffc7c7"
-RED = "#e14242"
-
-WHITE_GREEN = "#dafbf0"
-LIGHT_GREEN = "#b2fee3"
-GREEN = "#28ab58"
-
-WHITE_PURPLE = "#f3eefe"
-LIGHT_PURPLE =  "#d6c5fb"
-PURPLE = "#ceb9fe"
-
-WHITE_BLUE = "#ebf2fe"
-SKY_BLUE = "#cef2ff"
-LIGHT_BLUE = "#bcd4fe"
-BLUE = "#559eef"
-DARK_BLUE = "#427cbd"
-
-LIGHT_GREY = "#c4c4c4"
-GREY = "grey"
-DARK_GREY = "#545454"
-
-ENTRY_W1 = int(1.3241*SCREEN_H)#1430
-ENTRY_W2 = int(0.5556*SCREEN_H) #600
-ENTRY_H = int(0.0556*SCREEN_H) #60
-
-MENU_W1 = int(0.7407*SCREEN_H) #800
-MENU_W2 = int(1.2593*SCREEN_H) #1360 
-MENU_H = int(0.0556*SCREEN_H) #60
-
-YEAR_MENU_W = int(0.4167*SCREEN_H) #450
-MONTH_MENU_W = int(0.4630*SCREEN_H) #500 
-DAY_MENU_W = int(0.4167*SCREEN_H) #450
-
-PAD_X1 = int(0.0093*SCREEN_H) #10
-PAD_X2 = int(0.0185*SCREEN_H) #20
-PAD_X3 = int(0.0278*SCREEN_H) #30
-PAD_X4 = int(0.0370*SCREEN_H) #40
-PAD_X5 = int(0.0463*SCREEN_H) #50
-
-PAD_Y1 = int(0.0093*SCREEN_H) #10
-PAD_Y2 = int(0.0185*SCREEN_H) #20
-PAD_Y3 = int(0.0278*SCREEN_H) #30
-PAD_Y4 = int(0.0370*SCREEN_H) #40
-PAD_Y5 = int(0.0463*SCREEN_H) #50
-
-BTN_W1 = int(0.0648*SCREEN_H) #70
-BTN_W2 = int(0.3241*SCREEN_H) #350
-
-BTN_H1 = int(0.0648*SCREEN_H) #70
-BTN_H2 = int(0.0556*SCREEN_H) #60
-
-RAD = int(0.0185*SCREEN_H) #20
-
-# ---- exclusive ----
-# overwrite date picker size
-YEAR_MENU_W = 0.1667*SCREEN_H #180
-MONTH_MENU_W = 0.2037*SCREEN_H #220
-DAY_MENU_W = 0.1667*SCREEN_H #180
 
 # header section
 class EditHeader(ctk.CTkFrame):
@@ -117,11 +44,11 @@ class EditTransactionForm(ctk.CTkFrame):
                                                  dropdown_fg_color=WHITE,
                                                  dropdown_hover_color=BLUE,
                                                  dropdown_text_color=DARK_GREY,
-                                                 corner_radius=RAD, width=MENU_W1, height=MENU_H)
+                                                 corner_radius=RAD_2, width=MENU_W1, height=MENU_H)
         self.dateLabel = ctk.CTkLabel(self.frame1, text="Select New Date",
                                       font=self.font1, text_color=DARK_GREY)
-        self.dateMenu = DatePicker(picker_height=MENU_H, spacing=PAD_X1, rad=RAD,
-                                   day_width=DAY_MENU_W, month_width=MONTH_MENU_W, year_width=YEAR_MENU_W, 
+        self.dateMenu = DatePicker(picker_height=MENU_H, spacing=PAD_1, rad=RAD_2,
+                                   day_width=DAY_MENU_W1, month_width=MONTH_MENU_W1, year_width=YEAR_MENU_W1, 
                                    master=self.frame1, ctk_font=self.font3, dropdown_ctk_font=self.font2,
                                    dropdown_fg_color=WHITE, dropdown_hover_color=BLUE, fg_color=WHITE)
         # create frame 2 components
@@ -134,12 +61,12 @@ class EditTransactionForm(ctk.CTkFrame):
                                                 dropdown_fg_color=WHITE,
                                                 dropdown_hover_color=BLUE,
                                                 dropdown_text_color=DARK_GREY,
-                                                corner_radius=RAD, height=MENU_H)
+                                                corner_radius=RAD_2, height=MENU_H)
         self.descriptionLabel = ctk.CTkLabel(self.frame2, text="Enter New Description",
                                              font=self.font1, text_color=DARK_GREY)
         self.descriptionEntry = ctk.CTkEntry(self.frame2, font=self.font3,
                                              text_color=DARK_GREY, fg_color=LIGHT_BLUE,
-                                             corner_radius=RAD, width=ENTRY_W2, height=ENTRY_H,
+                                             corner_radius=RAD_2, width=ENTRY_W2, height=ENTRY_H,
                                              placeholder_text="Description",
                                              placeholder_text_color=GREY,
                                              border_width=0)
@@ -148,27 +75,27 @@ class EditTransactionForm(ctk.CTkFrame):
                                         font=self.font1, text_color=DARK_GREY)
         self.amountEntry = ctk.CTkEntry(self.frame3, font=self.font3,
                                         text_color=DARK_GREY, fg_color=LIGHT_BLUE,
-                                        corner_radius=RAD, width=ENTRY_W1, height=ENTRY_H,
+                                        corner_radius=RAD_2, width=ENTRY_W1, height=ENTRY_H,
                                         placeholder_text="Philippine Peso",
                                         placeholder_text_color=GREY,
                                         border_width=0)
         # display guide frames
-        self.frame1.pack(fill="both", pady=(PAD_Y4,0))
-        self.frame2.pack(fill="both", pady=(PAD_Y4,0))
-        self.frame3.pack(fill="both", pady=PAD_Y4)
+        self.frame1.pack(fill="both", pady=(PAD_4,0))
+        self.frame2.pack(fill="both", pady=(PAD_4,0))
+        self.frame3.pack(fill="both", pady=PAD_4)
         # display frame 1 components
-        self.transactionLabel.grid(row=0, column=0, sticky="w", padx=(PAD_X3,0), pady=(0,PAD_Y3))
-        self.transactionMenu.grid(row=1, column=0, sticky="w", padx=(PAD_X3,0), pady=0)
-        self.dateLabel.grid(row=0, column=1, sticky="w", padx=PAD_X3, pady=(0,PAD_Y3))
-        self.dateMenu.grid(row=1, column=1, sticky="w", padx=PAD_X3, pady=0)
+        self.transactionLabel.grid(row=0, column=0, sticky="w", padx=(PAD_3,0), pady=(0,PAD_3))
+        self.transactionMenu.grid(row=1, column=0, sticky="w", padx=(PAD_3,0), pady=0)
+        self.dateLabel.grid(row=0, column=1, sticky="w", padx=PAD_3, pady=(0,PAD_3))
+        self.dateMenu.grid(row=1, column=1, sticky="w", padx=PAD_3, pady=0)
         # display frame 2 components
-        self.categoryLabel.grid(row=0, column=0, sticky="w", padx=(PAD_X3,0), pady=(0,PAD_Y3))
-        self.categoryMenu.grid(row=1, column=0, sticky="w", padx=(PAD_X3,0), pady=0)
-        self.descriptionLabel.grid(row=0, column=1, sticky="w", padx=PAD_X3, pady=(0,PAD_Y3))
-        self.descriptionEntry.grid(row=1, column=1, sticky="w", padx=PAD_X3, pady=0)
+        self.categoryLabel.grid(row=0, column=0, sticky="w", padx=(PAD_3,0), pady=(0,PAD_3))
+        self.categoryMenu.grid(row=1, column=0, sticky="w", padx=(PAD_3,0), pady=0)
+        self.descriptionLabel.grid(row=0, column=1, sticky="w", padx=PAD_3, pady=(0,PAD_3))
+        self.descriptionEntry.grid(row=1, column=1, sticky="w", padx=PAD_3, pady=0)
         # display frame 3 components
-        self.amountLabel.pack(anchor="w", padx=PAD_X3, pady=(0,PAD_Y3))
-        self.amountEntry.pack(anchor="w", padx=PAD_X3, pady=0)
+        self.amountLabel.pack(anchor="w", padx=PAD_3, pady=(0,PAD_3))
+        self.amountEntry.pack(anchor="w", padx=PAD_3, pady=0)
     
     def updateTransactionMenuOptionsByType(self) -> list[str]:
         transactions = self.tm.repo.getTransactionsByType(self.user_id, self.t_type)
@@ -198,15 +125,15 @@ class EditPageTabs(ctk.CTkFrame):
         }
         # show buttons/tabs
         self.expenseBTN.grid(row=0, column=0, padx=(0, 0))
-        self.savingsBTN.grid(row=0, column=1, padx=(PAD_X3, 0))
-        self.investmentBTN.grid(row=0, column=2, padx=(PAD_X3, 0))
-        self.incomeBTN.grid(row=0, column=3, padx=(PAD_X3,0))
+        self.savingsBTN.grid(row=0, column=1, padx=(PAD_3, 0))
+        self.investmentBTN.grid(row=0, column=2, padx=(PAD_3, 0))
+        self.incomeBTN.grid(row=0, column=3, padx=(PAD_3,0))
         # open default tab (expense)
         self._switchPageTo("expense")
 
     def createTabButton(self, text, command):
         btn = ctk.CTkButton(self, text=text, text_color=DARK_GREY, height=BTN_H2, width=BTN_W2,
-                            font=self.font, corner_radius=RAD, fg_color=WHITE, hover_color=LIGHT_GREY,
+                            font=self.font, corner_radius=RAD_2, fg_color=WHITE, hover_color=LIGHT_GREY,
                             command=command)
         return btn
     
@@ -239,7 +166,7 @@ class Edit(ctk.CTkFrame):
         self.isCurrentPage = False
         # create page sections 
         self.header_section = EditHeader(self, fg_color=SKY_BLUE, corner_radius=0)
-        self.forms_section = ctk.CTkFrame(self, fg_color=SKY_BLUE, corner_radius=RAD)
+        self.forms_section = ctk.CTkFrame(self, fg_color=SKY_BLUE, corner_radius=RAD_2)
         # create transaction forms
         self.expenseForm = self.createEditTransactionForm("expense")
         self.savingsForm = self.createEditTransactionForm("savings")
@@ -253,9 +180,9 @@ class Edit(ctk.CTkFrame):
         self.tabs = EditPageTabs(transactionForms=self.transactionForms, master=self,
                          fg_color=SKY_BLUE, corner_radius=0)
         # show page sections 
-        self.header_section.pack(anchor="w", padx=PAD_X4+PAD_X4, pady=(PAD_Y4+PAD_Y4,0))
-        self.tabs.pack(padx=PAD_X3, pady=(PAD_Y4,0))
-        self.forms_section.pack(padx=PAD_X3, pady=(PAD_Y3,0))
+        self.header_section.pack(anchor="w", padx=PAD_4+PAD_4, pady=(PAD_4+PAD_4,0))
+        self.tabs.pack(padx=PAD_3, pady=(PAD_4,0))
+        self.forms_section.pack(padx=PAD_3, pady=(PAD_3,0))
 
     def createEditTransactionForm(self, transaction_type):
         # valid categories
@@ -270,7 +197,7 @@ class Edit(ctk.CTkFrame):
         # create form
         form = EditTransactionForm(tm=self.tm, user_id=self.user_id, t_type=transaction_type,
                                    categories=categories_by_type[transaction_type],
-                                   master=self.forms_section, fg_color=WHITE, corner_radius=RAD)
+                                   master=self.forms_section, fg_color=WHITE, corner_radius=RAD_2)
         return form
 
     def saveEditedTransactionToDatabase(self):

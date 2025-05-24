@@ -1,6 +1,8 @@
 # built-in/external modules/libs
 import customtkinter as ctk
+from pathlib import Path
 # our modules/libs
+from frontend.utilities.styles import *
 from frontend.utilities.sidebar import Sidebar # navigation page-tabs
 from frontend.pages.profile import Profile # profile page
 from frontend.pages.edit import Edit # edit page
@@ -59,17 +61,11 @@ YEAR_MENU_W = int(0.4167*SCREEN_H) #450
 MONTH_MENU_W = int(0.4630*SCREEN_H) #500 
 DAY_MENU_W = int(0.4167*SCREEN_H) #450
 
-PAD_X1 = int(0.0093*SCREEN_H) #10
-PAD_X2 = int(0.0185*SCREEN_H) #20
-PAD_X3 = int(0.0278*SCREEN_H) #30
-PAD_X4 = int(0.0370*SCREEN_H) #40
-PAD_X5 = int(0.0463*SCREEN_H) #50
-
-PAD_Y1 = int(0.0093*SCREEN_H) #10
-PAD_Y2 = int(0.0185*SCREEN_H) #20
-PAD_Y3 = int(0.0278*SCREEN_H) #30
-PAD_Y4 = int(0.0370*SCREEN_H) #40
-PAD_Y5 = int(0.0463*SCREEN_H) #50
+PAD_1 = int(0.0093*SCREEN_H) #10
+PAD_2 = int(0.0185*SCREEN_H) #20
+PAD_3 = int(0.0278*SCREEN_H) #30
+PAD_4 = int(0.0370*SCREEN_H) #40
+PAD_5 = int(0.0463*SCREEN_H) #50
 
 BTN_W1 = int(0.0648*SCREEN_H) #70
 BTN_W2 = int(0.3241*SCREEN_H) #350
@@ -77,7 +73,7 @@ BTN_W2 = int(0.3241*SCREEN_H) #350
 BTN_H1 = int(0.0648*SCREEN_H) #70
 BTN_H2 = int(0.0556*SCREEN_H) #60
 
-RAD = int(0.0185*SCREEN_H) #20
+RAD_2 = int(0.0185*SCREEN_H) #20
 
 
 class Home(ctk.CTkFrame):
@@ -98,21 +94,20 @@ class Home(ctk.CTkFrame):
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
+        db_path = Path(__file__).resolve().parent / "db/transactions.db"
         # user
-        self.user_id = 1
         # create transaction manager
-        db_path = "db/transactions.db"
+        self.user_id = 1
         self.tm = TransactionManager(db_path)
         # set app title
         self.title("Personal Finance Tracker")
         # initialize dimensions
-        # SCREEN_W = self.winfo_screenwidth()
-        # SCREEN_H = self.winfo_screenheight()
         self.geometry(f"{SCREEN_W}x{SCREEN_H}")
-        # self.attributes("-fullscreen", True)
-        self.resizable(width=False, height=False) #disable resize window (temporary)
+        self.maxsize(SCREEN_W, SCREEN_H)
+        self.minsize(SCREEN_W, SCREEN_H)
+        self.resizable(width=True, height=True)
         # create scrollable screen (vertical)
-        self.content = ctk.CTkScrollableFrame(self, orientation="vertical", corner_radius=0,fg_color=SKY_BLUE)
+        self.content = ctk.CTkScrollableFrame(self, orientation="vertical", corner_radius=0, fg_color=SKY_BLUE)
         # create app pages
         self.profilePage = Profile(self.user_id, tm=self.tm, master=self.content, fg_color=SKY_BLUE, corner_radius=0) 
         self.homePage = Home(self.content, fg_color=SKY_BLUE, corner_radius=0) 
@@ -125,7 +120,7 @@ class App(ctk.CTk):
             "add":self.addPage
         }
         # create sidebar tabs
-        self.sidebar = Sidebar(pages=self.pages, master=self, fg_color="#ffffff", corner_radius=0)
+        self.sidebar = Sidebar(pages=self.pages, master=self, fg_color=WHITE, corner_radius=0)
         # create save btn
         self.editSaveBtn = Save(tm=self.tm, user_id=self.user_id, pages=self.pages,
                                 master=self.editPage, fg_color=SKY_BLUE)
@@ -135,9 +130,8 @@ class App(ctk.CTk):
         self.sidebar.pack(side="left", fill="y")
         self.content.pack(side="left", fill="both", expand=True)
         # display save buttons
-        self.editSaveBtn.pack(pady=PAD_Y4)
-        self.addSaveBtn.pack(pady=PAD_Y4)
-
+        self.editSaveBtn.pack(pady=PAD_4)
+        self.addSaveBtn.pack(pady=PAD_4)
 
 
 if __name__ == "__main__":

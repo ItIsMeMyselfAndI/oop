@@ -2,6 +2,7 @@ import sqlite3
 import customtkinter as ctk
 import matplotlib
 import matplotlib.pyplot as plt
+from pathlib import Path
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from datetime import datetime, timedelta
 from collections import defaultdict
@@ -335,7 +336,8 @@ class TransactionManager:
 
         
 if __name__ == "__main__":
-    db_path = "../db/transactions.db"
+
+    db_path = Path(__file__).resolve().parent.parent / "db" / "transactions.db"
     tm = TransactionManager(db_path)
     # uncomment nyo inyo if magsasample run kayo
 
