@@ -13,7 +13,8 @@ WHITE= "white"
 
 class DatePicker(ctk.CTkFrame):
     def __init__(self, picker_height, spacing, rad, day_width, month_width, year_width,
-                 ctk_font, dropdown_ctk_font, dropdown_fg_color, master, **kwargs):
+                 ctk_font, dropdown_ctk_font, dropdown_fg_color, dropdown_hover_color,
+                 master, **kwargs):
         super().__init__(master, **kwargs)
         # initialize fonts
         # create date options
@@ -28,21 +29,21 @@ class DatePicker(ctk.CTkFrame):
                                       font=ctk_font, text_color=DARK_GREY,
                                       fg_color=BLUE, dropdown_font=dropdown_ctk_font,
                                       dropdown_fg_color=dropdown_fg_color,
-                                      dropdown_hover_color=DARK_BLUE,
+                                      dropdown_hover_color=dropdown_hover_color,
                                       dropdown_text_color=DARK_GREY,
                                       corner_radius=rad, width=year_width, height=picker_height)
         self.month = ctk.CTkOptionMenu(self, values=months,
                                        font=ctk_font, text_color=DARK_GREY,
                                        fg_color=BLUE, dropdown_font=dropdown_ctk_font,
                                        dropdown_fg_color=dropdown_fg_color,
-                                       dropdown_hover_color=DARK_BLUE,
+                                       dropdown_hover_color=dropdown_hover_color,
                                        dropdown_text_color=DARK_GREY,
                                        corner_radius=rad, width=month_width, height=picker_height)
         self.day = ctk.CTkOptionMenu(self, values=days,
                                      font=ctk_font, text_color=DARK_GREY,
                                      fg_color=BLUE, dropdown_font=dropdown_ctk_font,
                                      dropdown_fg_color=dropdown_fg_color,
-                                     dropdown_hover_color=DARK_BLUE,
+                                     dropdown_hover_color=dropdown_hover_color,
                                      dropdown_text_color=DARK_GREY,
                                      corner_radius=rad, width=day_width, height=picker_height)
         # display date menu

@@ -5,52 +5,74 @@ from frontend.utilities.date_picker import DatePicker
 from backend.transaction_manager import Transaction
 
 
-FONT_SIZE_1 = 25
-FONT_SIZE_2 = 30
-FONT_SIZE_3 = 40
-FONT_SIZE_4 = 50
-FONT_SIZE_5 = 60
+# create global screen dimension
+temp_root = ctk.CTk()
+SCREEN_W = temp_root.winfo_screenwidth()
+temp_root.destroy()
+SCREEN_H = int(0.5625*SCREEN_W)
+print(SCREEN_W, SCREEN_H)
 
-LIGHT_BLUE = "#bcd4fe"
+FONT_SIZE_1 = int(0.0231*SCREEN_H) #25
+FONT_SIZE_2 = int(0.0278*SCREEN_H) #30
+FONT_SIZE_3 = int(0.0370*SCREEN_H) #40
+FONT_SIZE_4 = int(0.0463*SCREEN_H) #50
+FONT_SIZE_5 = int(0.0556*SCREEN_H) #60
+
+WHITE= "white"
+
+WHITE_RED = "#fdecec"
+LIGHT_RED = "#ffc7c7"
+RED = "#e14242"
+
+WHITE_GREEN = "#dafbf0"
+LIGHT_GREEN = "#b2fee3"
+GREEN = "#28ab58"
+
+WHITE_PURPLE = "#f3eefe"
+LIGHT_PURPLE =  "#d6c5fb"
+PURPLE = "#ceb9fe"
+
+WHITE_BLUE = "#ebf2fe"
 SKY_BLUE = "#cef2ff"
+LIGHT_BLUE = "#bcd4fe"
 BLUE = "#559eef"
 DARK_BLUE = "#427cbd"
+
 LIGHT_GREY = "#c4c4c4"
 GREY = "grey"
 DARK_GREY = "#545454"
-WHITE= "white"
 
-ENTRY_W1 = 1430
-ENTRY_W2 = 600
-ENTRY_H = 60
+ENTRY_W1 = int(1.3241*SCREEN_H)#1430
+ENTRY_W2 = int(0.5556*SCREEN_H) #600
+ENTRY_H = int(0.0556*SCREEN_H) #60
 
-MENU_W1 = 800
-MENU_W2 = 1360 
-MENU_H = 60
+MENU_W1 = int(0.7407*SCREEN_H) #800
+MENU_W2 = int(1.2593*SCREEN_H) #1360 
+MENU_H = int(0.0556*SCREEN_H) #60
 
-YEAR_MENU_W = 450
-MONTH_MENU_W = 500 
-DAY_MENU_W = 450
+YEAR_MENU_W = int(0.4167*SCREEN_H) #450
+MONTH_MENU_W = int(0.4630*SCREEN_H) #500 
+DAY_MENU_W = int(0.4167*SCREEN_H) #450
 
-PAD_X1 = 10
-PAD_X2 = 20
-PAD_X3 = 30
-PAD_X4 = 40
-PAD_X5 = 50
+PAD_X1 = int(0.0093*SCREEN_H) #10
+PAD_X2 = int(0.0185*SCREEN_H) #20
+PAD_X3 = int(0.0278*SCREEN_H) #30
+PAD_X4 = int(0.0370*SCREEN_H) #40
+PAD_X5 = int(0.0463*SCREEN_H) #50
 
-PAD_Y1 = 10
-PAD_Y2 = 20
-PAD_Y3 = 30
-PAD_Y4 = 40
-PAD_Y5 = 50
+PAD_Y1 = int(0.0093*SCREEN_H) #10
+PAD_Y2 = int(0.0185*SCREEN_H) #20
+PAD_Y3 = int(0.0278*SCREEN_H) #30
+PAD_Y4 = int(0.0370*SCREEN_H) #40
+PAD_Y5 = int(0.0463*SCREEN_H) #50
 
-BTN_W1 = 70
-BTN_W2 = 350
+BTN_W1 = int(0.0648*SCREEN_H) #70
+BTN_W2 = int(0.3241*SCREEN_H) #350
 
-BTN_H1 = 70
-BTN_H2 = 60
+BTN_H1 = int(0.0648*SCREEN_H) #70
+BTN_H2 = int(0.0556*SCREEN_H) #60
 
-RAD = 20
+RAD = int(0.0185*SCREEN_H) #20
 
 
 # header section
@@ -87,7 +109,7 @@ class AddTransactionForm(ctk.CTkFrame):
         self.dateMenu = DatePicker(picker_height=MENU_H, spacing=PAD_X1, rad=RAD,
                                    day_width=DAY_MENU_W, month_width=MONTH_MENU_W, year_width=YEAR_MENU_W, 
                                    master=self.frame1, ctk_font=self.font3, dropdown_ctk_font=self.font2,
-                                   dropdown_fg_color=WHITE, fg_color=WHITE)
+                                   dropdown_fg_color=WHITE, dropdown_hover_color=BLUE, fg_color=WHITE)
         # create frame 2 components
         self.categoryLabel = ctk.CTkLabel(self.frame2, text="Select Category",
                                           font=self.font1, text_color=DARK_GREY)
@@ -96,7 +118,7 @@ class AddTransactionForm(ctk.CTkFrame):
                                                 width=MENU_W1, fg_color=BLUE,
                                                 dropdown_font=self.font2,
                                                 dropdown_fg_color=WHITE,
-                                                dropdown_hover_color=DARK_BLUE,
+                                                dropdown_hover_color=BLUE,
                                                 dropdown_text_color=DARK_GREY,
                                                 corner_radius=RAD, height=MENU_H)
         self.descriptionLabel = ctk.CTkLabel(self.frame2, text="Enter Description",

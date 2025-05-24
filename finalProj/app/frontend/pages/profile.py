@@ -4,11 +4,18 @@ from PIL import Image
 
 ICONS_FOLDER = "./assets/icons"
 
-FONT_SIZE_1 = 25
-FONT_SIZE_2 = 30
-FONT_SIZE_3 = 40
-FONT_SIZE_4 = 50
-FONT_SIZE_5 = 60
+# create global screen dimension
+temp_root = ctk.CTk()
+SCREEN_W = temp_root.winfo_screenwidth()
+temp_root.destroy()
+SCREEN_H = int(0.5625*SCREEN_W)
+print(SCREEN_W, SCREEN_H)
+
+FONT_SIZE_1 = int(0.0231*SCREEN_H) #25
+FONT_SIZE_2 = int(0.0278*SCREEN_H) #30
+FONT_SIZE_3 = int(0.0370*SCREEN_H) #40
+FONT_SIZE_4 = int(0.0463*SCREEN_H) #50
+FONT_SIZE_5 = int(0.0556*SCREEN_H) #60
 
 WHITE= "white"
 
@@ -34,57 +41,63 @@ LIGHT_GREY = "#c4c4c4"
 GREY = "grey"
 DARK_GREY = "#545454"
 
-ENTRY_W1 = 1430
-ENTRY_W2 = 600
-ENTRY_H = 60
+ENTRY_W1 = int(1.3241*SCREEN_H) #1430
+ENTRY_W2 = int(0.5556*SCREEN_H) #600
+ENTRY_H = int(0.0556*SCREEN_H) #60
 
-MENU_W1 = 800
-MENU_W2 = 1360 
-MENU_H = 60
-YEAR_MENU_W = 180
-MONTH_MENU_W = 220
-DAY_MENU_W = 180
+MENU_W1 = int(0.7407*SCREEN_H) #800
+MENU_W2 = int(1.2593*SCREEN_H) #1360 
+MENU_H = int(0.0556*SCREEN_H) #60
 
-PAD_X1 = 10
-PAD_X2 = 20
-PAD_X3 = 30
-PAD_X4 = 40
-PAD_X5 = 50
+YEAR_MENU_W = int(0.4167*SCREEN_H) #450
+MONTH_MENU_W = int(0.4630*SCREEN_H) #500 
+DAY_MENU_W = int(0.4167*SCREEN_H) #450
 
-PAD_Y1 = 10
-PAD_Y2 = 20
-PAD_Y3 = 30
-PAD_Y4 = 40
-PAD_Y5 = 50
+PAD_X1 = int(0.0093*SCREEN_H) #10
+PAD_X2 = int(0.0185*SCREEN_H) #20
+PAD_X3 = int(0.0278*SCREEN_H) #30
+PAD_X4 = int(0.0370*SCREEN_H) #40
+PAD_X5 = int(0.0463*SCREEN_H) #50
 
-BTN_W1 = 70
-BTN_W2 = 350
+PAD_Y1 = int(0.0093*SCREEN_H) #10
+PAD_Y2 = int(0.0185*SCREEN_H) #20
+PAD_Y3 = int(0.0278*SCREEN_H) #30
+PAD_Y4 = int(0.0370*SCREEN_H) #40
+PAD_Y5 = int(0.0463*SCREEN_H) #50
 
-BTN_H1 = 70
-BTN_H2 = 60
+BTN_W1 = int(0.0648*SCREEN_H) #70
+BTN_W2 = int(0.3241*SCREEN_H) #350
 
-RAD = 20
+BTN_H1 = int(0.0648*SCREEN_H) #70
+BTN_H2 = int(0.0556*SCREEN_H) #60
 
-HEADER_H = 280
-HEADER_W = 1630
+RAD = int(0.0185*SCREEN_H) #20
 
-PROFILE_IMG_W = 200
-PROFILE_IMG_H = 200
+# ---- exclusive ----
+HEADER_H = int(0.2593*SCREEN_H) #280
+HEADER_W = int(1.5093*SCREEN_H) #1630
 
-PROFILE_LABEL_W = 645
+PROFILE_IMG_W = int(0.1852*SCREEN_H) #200
+PROFILE_IMG_H = int(0.1852*SCREEN_H) #200
+
+PROFILE_IMG_BG_W = int(0.2222*SCREEN_H) #240
+PROFILE_IMG_BG_H = int(0.2222*SCREEN_H) #240
+
+PROFILE_LABEL_W1 = int(0.4630*SCREEN_H) #500
+PROFILE_LABEL_W2 = int(0.7222*SCREEN_H) #780
 
 # SUMMARY_H = 560
 # SUMMARY_W = 1630
-SUMMARY_ELEM_H = 220
-SUMMARY_ELEM_W = 755
+SUMMARY_ELEM_H = int(0.2037*SCREEN_H) #220
+SUMMARY_ELEM_W = int(0.6991*SCREEN_H) #755
 
-SUMMARY_IMG_W = 50
-SUMMARY_IMG_H = 50
+SUMMARY_IMG_W = int(0.0463*SCREEN_H) #50
+SUMMARY_IMG_H = int(0.0463*SCREEN_H) #50
 
-SUMMARY_IMG_FRAME_W = 120
-SUMMARY_IMG_FRAME_H = 120
+SUMMARY_IMG_FRAME_W = int(0.1111*SCREEN_H) #120
+SUMMARY_IMG_FRAME_H = int(0.1111*SCREEN_H) #120
 
-SUMMARY_LABEL_W = 500
+SUMMARY_LABEL_W = int(0.4630*SCREEN_H) #500
 
 
 class ProfileHeader(ctk.CTkFrame):
@@ -94,18 +107,19 @@ class ProfileHeader(ctk.CTkFrame):
         self.font2 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_5, slant="italic", weight="normal")
         self.img = img
         # create guide frames
-        self.img_bg = ctk.CTkLabel(self, corner_radius=RAD, image=img, text="")
+        self.img_bg = ctk.CTkLabel(self, corner_radius=RAD, fg_color="transparent", image=img,
+                                   text="", width=PROFILE_IMG_BG_W, height=PROFILE_IMG_BG_H)
         self.uname_frame = ctk.CTkFrame(self, corner_radius=RAD, fg_color="transparent", width=SUMMARY_IMG_FRAME_W)
         self.balance_frame = ctk.CTkFrame(self, corner_radius=RAD, fg_color="transparent", width=SUMMARY_IMG_FRAME_W)
-        # create labels
+        # create label
         self.uname_label = ctk.CTkLabel(self.uname_frame, text=uname, font=self.font2, text_color=WHITE,
-                                        anchor="w", width=PROFILE_LABEL_W)
-        self.summary_type_label = ctk.CTkLabel(self.balance_frame, text=summary_type, font=self.font1, text_color=WHITE,
-                                        anchor="e")
-        self.amount_label = ctk.CTkLabel(self.balance_frame, text=f"₱ {amount:,}", font=self.font2, text_color=WHITE,
-                                         width=PROFILE_LABEL_W, anchor="e")
+                                        anchor="w", width=PROFILE_LABEL_W1)
+        self.summary_type_label = ctk.CTkLabel(self.balance_frame, text=summary_type, font=self.font1,
+                                               text_color=WHITE, anchor="e")
+        self.amount_label = ctk.CTkLabel(self.balance_frame, text=f"₱ {amount:,}", font=self.font2,
+                                         text_color=WHITE, width=PROFILE_LABEL_W2, anchor="e")
         # display guide frames
-        self.img_bg.grid(row=0, column=0, pady=PAD_Y4, padx=(PAD_X4,0))
+        self.img_bg.grid(row=0, column=0, pady=PAD_X2, padx=PAD_Y2)
         self.uname_frame.grid(row=0, column=1, padx=(0,PAD_X2))
         self.balance_frame.grid(row=0, column=2, padx=(0,PAD_X4))
         # display labels
@@ -115,7 +129,7 @@ class ProfileHeader(ctk.CTkFrame):
 
 
 
-class SummaryElement(ctk.CTkFrame):
+class SummarySection(ctk.CTkFrame):
     def __init__(self, img, img_bg_color, summary_type, amount, master, **kwargs):
         super().__init__(master, ** kwargs)
         self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_3, slant="italic", weight="normal")
@@ -153,19 +167,19 @@ class Profile(ctk.CTkFrame):
         self.summary_section = ctk.CTkFrame(self, fg_color=WHITE, corner_radius=RAD)
         # create summary sub-sections
         finance = self.tm.calculateOverallFinance(self.user_id)
-        self.income = SummaryElement(img=income_icon, master=self.summary_section, fg_color=WHITE_BLUE,
+        self.income = SummarySection(img=income_icon, master=self.summary_section, fg_color=WHITE_BLUE,
                                      summary_type="Total Income:", amount=finance.total_income,
                                      corner_radius=RAD, height=SUMMARY_ELEM_H,
                                      width=SUMMARY_ELEM_W, img_bg_color=LIGHT_BLUE)
-        self.expense = SummaryElement(img=expense_icon, master=self.summary_section, fg_color=WHITE_RED,
+        self.expense = SummarySection(img=expense_icon, master=self.summary_section, fg_color=WHITE_RED,
                                      summary_type="Total Expenses:", amount=finance.total_expenses,
                                      corner_radius=RAD, height=SUMMARY_ELEM_H,
                                      width=SUMMARY_ELEM_W, img_bg_color=LIGHT_RED)
-        self.savings = SummaryElement(img=savings_icon, master=self.summary_section, fg_color=WHITE_GREEN,
+        self.savings = SummarySection(img=savings_icon, master=self.summary_section, fg_color=WHITE_GREEN,
                                      summary_type="Total Savings:", amount=finance.total_savings,
                                      corner_radius=RAD, height=SUMMARY_ELEM_H,
                                      width=SUMMARY_ELEM_W, img_bg_color=LIGHT_GREEN)
-        self.investment = SummaryElement(img=investment_icon, master=self.summary_section, fg_color=WHITE_PURPLE,
+        self.investment = SummarySection(img=investment_icon, master=self.summary_section, fg_color=WHITE_PURPLE,
                                      summary_type="Total Investment:", amount=finance.total_investment,
                                      corner_radius=RAD, height=SUMMARY_ELEM_H,
                                      width=SUMMARY_ELEM_W, img_bg_color=LIGHT_PURPLE)
