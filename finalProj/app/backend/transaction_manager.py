@@ -298,7 +298,7 @@ class TransactionManager:
             print(f"\t\ttotal_savings: {finance.total_savings}")
             print(f"\t\ttotal_investment: {finance.total_investment}\n")
 
-    def testCalculateQuarterlyFinance(self):
+    def testCalculateQuarterlyFinances(self):
         quarterly_finances = self.calculateQuarterlyFinances(user_id=self.user_id)
         # display result
         print("\n\n[Quarterly Finances]\n")
@@ -351,7 +351,7 @@ if __name__ == "__main__":
     # tm.testCalculateOverallFinance()
     # tm.testCalculateOverallBalance()
     # tm.testCalculateMonthlyFinances()
-    # tm.testCalculateQuarterlyFinance()
+    # tm.testCalculateQuarterlyFinances()
     # tm.testCreateMonthlyGraph()
     # tm.testCreateQuarterlyGraph()
 

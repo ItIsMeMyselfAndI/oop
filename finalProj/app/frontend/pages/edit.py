@@ -245,3 +245,9 @@ class Edit(ctk.CTkFrame):
                                    master=self.forms_section, fg_color=WHITE, corner_radius=RAD)
         return form
 
+    # update edit transaction forms
+    def updatePageDisplay(self):
+        for form in self.transactionForms.values():
+            form.updateTransactionMenuOptionsByType()
+            form.transactionMenu.configure(values=form.transaction_options)
+            form.transactionMenu.set(form.transaction_options[0])

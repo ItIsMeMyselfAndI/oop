@@ -60,12 +60,15 @@ class Save(ctk.CTkFrame):
         self.btn.pack()
 
     def onClickSave(self):
+        # save to database
         for page_name, page in self.pages.items():
             if page_name == "edit" and page.isCurrentPage == True:
                 self.saveEditedTransactionToDatabase()
             elif page_name == "add" and page.isCurrentPage == True:
                 self.saveNewTransactionToDatabase()
-        self.updateAppMemory()
+        # self.updateAppMemory()
+        self.pages["edit"].updatePageDisplay()
+        self.pages["profile"].updatePageDisplay()
 
     def saveEditedTransactionToDatabase(self):
         month_2_numeric = {"January":"01", "February":"02", "March":"03", "April":"04",
@@ -128,10 +131,3 @@ class Save(ctk.CTkFrame):
                 print(f"{new_category = }")
                 print(f"{new_description = }")
                 print(f"{new_amount = }")
-
-    def updateAppMemory(self):
-        # update edit transaction forms
-        for form in self.pages["edit"].transactionForms.values():
-            form.updateTransactionMenuOptionsByType()
-            form.transactionMenu.configure(values=form.transaction_options)
-            form.transactionMenu.set(form.transaction_options[0])

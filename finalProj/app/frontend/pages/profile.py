@@ -88,7 +88,7 @@ SUMMARY_LABEL_W = 500
 
 
 class ProfileHeader(ctk.CTkFrame):
-    def __init__(self, img, uname, summary_type, master, **kwargs):
+    def __init__(self, img, uname, summary_type, amount, master, **kwargs):
         super().__init__(master, ** kwargs)
         self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_3, slant="italic", weight="normal")
         self.font2 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_5, slant="italic", weight="normal")
@@ -102,7 +102,7 @@ class ProfileHeader(ctk.CTkFrame):
                                         anchor="w", width=PROFILE_LABEL_W)
         self.summary_type_label = ctk.CTkLabel(self.balance_frame, text=summary_type, font=self.font1, text_color=WHITE,
                                         anchor="e")
-        self.amount_label = ctk.CTkLabel(self.balance_frame, text="₱ 0.0", font=self.font2, text_color=WHITE,
+        self.amount_label = ctk.CTkLabel(self.balance_frame, text=f"₱ {amount:,}", font=self.font2, text_color=WHITE,
                                          width=PROFILE_LABEL_W, anchor="e")
         # display guide frames
         self.img_bg.grid(row=0, column=0, pady=PAD_Y4, padx=(PAD_X4,0))
@@ -116,7 +116,7 @@ class ProfileHeader(ctk.CTkFrame):
 
 
 class SummaryElement(ctk.CTkFrame):
-    def __init__(self, img, img_bg_color, summary_type, master, **kwargs):
+    def __init__(self, img, img_bg_color, summary_type, amount, master, **kwargs):
         super().__init__(master, ** kwargs)
         self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_3, slant="italic", weight="normal")
         self.font2 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_5, slant="italic", weight="normal")
@@ -127,7 +127,7 @@ class SummaryElement(ctk.CTkFrame):
         self.details_frame = ctk.CTkFrame(self, width=SUMMARY_IMG_FRAME_W, corner_radius=RAD, fg_color="transparent")
         # create labels
         self.summary_type_label = ctk.CTkLabel(self.details_frame, text=summary_type, font=self.font1, text_color=DARK_GREY, anchor="w")
-        self.amount_label = ctk.CTkLabel(self.details_frame, text="₱ 0.0", font=self.font2, text_color=DARK_GREY,
+        self.amount_label = ctk.CTkLabel(self.details_frame, text=f"₱ {amount:,}", font=self.font2, text_color=DARK_GREY,
                                          width=SUMMARY_LABEL_W, anchor="w")
         # display guide frames
         self.img_bg.grid(row=0, column=0, padx=(PAD_X5, 0), pady=PAD_Y5)
@@ -137,41 +137,46 @@ class SummaryElement(ctk.CTkFrame):
         self.amount_label.pack(anchor="w")
 
 
-
 class Profile(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
+    def __init__(self, user_id, tm, master, **kwargs):
         super().__init__(master, ** kwargs)
+        self.user_id = user_id
+        self.tm = tm
         # initialize state
         self.isCurrentPage = False
         # load imgs
         profile_icon, income_icon, savings_icon, expense_icon, investment_icon = self.loadIcons()
         # create page sections
-        self.profile_header = ProfileHeader(img=profile_icon, uname="Username", master=self, fg_color=BLUE,
-                                              summary_type="Total Balance:", corner_radius=RAD, height=HEADER_H,
-                                              width=HEADER_W)
+        self.header_section = ProfileHeader(img=profile_icon, uname=f"User {self.user_id}", master=self,
+                                            fg_color=BLUE, summary_type="Total Balance:", amount=0.0,
+                                            corner_radius=RAD, height=HEADER_H, width=HEADER_W)
         self.summary_section = ctk.CTkFrame(self, fg_color=WHITE, corner_radius=RAD)
         # create summary sub-sections
+        finance = self.tm.calculateOverallFinance(self.user_id)
         self.income = SummaryElement(img=income_icon, master=self.summary_section, fg_color=WHITE_BLUE,
-                                     summary_type="Total Income:", corner_radius=RAD, height=SUMMARY_ELEM_H,
+                                     summary_type="Total Income:", amount=finance.total_income,
+                                     corner_radius=RAD, height=SUMMARY_ELEM_H,
                                      width=SUMMARY_ELEM_W, img_bg_color=LIGHT_BLUE)
         self.expense = SummaryElement(img=expense_icon, master=self.summary_section, fg_color=WHITE_RED,
-                                     summary_type="Total Expenses:", corner_radius=RAD, height=SUMMARY_ELEM_H,
+                                     summary_type="Total Expenses:", amount=finance.total_expenses,
+                                     corner_radius=RAD, height=SUMMARY_ELEM_H,
                                      width=SUMMARY_ELEM_W, img_bg_color=LIGHT_RED)
         self.savings = SummaryElement(img=savings_icon, master=self.summary_section, fg_color=WHITE_GREEN,
-                                     summary_type="Total Savings:", corner_radius=RAD, height=SUMMARY_ELEM_H,
+                                     summary_type="Total Savings:", amount=finance.total_savings,
+                                     corner_radius=RAD, height=SUMMARY_ELEM_H,
                                      width=SUMMARY_ELEM_W, img_bg_color=LIGHT_GREEN)
         self.investment = SummaryElement(img=investment_icon, master=self.summary_section, fg_color=WHITE_PURPLE,
-                                     summary_type="Total Investment:", corner_radius=RAD, height=SUMMARY_ELEM_H,
+                                     summary_type="Total Investment:", amount=finance.total_investment,
+                                     corner_radius=RAD, height=SUMMARY_ELEM_H,
                                      width=SUMMARY_ELEM_W, img_bg_color=LIGHT_PURPLE)
         # display page sections
-        self.profile_header.pack(padx=PAD_X5+PAD_X5, pady=(PAD_Y5+PAD_Y5,0))
+        self.header_section.pack(padx=PAD_X5+PAD_X5, pady=(PAD_Y5+PAD_Y5,0))
         self.summary_section.pack(padx=PAD_X5, pady=(PAD_Y4, PAD_Y5+PAD_Y5))
         # display summary sections
         self.income.grid(row=0, column=0, padx=(PAD_X4,0), pady=(PAD_Y4,0), sticky="nsew")
         self.expense.grid(row=0, column=1, padx=PAD_X4, pady=(PAD_Y4,0), sticky="nsew")
         self.savings.grid(row=1, column=0, padx=(PAD_Y4,0), pady=PAD_Y4, sticky="nsew")
         self.investment.grid(row=1, column=1, pady=PAD_Y4, padx=PAD_X4, sticky="nsew")
-
 
     def loadIcons(self):
         profile_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/profile1.png"), size=(PROFILE_IMG_H, PROFILE_IMG_W))
@@ -180,3 +185,10 @@ class Profile(ctk.CTkFrame):
         expense_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/expense.png"), size=(SUMMARY_IMG_H, SUMMARY_IMG_W))
         investment_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/investment.png"), size=(SUMMARY_IMG_H, SUMMARY_IMG_W))
         return profile_icon, income_icon, savings_icon, expense_icon, investment_icon
+    
+    def updatePageDisplay(self):
+        finance = self.tm.calculateOverallFinance(self.user_id)
+        self.income.amount_label.configure(text=f"₱ {finance.total_income:,}")
+        self.expense.amount_label.configure(text=f"₱ {finance.total_expenses:,}")
+        self.savings.amount_label.configure(text=f"₱ {finance.total_savings:,}")
+        self.investment.amount_label.configure(text=f"₱ {finance.total_investment:,}")

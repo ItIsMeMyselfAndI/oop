@@ -92,7 +92,7 @@ class App(ctk.CTk):
         # create scrollable screen (vertical)
         self.content = ctk.CTkScrollableFrame(self, orientation="vertical", corner_radius=0,fg_color=SKY_BLUE)
         # create app pages
-        self.profilePage = Profile(self.content, fg_color=SKY_BLUE, corner_radius=0) 
+        self.profilePage = Profile(self.user_id, tm=self.tm, master=self.content, fg_color=SKY_BLUE, corner_radius=0) 
         self.homePage = Home(self.content, fg_color=SKY_BLUE, corner_radius=0) 
         self.editPage = Edit(self.user_id, tm=self.tm, master=self.content, fg_color=SKY_BLUE, corner_radius=0) 
         self.historyPage = History(self.content, fg_color=SKY_BLUE, corner_radius=0) 
