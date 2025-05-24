@@ -6,6 +6,7 @@ from pathlib import Path
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from datetime import datetime, timedelta
 from collections import defaultdict
+import os
 
 
 # data holder for a transaction
@@ -34,13 +35,39 @@ class TransactionRepository:
         self.user_id: int = 1
         self.connection = sqlite3.connect(db_path)
         self.cursor = self.connection.cursor()
+        self.createTablesIfNotExist()
+
+    def createTablesIfNotExist(self):
+        command_users = (
+            "CREATE TABLE IF NOT EXISTS users ( "
+            "    user_id INTEGER PRIMARY KEY AUTOINCREMENT, " 
+            "    username TEXT UNIQUE NOT NULL, " 
+            "    password CHAR(16) "
+            ")"
+        )
+        command_transactions = (
+            "CREATE TABLE IF NOT EXISTS transactions( "
+            "    transaction_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+            "    transaction_date TEXT, "
+            "    transaction_type TEXT, "
+            "    transaction_category TEXT, "
+            "    transaction_amount REAL, "
+            "    transaction_description TEXT, "
+            "    user_id INTEGER, "
+            "    FOREIGN KEY (user_id) REFERENCES users(user_id) "
+            ")"
+        )
+        self.cursor.execute(command_users)
+        self.cursor.execute(command_transactions)
+        self.cursor.execute("PRAGMA foreign_keys = ON") 
+        self.connection.commit()
+
 
     def getAllTransactions(self, user_id: int) -> list[Transaction]:
         # retrieve transaction data
-        table_name = "transactions"
         command = (
-            f"SELECT * FROM {table_name} "
-            f"WHERE user_id = ?"
+            "SELECT * FROM transactions "
+            "WHERE user_id = ?"
         )
         values = (user_id,)
         rows: list[tuple] = self.cursor.execute(command, values).fetchall()
@@ -54,9 +81,8 @@ class TransactionRepository:
     
     def getTransactionsByType(self, user_id: int, t_type: str) -> list[Transaction]:
         # retrieve transaction data
-        table_name = "transactions"
         command = (
-            f"SELECT * FROM {table_name} "
+            "SELECT * FROM transactions "
             "WHERE user_id = ? AND transaction_type = ? "
         )
         values = (user_id, t_type)
