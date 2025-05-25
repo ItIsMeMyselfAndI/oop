@@ -353,7 +353,111 @@ class TransactionManager:
         return sorted_quarterly_finances
 
     def createMonthlyGraph(self, monthly_finances: list[Finance]) -> matplotlib.figure.Figure:
-        pass
+        def filter_non_zero(data_dict, attr):
+            filtered_months = []
+            filtered_values = []
+            for month, finance in sorted(data_dict.items()):
+                value = getattr(finance, attr)
+                if value != 0:
+                    filtered_months.append(month)
+                    filtered_values.append(value)
+            return filtered_months, filtered_values
+
+        fig, axs = plt.subplots(4, 1, figsize=(14, 12), sharex=False)
+
+        # Remove top and bottom borders from all subplots
+        for ax in axs:
+            ax.spines['top'].set_visible(False)
+            ax.spines['bottom'].set_visible(False)
+
+        # Income
+        months_inc, incomes = filter_non_zero(monthly_finances, "total_income")
+        bars_income = axs[0].bar(months_inc, incomes, color='blue')
+        axs[0].set_title("Income")
+        axs[0].set_ylabel("Amount")
+        axs[0].grid(axis='y')
+
+        # Cap Income y-axis
+        if len(incomes) > 1:
+            sorted_incomes = sorted(incomes, reverse=True)
+            second_largest = sorted_incomes[1]
+            cap = second_largest * 1.1
+            if cap < sorted_incomes[0]:
+                axs[0].set_ylim(0, cap)
+
+        # Expenses
+        months_exp, expenses = filter_non_zero(monthly_finances, "total_expenses")
+        bars_expenses = axs[1].bar(months_exp, expenses, color='orange')
+        axs[1].set_title("Expenses")
+        axs[1].set_ylabel("Amount")
+        axs[1].grid(axis='y')
+
+        # Savings
+        months_sav, savings = filter_non_zero(monthly_finances, "total_savings")
+        bars_savings = axs[2].bar(months_sav, savings, color='green')
+        axs[2].set_title("Savings")
+        axs[2].set_ylabel("Amount")
+        axs[2].grid(axis='y')
+
+        # Investments
+        months_inv, investments = filter_non_zero(monthly_finances, "total_investment")
+        bars_investments = axs[3].bar(months_inv, investments, color='red')
+        axs[3].set_title("Investments")
+        axs[3].set_ylabel("Amount")
+        axs[3].set_xlabel("Month")
+        axs[3].grid(axis='y')
+
+        plt.suptitle("Monthly Finances Overview", fontsize=16)
+        plt.tight_layout(rect=[0, 0, 1, 0.96])
+
+        def human_format(num):
+            for unit in ['', 'K', 'M', 'B', 'T']:
+                if abs(num) < 1000:
+                    return f"{num:.0f}{unit}"
+                num /= 1000
+            return f"{num:.0f}P"
+
+        def annotate_bars(ax, bars, values, months):
+            ax.set_xticks([bar.get_x() + bar.get_width() / 2 for bar in bars])
+            ax.set_xticklabels(months, rotation=0)
+
+            bar_heights = [bar.get_height() for bar in bars]
+            max_bar_height = max(bar_heights) if bar_heights else 0
+            padding_above = max_bar_height * 0.08  # 8% headroom above tallest bar
+            ax.set_ylim(top=max_bar_height + padding_above)
+
+            for bar, val in zip(bars, values):
+                height = bar.get_height()
+                x_pos = bar.get_x() + bar.get_width() / 2
+
+                if height == 0:
+                    continue  # Skip zero bars
+
+                # Label position logic
+                if height >= max_bar_height * 0.92:
+                    y_pos = height + padding_above * 0.5
+                    va = 'bottom'
+                else:
+                    y_pos = height * 0.5
+                    va = 'center'
+
+                ax.annotate(
+                    human_format(float(val)),
+                    xy=(x_pos, y_pos),
+                    ha='center',
+                    va=va,
+                    fontsize=9,
+                    color='black',
+                    clip_on=False
+                )
+
+        annotate_bars(axs[0], bars_income, incomes, months_inc)
+        annotate_bars(axs[1], bars_expenses, expenses, months_exp)
+        annotate_bars(axs[2], bars_savings, savings, months_sav)
+        annotate_bars(axs[3], bars_investments, investments, months_inv)
+
+        # plt.show()
+        return fig
 
     def createQuarterlyGraph(self, quarterly_finances: list[Finance]) -> matplotlib.figure.Figure:
         pass
@@ -439,10 +543,10 @@ if __name__ == "__main__":
 
     # --- MANAGER tests ---
     # tm.testCalculateOverallFinance()
-    tm.testCalculateOverallBalance()
+    # tm.testCalculateOverallBalance()
     # tm.testCalculateMonthlyFinances()
     # tm.testCalculateQuarterlyFinances()
-    # tm.testCreateMonthlyGraph()
+    tm.testCreateMonthlyGraph()
     # tm.testCreateQuarterlyGraph()
 
     tm.repo.connection.close()
