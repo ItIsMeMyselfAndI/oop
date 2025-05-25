@@ -240,3 +240,7 @@ class Edit(ctk.CTkFrame):
         for form in self.transactionForms.values():
             form.updateTransactionMenuOptionsByType()
             form.transactionMenu.configure(values=form.transaction_options)
+            if form.transaction_options:
+                form.transactionMenu.set(form.transaction_options[0])
+            else:
+                form.transactionMenu.set(" No Available Transaction")

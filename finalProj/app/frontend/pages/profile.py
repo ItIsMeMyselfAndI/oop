@@ -66,14 +66,16 @@ class Profile(ctk.CTkFrame):
         self.isCurrentPage = False
         # load imgs
         profile_icon, income_icon, savings_icon, expense_icon, investment_icon = self.loadIcons()
+        # calculate summaries
+        finance = self.tm.calculateOverallFinance(self.user_id)
+        balance = self.tm.calculateOverallBalance(finance)
         # create page sections
         self.header_section = ProfileHeader(img=profile_icon, uname=f"User {self.user_id}", 
-                                            summary_type="Total Balance:", amount=0.0, master=self,
+                                            summary_type="Total Balance:", amount=balance, master=self,
                                             fg_color=BLUE, corner_radius=RAD_2, height=HEADER_H,
                                             width=HEADER_W)
         self.summary_section = ctk.CTkFrame(self, fg_color=WHITE, corner_radius=RAD_2)
         # create summary sub-sections
-        finance = self.tm.calculateOverallFinance(self.user_id)
         self.income = SummarySection(img=income_icon, summary_type="Total Income:",
                                      amount=finance.total_income, master=self.summary_section,
                                      fg_color=WHITE_BLUE, corner_radius=RAD_2, height=SUMMARY_ELEM_H,
@@ -112,6 +114,8 @@ class Profile(ctk.CTkFrame):
     
     def updatePageDisplay(self):
         finance = self.tm.calculateOverallFinance(self.user_id)
+        balance = self.tm.calculateOverallBalance(finance)
+        self.header_section.amount_label.configure(text=f"₱ {balance:,}")
         self.income.amount_label.configure(text=f"₱ {finance.total_income:,}")
         self.expense.amount_label.configure(text=f"₱ {finance.total_expenses:,}")
         self.savings.amount_label.configure(text=f"₱ {finance.total_savings:,}")

@@ -24,7 +24,7 @@ class Sidebar(ctk.CTkFrame):
             "add":self.addBTN
         }
         # display page buttons/tabs
-        self.profileBTN.pack(pady=(PAD_2,0), padx=PAD_1)
+        self.profileBTN.pack(pady=(PAD_1,0), padx=PAD_1)
         self.homeBTN.pack(pady=(PAD_2,0), padx=PAD_1)
         self.editBTN.pack(pady=(PAD_2,0), padx=PAD_1)
         self.historyBTN.pack(pady=(PAD_2,0), padx=PAD_1)
