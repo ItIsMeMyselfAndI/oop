@@ -114,7 +114,7 @@ class TransactionRepository:
             new_transaction.t_date,
             new_transaction.t_type,
             new_transaction.t_category,
-            new_transaction.t_amount,
+            round(new_transaction.t_amount, 2),
             new_transaction.t_description,
             user_id
         )
@@ -149,7 +149,7 @@ class TransactionRepository:
             updated_transaction.t_date, 
             updated_transaction.t_type,
             updated_transaction.t_category,
-            updated_transaction.t_amount,
+            round(updated_transaction.t_amount, 2),
             updated_transaction.t_description,
             user_id,
             t_id
@@ -237,14 +237,15 @@ class TransactionManager:
                 total_investment += t.t_amount
 
         return Finance(
-            total_income=total_income,
-            total_expenses=total_expenses,
-            total_savings=total_savings,
-            total_investment=total_investment
+            total_income=round(total_income, 2),
+            total_expenses=round(total_expenses, 2),
+            total_savings=round(total_savings, 2),
+            total_investment=round(total_investment, 2)
         )
 
-    def calculateOverallBalance(self, user_id: int) -> float:
-        pass
+    def calculateOverallBalance(self, overall_finance: Finance) -> float:
+        overall_balance = overall_finance.total_income - overall_finance.total_expenses + overall_finance.total_savings
+        return round(overall_balance, 2)
 
     def calculateMonthlyFinances(self, user_id: int) -> list[Finance]:
         transactions = self.repo.getAllTransactions(user_id)
@@ -279,17 +280,77 @@ class TransactionManager:
         monthly_finances = {}
         for month, values in sorted(monthly_data.items()):
             finance = Finance(
-                total_income=values["income"],
-                total_expenses=values["expense"],
-                total_savings=values["savings"],
-                total_investment=values["investment"]
+                total_income=round(values["income"], 2),
+                total_expenses=round(values["expense"], 2),
+                total_savings=round(values["savings"], 2),
+                total_investment=round(values["investment"], 2)
             )
             monthly_finances[month] = finance
 
         return monthly_finances
 
     def calculateQuarterlyFinances(self, user_id: int) -> list[Finance]:
-        pass
+        transactions = self.repo.getAllTransactions(user_id)
+        quarterly_data = defaultdict(lambda: {"income": 0.0, "expense": 0.0, "savings": 0.0, "investment": 0.0})
+        quarter_keys = set()
+
+        # 1. process all transactions
+        for t in transactions:
+            try:
+                date_obj = datetime.strptime(t.t_date, "%Y-%m-%d")
+            except ValueError:
+                # skip invalid dates
+                continue
+            year = date_obj.year
+            month = date_obj.month
+            # figures out the quarter from the month (1..3 -> Q1, 4..6 -> Q2, etc.)
+            quarter = (month - 1) // 3 + 1
+            year_quarter = f"{year}-Q{quarter}"
+            quarter_keys.add(year_quarter)
+            
+            t_type = t.t_type.lower()
+            if t_type in ["income", "expense", "savings", "investment"]:
+                quarterly_data[year_quarter][t_type] += t.t_amount
+
+        # 2. fills in missing quarters. first determine the range from earliest to latest
+        def quarter_to_int(y, q):
+            return y * 4 + (q - 1)  # 2024-Q1 => 2024*4+0 = 8096
+
+        def int_to_quarter(val):
+            y, r = divmod(val, 4)
+            return y, r + 1  # e.g. (2024, 1)
+
+        # parse existing quarters to numeric form
+        numeric_quarters = []
+        for k in quarter_keys:
+            y_str, q_str = k.split("-Q")
+            y = int(y_str)
+            q = int(q_str)
+            numeric_quarters.append(quarter_to_int(y, q))
+
+        if numeric_quarters:
+            first_qnum = min(numeric_quarters)
+            last_qnum = max(numeric_quarters)
+            for val in range(first_qnum, last_qnum + 1):
+                y, q = int_to_quarter(val)
+                key = f"{y}-Q{q}"
+                if key not in quarterly_data:
+                    # trigger default zero dictionary
+                    quarterly_data[key]
+
+        # 3. final dictionary of sorted quarters => Finance
+        sorted_quarterly_finances = {}
+        all_quarters = sorted(quarterly_data.keys())
+        for k in all_quarters:
+            values = quarterly_data[k]
+            finance = Finance(
+                total_income=round(values["income"], 2),
+                total_expenses=round(values["expense"], 2),
+                total_savings=round(values["savings"], 2),
+                total_investment=round(values["investment"], 2)
+            )
+            sorted_quarterly_finances[k] = finance
+        return sorted_quarterly_finances
 
     def createMonthlyGraph(self, monthly_finances: list[Finance]) -> matplotlib.figure.Figure:
         pass
@@ -309,7 +370,8 @@ class TransactionManager:
         print(f"\ttotal_investment: {overall_finance.total_investment}\n")
 
     def testCalculateOverallBalance(self):
-        overall_balance = self.calculateOverallBalance(user_id=self.user_id)
+        overall_finance = self.calculateOverallFinance(user_id=self.user_id)
+        overall_balance = self.calculateOverallBalance(overall_finance=overall_finance)
         # display result
         print("\n\n[Overall Balance]\n")
         print(overall_balance)
@@ -377,7 +439,7 @@ if __name__ == "__main__":
 
     # --- MANAGER tests ---
     # tm.testCalculateOverallFinance()
-    # tm.testCalculateOverallBalance()
+    tm.testCalculateOverallBalance()
     # tm.testCalculateMonthlyFinances()
     # tm.testCalculateQuarterlyFinances()
     # tm.testCreateMonthlyGraph()
