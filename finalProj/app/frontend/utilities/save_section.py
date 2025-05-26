@@ -7,12 +7,12 @@ from frontend.utilities.styles import *
 
 # save section
 class Save(ctk.CTkFrame):
-    def __init__(self, tm, user_id, pages, master, **kwargs):
+    def __init__(self, user_id, tm, pages, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.tm = tm
         self.user_id = user_id
+        self.tm = tm
         self.pages = pages
-        self.font = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_2, slant="italic", weight="normal")
+        self.font = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_3, slant="italic", weight="normal")
         self.btn = ctk.CTkButton(self, width=BTN_W2, height=BTN_H2, text="Save Changes",
                                  font=self.font, text_color=WHITE,
                                  fg_color=BLUE, hover_color=DARK_BLUE,

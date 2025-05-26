@@ -32,6 +32,7 @@ class Finance:
 
 class TransactionRepository:
     def __init__(self, db_path):
+        print(db_path)
         self.user_id: int = 1
         self.connection = sqlite3.connect(db_path)
         self.cursor = self.connection.cursor()
@@ -457,7 +458,7 @@ class TransactionManager:
         annotate_bars(axs[3], bars_investments, investments, months_inv)
 
         # plt.show()
-        return fig
+        return fig # pabago nlng nito, return mo fig_income and fig_expenses
 
     def createQuarterlyGraph(self, quarterly_finances: list[Finance]) -> matplotlib.figure.Figure:
         pass
@@ -504,14 +505,17 @@ class TransactionManager:
 
     def testCreateMonthlyGraph(self):
         monthly_finances = self.calculateMonthlyFinances(user_id=self.user_id)
-        graph = self.createMonthlyGraph(monthly_finances=monthly_finances)
+        graph_income, graph_expenses = self.createMonthlyGraph(monthly_finances=monthly_finances)
         # display result
         root = ctk.CTk()
         root.title("Monthly Graph")
         root.geometry("1920x1080")
-        canvas = FigureCanvasTkAgg(graph, master=root)
-        canvas.draw()
-        canvas.get_tk_widget().pack(fill="both", expand=True)
+        canvas_income = FigureCanvasTkAgg(graph_income, master=root)
+        canvas_expenses = FigureCanvasTkAgg(graph_expenses, master=root)
+        canvas_income.draw()
+        canvas_expenses.draw()
+        canvas_income.get_tk_widget().pack(fill="both", expand=True)
+        canvas_expenses.get_tk_widget().pack(fill="both", expand=True)
         root.mainloop()
 
     def testCreateQuarterlyGraph(self):

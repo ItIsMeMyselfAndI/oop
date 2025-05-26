@@ -10,8 +10,9 @@ from backend.transaction_manager import Transaction
 class EditHeader(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_5, slant="italic", weight="normal")
-        self.label = ctk.CTkLabel(self, text="Edit Transaction", font=self.font, text_color=DARK_GREY)
+        self.font = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_6, slant="italic", weight="normal")
+        self.label = ctk.CTkLabel(self, text="Edit Transaction", font=self.font,
+                                  text_color=DARK_GREY, anchor="w", width=HEADER_W)
         self.label.pack(anchor="w")
 
 
@@ -28,9 +29,9 @@ class EditTransactionForm(ctk.CTkFrame):
         # initialize state
         self.isCurrentEditTransactionForm = False
         # initialize fonts
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_3, slant="italic", weight="normal")
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_2, slant="italic", weight="normal")
-        self.font3 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_1, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_4, slant="italic", weight="normal")
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_3, slant="italic", weight="normal")
+        self.font3 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_2, slant="italic", weight="normal")
         # create guide frames
         self.frame1 = ctk.CTkFrame(self, fg_color=WHITE, corner_radius=0)
         self.frame2 = ctk.CTkFrame(self, fg_color=WHITE, corner_radius=0)
@@ -113,7 +114,7 @@ class EditPageTabs(ctk.CTkFrame):
         super().__init__(master, **kwargs)
         self.transactionForms = transactionForms
         # initialize ctk font
-        self.font = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_2, slant="italic", weight="normal")
+        self.font = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_3, slant="italic", weight="normal")
         # create buttons/tabs
         self.expenseBTN = self.createTabButton(text="Expense", command=self.onClickExpenseTab)
         self.savingsBTN = self.createTabButton(text="Savings", command=self.onClickSavingsTab)
@@ -208,9 +209,9 @@ class Edit(ctk.CTkFrame):
             # retrieve user inputs from the UI
             original_transaction = form.transactionMenu.get().strip()
             transaction_id = int(original_transaction.split()[0])
-            year = form.dateMenu.year.get()
-            month = month_2_numeric[form.dateMenu.month.get()]
-            day = form.dateMenu.day.get()
+            year = form.dateMenu.year_menu.get()
+            month = month_2_numeric[form.dateMenu.month_menu.get()]
+            day = form.dateMenu.day_menu.get()
             new_date = f"{year}-{month}-{day}"
             new_category = form.categoryMenu.get()
             new_description = form.descriptionEntry.get()

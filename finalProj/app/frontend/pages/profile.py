@@ -9,8 +9,8 @@ from frontend.utilities.styles import * # contains paddings, dimensions, colors,
 class ProfileHeader(ctk.CTkFrame):
     def __init__(self, img, uname, summary_type, amount, master, **kwargs):
         super().__init__(master, ** kwargs)
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_3, slant="italic", weight="normal")
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_5, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_4, slant="italic", weight="normal")
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_6, slant="italic", weight="normal")
         self.img = img
         # create guide frames
         self.img_bg = ctk.CTkLabel(self, corner_radius=RAD_2, fg_color="transparent", image=img,
@@ -38,8 +38,8 @@ class ProfileHeader(ctk.CTkFrame):
 class SummarySection(ctk.CTkFrame):
     def __init__(self, img, img_bg_color, summary_type, amount, master, **kwargs):
         super().__init__(master, ** kwargs)
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_3, slant="italic", weight="normal")
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_5, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_4, slant="italic", weight="normal")
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_6, slant="italic", weight="normal")
         self.img = img
         # create guide frames
         self.img_bg = ctk.CTkLabel(self, height=SUMMARY_IMG_FRAME_H, width=SUMMARY_IMG_FRAME_W,
@@ -93,7 +93,7 @@ class Profile(ctk.CTkFrame):
                                          fg_color=WHITE_PURPLE, corner_radius=RAD_2, height=SUMMARY_ELEM_H,
                                          width=SUMMARY_ELEM_W, img_bg_color=LIGHT_PURPLE)
         # display page sections
-        self.header_section.pack(padx=PAD_5+PAD_5, pady=(PAD_5+PAD_5,0))
+        self.header_section.pack(pady=(PAD_5+PAD_5,0))
         self.summary_section.pack(padx=PAD_5, pady=(PAD_4, PAD_5+PAD_5))
         # display summary sections
         self.income.grid(row=0, column=0, padx=(PAD_4,0), pady=(PAD_4,0), sticky="nsew")

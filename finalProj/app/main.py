@@ -45,11 +45,11 @@ class App(ctk.CTk):
         # create scrollable screen (vertical)
         self.content = ctk.CTkScrollableFrame(self, orientation="vertical", corner_radius=0, fg_color=SKY_BLUE)
         # create app pages
-        self.profilePage = Profile(self.user_id, tm=self.tm, master=self.content, fg_color=SKY_BLUE, corner_radius=0) 
-        self.homePage = Home(self.content, fg_color=SKY_BLUE, corner_radius=0) 
-        self.editPage = Edit(self.user_id, tm=self.tm, master=self.content, fg_color=SKY_BLUE, corner_radius=0) 
-        self.historyPage = History(self.content, fg_color=SKY_BLUE, corner_radius=0) 
-        self.addPage = Add(self.user_id, tm=self.tm, master=self.content, fg_color=SKY_BLUE, corner_radius=0) 
+        self.profilePage = Profile(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=SKY_BLUE, corner_radius=0) 
+        self.homePage = Home(master=self.content, fg_color=SKY_BLUE, corner_radius=0) 
+        self.editPage = Edit(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=SKY_BLUE, corner_radius=0) 
+        self.historyPage = History(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=SKY_BLUE, corner_radius=0) 
+        self.addPage = Add(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=SKY_BLUE, corner_radius=0) 
         self.pages = {
             "profile":self.profilePage, "home":self.homePage,
             "edit":self.editPage, "history":self.historyPage,
@@ -58,9 +58,9 @@ class App(ctk.CTk):
         # create sidebar tabs
         self.sidebar = Sidebar(pages=self.pages, master=self, fg_color=WHITE, corner_radius=0)
         # create save btn
-        self.editSaveBtn = Save(tm=self.tm, user_id=self.user_id, pages=self.pages,
+        self.editSaveBtn = Save(user_id=self.user_id, tm=self.tm, pages=self.pages,
                                 master=self.editPage, fg_color=SKY_BLUE)
-        self.addSaveBtn = Save(tm=self.tm, user_id=self.user_id, pages=self.pages,
+        self.addSaveBtn = Save(user_id=self.user_id, tm=self.tm, pages=self.pages,
                                master=self.addPage, fg_color=SKY_BLUE)
         # display sidebar/page-tabs and content[profile, home, edit, history, add]
         self.sidebar.pack(side="left", fill="y")
