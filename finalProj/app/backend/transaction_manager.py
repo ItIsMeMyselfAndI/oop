@@ -546,7 +546,7 @@ if __name__ == "__main__":
     # tm.testCalculateOverallBalance()
     # tm.testCalculateMonthlyFinances()
     # tm.testCalculateQuarterlyFinances()
-    tm.testCreateMonthlyGraph()
+    # tm.testCreateMonthlyGraph()
     # tm.testCreateQuarterlyGraph()
 
     tm.repo.connection.close()
