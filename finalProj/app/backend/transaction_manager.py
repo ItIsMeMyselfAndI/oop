@@ -2,11 +2,10 @@ import sqlite3
 import customtkinter as ctk
 import matplotlib
 import matplotlib.pyplot as plt
-from pathlib import Path
+import os
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from datetime import datetime, timedelta
 from collections import defaultdict
-import os
 
 
 # data holder for a transaction
@@ -34,11 +33,11 @@ class TransactionRepository:
     def __init__(self, db_path):
         print(db_path)
         self.user_id: int = 1
+        self.initializeDatabase(db_path)
+
+    def initializeDatabase(self, db_path):
         self.connection = sqlite3.connect(db_path)
         self.cursor = self.connection.cursor()
-        self.createTablesIfNotExist()
-
-    def createTablesIfNotExist(self):
         command_users = (
             "CREATE TABLE IF NOT EXISTS users ( "
             "    user_id INTEGER PRIMARY KEY AUTOINCREMENT, " 
@@ -533,7 +532,7 @@ class TransactionManager:
         
 if __name__ == "__main__":
 
-    db_path = Path(__file__).resolve().parent.parent / "db" / "transactions.db"
+    db_path = os.path.abspath("../db/transactions.db")
     tm = TransactionManager(db_path)
     # uncomment nyo inyo if magsasample run kayo
 

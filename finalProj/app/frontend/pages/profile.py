@@ -1,7 +1,7 @@
 # external/built-in modules/libs
 import customtkinter as ctk
 from PIL import Image
-from pathlib import Path
+import os
 # our modules/libs
 from frontend.utilities.styles import * # contains paddings, dimensions, colors, etc
 
@@ -103,7 +103,7 @@ class Profile(ctk.CTkFrame):
 
     def loadIcons(self):
         # icon path
-        ICONS_FOLDER = Path(__file__).resolve().parent.parent.parent / "assets" / "icons"
+        ICONS_FOLDER = os.path.abspath("assets/icons")
         # load images
         profile_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/profile1.png"), size=(PROFILE_IMG_H, PROFILE_IMG_W))
         income_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/income.png"), size=(SUMMARY_IMG_H, SUMMARY_IMG_W))

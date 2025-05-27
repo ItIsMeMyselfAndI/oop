@@ -1,7 +1,7 @@
 # external/built-in modules/libs
 import customtkinter as ctk
+import os
 from PIL import Image
-from pathlib import Path
 # our modules/libs
 from frontend.utilities.styles import * # contains paddings, dimensions, colors, etc
 
@@ -35,7 +35,7 @@ class Sidebar(ctk.CTkFrame):
 
     def loadIcons(self):
         # icon path
-        ICONS_FOLDER = Path(__file__).resolve().parent.parent.parent / "assets" / "icons"
+        ICONS_FOLDER = os.path.abspath("assets/icons")
         # load images
         home_icon = ctk.CTkImage(light_image=Image.open(f"{ICONS_FOLDER}/home.png"), size=(IMG_W,IMG_H))
         profile_icon = ctk.CTkImage(light_image=Image.open(f"{ICONS_FOLDER}/profile.png"), size=(IMG_W,IMG_H))

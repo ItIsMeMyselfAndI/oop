@@ -1,6 +1,6 @@
 # built-in/external modules/libs
 import customtkinter as ctk
-from pathlib import Path
+import os
 # our modules/libs
 from frontend.utilities.styles import *
 from frontend.utilities.sidebar import Sidebar # navigation page-tabs
@@ -30,7 +30,7 @@ class Home(ctk.CTkFrame):
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
-        db_path = Path(__file__).resolve().parent / "db/transactions.db"
+        db_path = os.path.abspath("db/transactions.db")
         # user
         # create transaction manager
         self.user_id = 1
