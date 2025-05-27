@@ -4,9 +4,22 @@ import customtkinter as ctk
 from frontend.utilities.styles import * # contains paddings, dimensions, colors, etc
 
 
-class TableFilter(ctk.CTkFrame):
+class HistoryHeader(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_6, slant="italic", weight="normal")
+
+        self.tile_label = ctk.CTkLabel(self, text="Transaction History", font=self.font1, text_color=WHITE,
+                                       anchor="w", fg_color=GREEN, width=1080, height=HEADER_LABEL_H)
+
+        self.tile_label.grid(row=0, column=0, padx=PAD_4, pady=PAD_1)
+
+
+class TableFilters(ctk.CTkFrame):
+    def __init__(self, table, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.table = table
+        # initialize fonts
         self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_1, slant="italic", weight="normal")
         self.font2 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_4, slant="italic", weight="normal")
         self.font3 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_6, slant="italic", weight="normal")
@@ -20,51 +33,54 @@ class TableFilter(ctk.CTkFrame):
             "Savings": ["All Categories", "Monthly Allowance", "Change", "Miscellaneous"],
             "Investment": ["All Categories", "Stocks", "Crypto", "Bonds", "Real Estate"]
         }
-        self.all_categories = (self.categories_by_type["Income"]
-                               + self.categories_by_type["Expenses"][1:]
-                               + self.categories_by_type["Savings"][1:]
-                               + self.categories_by_type["Investment"][1:])
+        self.all_categories = ["All Categories"] + [c for categories in self.categories_by_type.values() for c in categories[1:]]
         self.current_categories = self.all_categories
         # create menus
-
         self.type_menu = ctk.CTkOptionMenu(self, values=self.t_type, font=self.font1, text_color=DARK_GREY,
                                            fg_color=WHITE, dropdown_font=self.font1,
                                            dropdown_fg_color=WHITE, dropdown_hover_color=BLUE,
                                            dropdown_text_color=DARK_GREY, button_color=WHITE,
                                            button_hover_color=LIGHT_GREY, corner_radius=RAD_2,
-                                           width=220, height=40, command=self.updateCurrentCategoriesAndTable)
+                                           width=FILTER_MENU_W, height=FILTER_MENU_H, command=self.onPickTypeMenu)
         self.category_menu = ctk.CTkOptionMenu(self, values=self.current_categories, font=self.font1, text_color=DARK_GREY,
-                                           fg_color=WHITE, dropdown_font=self.font1,
-                                           dropdown_fg_color=WHITE, dropdown_hover_color=BLUE,
-                                           dropdown_text_color=DARK_GREY, button_color=WHITE,
-                                           button_hover_color=LIGHT_GREY, corner_radius=RAD_2,
-                                           width=220, height=40, command=None)
+                                               fg_color=WHITE, dropdown_font=self.font1,
+                                               dropdown_fg_color=WHITE, dropdown_hover_color=BLUE,
+                                               dropdown_text_color=DARK_GREY, button_color=WHITE,
+                                               button_hover_color=LIGHT_GREY, corner_radius=RAD_2,
+                                               width=FILTER_MENU_W, height=FILTER_MENU_H, command=None)
         # display menus 
         self.type_menu.grid(row=0, column=0, padx=(0,PAD_1))
         self.category_menu.grid(row=0, column=1)
-        
-    def updateCurrentCategoriesAndTable(self, t_type):
+
+    def _updateCategoryMenuByType(self, t_type):
         if t_type == "All Types":
             self.current_categories = self.all_categories
         else:
             self.current_categories = self.categories_by_type[t_type]
         self.category_menu.configure(values=self.current_categories)
         self.category_menu.set(self.current_categories[0])
-
-
-# header section
-class HistoryHeader(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_6, slant="italic", weight="normal")
-
-        self.tile_label = ctk.CTkLabel(self, text="Transaction History", font=self.font1, text_color=WHITE,
-                                       anchor="w", fg_color=GREEN, width=HEADER_LABEL_W, height=HEADER_LABEL_H)
-        self.filter = TableFilter(self)
-
-
-        self.tile_label.grid(row=0, column=0, padx=PAD_4, pady=PAD_1)
-        self.filter.grid(row=0, column=1, padx=(0, PAD_3), pady=(0,PAD_3), sticky="s")
+    
+    def _filterRowsByType(self, t_type):
+        # hide previous rows
+        for rows_by_type in self.table.all_rows_by_type_per_page.values():
+            for page_frame, rows in rows_by_type.items():
+                page_frame.pack_forget()
+                for row in rows:
+                    row.pack_forget()
+        # show selected rows
+        page_frame = list(self.table.all_rows_by_type_per_page[t_type].keys())[0]
+        page_frame.pack()
+        for row in self.table.all_rows_by_type_per_page[t_type][page_frame]:
+            row.pack(pady=(0,PAD_1))
+            row.date_label.grid(row=0, column=0, padx=(0,PAD_2), pady=0)
+            row.type_label.grid(row=0, column=1, padx=(0,PAD_2), pady=0)
+            row.category_label.grid(row=0, column=2, padx=(0,PAD_2), pady=0)
+            row.description_label.grid(row=0, column=3, padx=(0,PAD_2), pady=0)
+            row.amount_label.grid(row=0, column=4, padx=(0,PAD_2), pady=0)
+        
+    def onPickTypeMenu(self, t_type):
+        self._updateCategoryMenuByType(t_type)
+        self._filterRowsByType(t_type)
 
 
 class TableRow(ctk.CTkFrame):
@@ -72,7 +88,7 @@ class TableRow(ctk.CTkFrame):
         super().__init__(master, **kwargs)
         self.t = transaction
         # initialize font
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_3, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_2, slant="italic", weight="normal")
         self.font2 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_4, slant="italic", weight="normal")
         
         self.date_label = ctk.CTkLabel(self, text=self.t.t_date, font=self.font1,
@@ -91,9 +107,23 @@ class TableRow(ctk.CTkFrame):
                                          text_color=DARK_GREY, fg_color="indigo", anchor="e",
                                          width=TABLE_COL_W3, wraplength=TABLE_COL_W3)
         
+        
+class TableNavigation(ctk.CTkFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_1, slant="italic", weight="normal")
+        # create nav btns
+        self.prevBTN = ctk.CTkButton(self, text="Prev", text_color=WHITE, fg_color=BLUE, hover_color=DARK_BLUE,
+                                     font=self.font1, corner_radius=RAD_2, width=100, height=40)
+        self.nextBTN = ctk.CTkButton(self, text="Next", text_color=WHITE, fg_color=BLUE, hover_color=DARK_BLUE,
+                                     font=self.font1, corner_radius=RAD_2, width=100, height=40)
+        # display nav btns
+        self.prevBTN.grid(row=0, column=0, padx=(0,PAD_1))
+        self.nextBTN.grid(row=0, column=1)
+        
 
 class Table(ctk.CTkFrame):
-    def __init__(self, user_id, tm, master, **kwargs):
+    def __init__(self, user_id, tm, header_section, master, **kwargs):
         super().__init__(master, **kwargs)
         self.user_id = user_id
         self.tm = tm
@@ -101,75 +131,132 @@ class Table(ctk.CTkFrame):
         self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_3, slant="italic", weight="normal")
         self.font2 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_4, slant="italic", weight="normal")
         # table sections
+        self.filters = TableFilters(table=self, master=header_section)
         self.table_header = ctk.CTkFrame(self, fg_color=WHITE, corner_radius=RAD_2)
-        self.table_body = ctk.CTkScrollableFrame(self, fg_color=WHITE, orientation="vertical", corner_radius=RAD_2,
-                                                 height=TABLE_H, width=TABLE_W)
+        self.table_body = ctk.CTkScrollableFrame(self, fg_color=WHITE, orientation="vertical",
+                                                 corner_radius=RAD_2, height=500, width=TABLE_W)
+        self.table_nav = TableNavigation(self)
         # table header content
         self.date_header = ctk.CTkLabel(self.table_header, text="Date", font=self.font1,
                                        text_color=DARK_GREY, fg_color="yellow", anchor="w",
-                                       width=TABLE_COL_W1, height=40)
+                                       width=TABLE_COL_W1, height=TABLE_ROW_H)
         self.type_header = ctk.CTkLabel(self.table_header, text="Type", font=self.font1,
                                        text_color=DARK_GREY, fg_color="blue", anchor="w",
-                                       width=TABLE_COL_W2, height=40)
+                                       width=TABLE_COL_W2, height=TABLE_ROW_H)
         self.category_header = ctk.CTkLabel(self.table_header, text="Category", font=self.font1,
                                        text_color=DARK_GREY, fg_color="orange", anchor="w",
-                                       width=TABLE_COL_W2, height=40)
+                                       width=TABLE_COL_W2, height=TABLE_ROW_H)
         self.description_header = ctk.CTkLabel(self.table_header, text="Description", font=self.font1,
                                        text_color=DARK_GREY, fg_color="red", anchor="w",
-                                       width=TABLE_COL_W3, height=40)
+                                       width=TABLE_COL_W3, height=TABLE_ROW_H)
         self.amount_header = ctk.CTkLabel(self.table_header, text="Amount", font=self.font1,
                                        text_color=DARK_GREY, fg_color="indigo", anchor="e",
-                                       width=TABLE_COL_W3, height=40)
+                                       width=TABLE_COL_W3, height=TABLE_ROW_H)
         # table body content
-        self.all_transactions = self.tm.repo.getAllTransactions(self.user_id)
-        self.all_transactions_by_type = {
-            "income": self.tm.repo.getTransactionsByType(self.user_id, "income"),
-            "savings": self.tm.repo.getTransactionsByType(self.user_id, "savings"),
-            "expense": self.tm.repo.getTransactionsByType(self.user_id, "expense"),
-            "investment": self.tm.repo.getTransactionsByType(self.user_id, "investment")
-        }
-        self.all_rows = [TableRow(transaction=t, master=self.table_body) for t in self.all_transactions]
-        self.all_rows_by_type = {}
-        for t_type, transactions in self.all_transactions_by_type.items():
-            self.all_rows_by_type[t_type] = [TableRow(transaction=t, master=self.table_body) for t in transactions]
-
+        self.all_rows_by_type_per_page = self.loadAllRowsByTypePerTablePage()
         # display table sections
+        self.filters.grid(row=0, column=1, padx=(0, PAD_1), pady=(0,PAD_1), sticky="s")
         self.table_header.pack(pady=(0,PAD_1))
         self.table_body.pack()
+        self.table_nav.pack(pady=(PAD_1,0))
         # display table header
         self.date_header.grid(row=0, column=0, padx=(PAD_2,PAD_2), pady=PAD_1)
         self.type_header.grid(row=0, column=1, padx=(0,PAD_2), pady=PAD_1)
         self.category_header.grid(row=0, column=2, padx=(0,PAD_2), pady=PAD_1)
         self.description_header.grid(row=0, column=3, padx=(0,PAD_2), pady=PAD_1)
         self.amount_header.grid(row=0, column=4, padx=(0,PAD_2), pady=PAD_1)
-        # display table body
-        for row in self.all_rows:
-            row.pack(pady=(0,PAD_1))
-            row.date_label.grid(row=0, column=0, padx=(0,PAD_2), pady=0)
-            row.type_label.grid(row=0, column=1, padx=(0,PAD_2), pady=0)
-            row.category_label.grid(row=0, column=2, padx=(0,PAD_2), pady=0)
-            row.description_label.grid(row=0, column=3, padx=(0,PAD_2), pady=0)
-            row.amount_label.grid(row=0, column=4, padx=(0,PAD_2), pady=0)
-
-
-    def filterRowsByType(self, t_type):
-        # hide previous rows
-        for row in self.all_rows:
-            row.pack_ignore()
-        for rows in self.all_rows_by_type.keys():
-            for row in rows:
-                row.pack_ignore()
-        # show selected rows
-        if t_type == "All Types":
-            for row in self.all_rows:
-                row.pack()
+        # display default table body
+        self.filters._filterRowsByType("All Types")
+    
+    def _groupTransactionsPerTablePage(self, transactions):
+        # get number of pages
+        num_of_pages = len(transactions) / 20 # 20 transactions per page
+        if num_of_pages.is_integer:
+            num_of_pages = int(num_of_pages)
         else:
-            for row in self.all_rows_by_type[t_type]:
-                row.pack()
-        
+            num_of_pages = int(num_of_pages) + 1 # plus one page for excess transactions
+        # group transactions by page
+        transactions_by_page = {}
+        for i in range(num_of_pages):
+            start = i * 20
+            end = start + 20
+            transactions_by_page[i] = transactions[start:end]
+        # for k, v in transactions_by_page.items():
+        #     print(k)
+        #     for x in v:
+        #         print(f"\t{x}")
+        return transactions_by_page
 
+    def _convertTransactionsToRowsPerTablePage(self, transactions_per_page):
+        rows_per_page = {}
+        for transactions in transactions_per_page.values():
+            page_frame = ctk.CTkFrame(self.table_body)
+            # page_frame.pack()
+            rows = []
+            for t in transactions:
+                row = TableRow(transaction=t, master=page_frame)
+                rows.append(row)
+            rows_per_page[page_frame] = rows
+        return rows_per_page
 
+    def loadAllRowsByTypePerTablePage(self):
+        # retrieve all transactions from db base on type
+        all_transactions_by_type = {
+            "All Types": self.tm.repo.getAllTransactions(self.user_id),
+            "Income": self.tm.repo.getTransactionsByType(self.user_id, "income"),
+            "Savings": self.tm.repo.getTransactionsByType(self.user_id, "savings"),
+            "Expenses": self.tm.repo.getTransactionsByType(self.user_id, "expense"),
+            "Investment": self.tm.repo.getTransactionsByType(self.user_id, "investment"),
+        }
+        # all_transactions_by_type["All Types"] = [t for transactions in all_transactions_by_type.values() for t in transactions]
+        # for each type, group the transactions base on table page
+        all_transactions_by_type_per_page = {}
+        for t_type, transactions in all_transactions_by_type.items():
+            all_transactions_by_type_per_page[t_type] = self._groupTransactionsPerTablePage(transactions)
+        # convert transactions to rows
+        all_rows_by_type_per_page = {}
+        for t_type, transactions_per_page in all_transactions_by_type_per_page.items():
+            all_rows_by_type_per_page[t_type] = self._convertTransactionsToRowsPerTablePage(transactions_per_page)
+        # return the rows
+        return all_rows_by_type_per_page
 
+    def loadAllRowsByCategoryPerTablePage(self):
+        # retrieve all transactions from db base on category
+        all_transactions_by_category = {
+            # income
+            "Salary":self.tm.repo.getTransactionsByCategory(self.user_id, "Salary"),
+            "Bonus":self.tm.repo.getTransactionsByCategory(self.user_id, "Bonus"),
+            "Side-hustles":self.tm.repo.getTransactionsByCategory(self.user_id, "Side-hustles"),
+            "Tips":self.tm.repo.getTransactionsByCategory(self.user_id, "Tips"),
+            # expenses
+            "Bills":self.tm.repo.getTransactionsByCategory(self.user_id, "Bills"),
+            "Education":self.tm.repo.getTransactionsByCategory(self.user_id, "Education"),
+            "Entertainment":self.tm.repo.getTransactionsByCategory(self.user_id, "Entertainment"),
+            "Food & Drinks":self.tm.repo.getTransactionsByCategory(self.user_id, "Food & Drinks"),
+            "Grocery":self.tm.repo.getTransactionsByCategory(self.user_id, "Grocery"),
+            "Healthcare":self.tm.repo.getTransactionsByCategory(self.user_id, "Healthcare"),
+            "House":self.tm.repo.getTransactionsByCategory(self.user_id, "House"),
+            "Shopping":self.tm.repo.getTransactionsByCategory(self.user_id, "Shopping"),
+            "Transportation":self.tm.repo.getTransactionsByCategory(self.user_id, "Transportation"),
+            "Wellness":self.tm.repo.getTransactionsByCategory(self.user_id, "Wellness"),
+            "Other":self.tm.repo.getTransactionsByCategory(self.user_id, "Other"),
+            # savings
+            "Monthly Allowance":self.tm.repo.getTransactionsByCategory(self.user_id, "Monthly Allowance"),
+            "Change":self.tm.repo.getTransactionsByCategory(self.user_id, "Change"),
+            "Miscellaneous":self.tm.repo.getTransactionsByCategory(self.user_id, "Miscellaneous"),
+            # investment
+            "Stocks":self.tm.repo.getTransactionsByCategory(self.user_id, "Stocks"),
+            "Crypto":self.tm.repo.getTransactionsByCategory(self.user_id, "Crypto"),
+            "Bonds":self.tm.repo.getTransactionsByCategory(self.user_id, "Bonds"),
+            "Real Estate":self.tm.repo.getTransactionsByCategory(self.user_id, "Real Estate")
+        }
+        # all_transactions_by_category["All Categories"] = [t for transactions in all_transactions_by_category.values() for t in transactions]
+        # for each category, separate transactions base on table page
+        all_transactions_by_category_per_page = {}
+        for t_type, transactions in all_transactions_by_category.items():
+            all_transactions_by_category_per_page[t_type] = self._groupTransactionsByTablePage(transactions)
+        return all_transactions_by_category_per_page
+    
 
 class History(ctk.CTkFrame):
     def __init__(self, user_id, tm, master, **kwargs):
@@ -179,9 +266,9 @@ class History(ctk.CTkFrame):
         # initialize state
         self.isCurrentPage = False
         # create page sections
-        self.header_section = HistoryHeader(master=self, fg_color=BLUE, corner_radius=RAD_2,
-                                            height=HEADER_H, width=HEADER_W)
-        self.table = Table(user_id=self.user_id, tm=self.tm, master=self, fg_color=RED, corner_radius=0)
+        self.header_section = HistoryHeader(master=self, fg_color=BLUE, corner_radius=RAD_2, height=HEADER_H, width=HEADER_W)
+        self.table_section = Table(user_id=self.user_id, tm=self.tm, header_section=self.header_section,
+                                   master=self, fg_color=RED, corner_radius=0)
         # display page sections
-        self.header_section.pack(fill="y", expand=True, pady=(PAD_5+PAD_5,0))
-        self.table.pack(padx=PAD_3, pady=(PAD_4,0))
+        self.header_section.pack(pady=(PAD_5+PAD_5,0))
+        self.table_section.pack(padx=PAD_3, pady=(PAD_1,0))

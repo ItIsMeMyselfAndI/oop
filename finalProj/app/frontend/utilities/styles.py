@@ -107,15 +107,21 @@ SUMMARY_LABEL_W = int(0.4630*SCREEN_H) #500
 
 
 # ---- exclusive for history page ----
+FILTER_MENU_H = int(0.0370*SCREEN_H) #40
+FILTER_MENU_W = int(0.2037*SCREEN_H) #220
+
 TABLE_COL_W1 = int(0.1667*SCREEN_H) #180
 TABLE_COL_W2 = int(0.2315*SCREEN_H) #250
 TABLE_COL_W3 = int(0.3843*SCREEN_H) #415
 
+TABLE_ROW_H = int(0.0370*SCREEN_H) #40 
+
 TABLE_W = int(1.4722*SCREEN_H) #1590
-TABLE_H = int(0.4722*SCREEN_H) #510
+TABLE_H = int(0.5093*SCREEN_H) #550
 
 
 # ---- exclusive for sidebar ----
 IMG_W = int(0.0370*SCREEN_H) #40
 IMG_H = int(0.0370*SCREEN_H) #40
+
 
