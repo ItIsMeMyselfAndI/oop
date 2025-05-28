@@ -47,10 +47,18 @@ class TableFilters(ctk.CTkFrame):
                                                dropdown_fg_color=s.WHITE, dropdown_hover_color=s.BLUE,
                                                dropdown_text_color=s.DARK_GREY, button_color=s.WHITE,
                                                button_hover_color=s.LIGHT_GREY, corner_radius=s.RAD_2,
-                                               width=s.FILTER_MENU_W, height=s.FILTER_MENU_H, command=None)
+                                               width=s.FILTER_MENU_W, height=s.FILTER_MENU_H, command=self.onPickCategories)
         # display menus 
         self.type_menu.grid(row=0, column=0, padx=(0,s.PAD_1))
         self.category_menu.grid(row=0, column=1)
+
+    def _filterRows(self, filter_type):
+        # set new table body base on type
+        self.table.current_rows_per_page = self.table.all_rows_by_filter_per_page[filter_type]
+        # reset page num
+        self.table.current_page_num = 0
+        # display current table page
+        self.table.showRowsInCurrentPage()
 
     def _updateCategoryMenuByType(self, t_type):
         if t_type == "All Types":
@@ -60,17 +68,13 @@ class TableFilters(ctk.CTkFrame):
         self.category_menu.configure(values=self.current_categories)
         self.category_menu.set(self.current_categories[0])
     
-    def _filterRowsByType(self, t_type):
-        # set new table body base on type
-        self.table.current_rows_per_page = self.table.all_rows_by_type_per_page[t_type]
-        # reset page num
-        self.table.current_page_num = 0
-        # display current table page
-        self.table.showRowsInCurrentPage()
-
     def onPickType(self, t_type):
-        self._updateCategoryMenuByType(t_type)
-        self._filterRowsByType(t_type)
+        self._filterRows(filter_type=t_type)
+        self._updateCategoryMenuByType(t_type=t_type)
+
+    def onPickCategories(self, t_categories):
+        # self._filterRows(filter_type=t_categories)
+        pass
 
 
 class TableRow(ctk.CTkFrame):
@@ -156,9 +160,8 @@ class Table(ctk.CTkFrame):
                                        text_color=s.DARK_GREY, fg_color="transparent", anchor="e",
                                        width=s.TABLE_COL_W3, height=s.TABLE_ROW_H)
         # initialize table body
-        self.all_rows_by_type_per_page = self.loadAllRowsByTypePerTablePage()
-        # self.all_rows_by_category_per_page = self.loadAllRowsByCategoryPerTablePage()
-        self.current_rows_per_page = self.all_rows_by_type_per_page["All Types"]
+        self.all_rows_by_filter_per_page = self.loadAllRowsByFilterPerTablePage()
+        self.current_rows_per_page = self.all_rows_by_filter_per_page["All Types"]
         self.current_page_num = 0
         # display table sections
         self.filters.grid(row=0, column=1, padx=(0, s.PAD_2), pady=(0,s.PAD_2), sticky="s")
@@ -172,7 +175,7 @@ class Table(ctk.CTkFrame):
         self.description_header.grid(row=0, column=3, padx=(0,s.PAD_2), pady=s.PAD_1)
         self.amount_header.grid(row=0, column=4, padx=(0,s.PAD_2), pady=s.PAD_1)
         # display default table body
-        self.filters._filterRowsByType("All Types")
+        self.showRowsInCurrentPage()
 
     def _groupTransactionsPerTablePage(self, transactions):
         # get number of pages
@@ -200,65 +203,55 @@ class Table(ctk.CTkFrame):
             rows_per_page[page_frame] = rows
         return rows_per_page
 
-    def loadAllRowsByTypePerTablePage(self):
-        # retrieve all transactions from db base on type
-        all_transactions_by_type = {
+    def loadAllRowsByFilterPerTablePage(self):
+        # retrieve all transactions from db base on filter
+        all_transactions_by_filter = {
             "All Types": self.tm.repo.getAllTransactions(self.user_id),
             "Income": self.tm.repo.getTransactionsByType(self.user_id, "income"),
             "Savings": self.tm.repo.getTransactionsByType(self.user_id, "savings"),
             "Expenses": self.tm.repo.getTransactionsByType(self.user_id, "expense"),
             "Investment": self.tm.repo.getTransactionsByType(self.user_id, "investment"),
+            # # income
+            # "Salary":self.tm.repo.getTransactionsByCategory(self.user_id, "Salary"),
+            # "Bonus":self.tm.repo.getTransactionsByCategory(self.user_id, "Bonus"),
+            # "Side-hustles":self.tm.repo.getTransactionsByCategory(self.user_id, "Side-hustles"),
+            # "Tips":self.tm.repo.getTransactionsByCategory(self.user_id, "Tips"),
+            # # expenses
+            # "Bills":self.tm.repo.getTransactionsByCategory(self.user_id, "Bills"),
+            # "Education":self.tm.repo.getTransactionsByCategory(self.user_id, "Education"),
+            # "Entertainment":self.tm.repo.getTransactionsByCategory(self.user_id, "Entertainment"),
+            # "Food & Drinks":self.tm.repo.getTransactionsByCategory(self.user_id, "Food & Drinks"),
+            # "Grocery":self.tm.repo.getTransactionsByCategory(self.user_id, "Grocery"),
+            # "Healthcare":self.tm.repo.getTransactionsByCategory(self.user_id, "Healthcare"),
+            # "House":self.tm.repo.getTransactionsByCategory(self.user_id, "House"),
+            # "Shopping":self.tm.repo.getTransactionsByCategory(self.user_id, "Shopping"),
+            # "Transportation":self.tm.repo.getTransactionsByCategory(self.user_id, "Transportation"),
+            # "Wellness":self.tm.repo.getTransactionsByCategory(self.user_id, "Wellness"),
+            # "Other":self.tm.repo.getTransactionsByCategory(self.user_id, "Other"),
+            # # savings
+            # "Monthly Allowance":self.tm.repo.getTransactionsByCategory(self.user_id, "Monthly Allowance"),
+            # "Change":self.tm.repo.getTransactionsByCategory(self.user_id, "Change"),
+            # "Miscellaneous":self.tm.repo.getTransactionsByCategory(self.user_id, "Miscellaneous"),
+            # # investment
+            # "Stocks":self.tm.repo.getTransactionsByCategory(self.user_id, "Stocks"),
+            # "Crypto":self.tm.repo.getTransactionsByCategory(self.user_id, "Crypto"),
+            # "Bonds":self.tm.repo.getTransactionsByCategory(self.user_id, "Bonds"),
+            # "Real Estate":self.tm.repo.getTransactionsByCategory(self.user_id, "Real Estate")
         }
-        # for each type, group the transactions base on table page
-        all_transactions_by_type_per_page = {}
-        for t_type, transactions in all_transactions_by_type.items():
-            all_transactions_by_type_per_page[t_type] = self._groupTransactionsPerTablePage(transactions)
+        # for each filtered transactions, group the transactions base on table page
+        all_transactions_by_filter_per_page = {}
+        for t_type, transactions in all_transactions_by_filter.items():
+            all_transactions_by_filter_per_page[t_type] = self._groupTransactionsPerTablePage(transactions)
         # convert transactions to rows
-        all_rows_by_type_per_page = {}
-        for t_type, transactions_per_page in all_transactions_by_type_per_page.items():
-            all_rows_by_type_per_page[t_type] = self._convertTransactionsToRowsPerTablePage(transactions_per_page)
+        all_rows_by_filter_per_page = {}
+        for t_type, transactions_per_page in all_transactions_by_filter_per_page.items():
+            all_rows_by_filter_per_page[t_type] = self._convertTransactionsToRowsPerTablePage(transactions_per_page)
         # return the rows
-        return all_rows_by_type_per_page
+        return all_rows_by_filter_per_page
 
-    def loadAllRowsByCategoryPerTablePage(self):
-        # retrieve all transactions from db base on category
-        all_transactions_by_category = {
-            # income
-            "Salary":self.tm.repo.getTransactionsByCategory(self.user_id, "Salary"),
-            "Bonus":self.tm.repo.getTransactionsByCategory(self.user_id, "Bonus"),
-            "Side-hustles":self.tm.repo.getTransactionsByCategory(self.user_id, "Side-hustles"),
-            "Tips":self.tm.repo.getTransactionsByCategory(self.user_id, "Tips"),
-            # expenses
-            "Bills":self.tm.repo.getTransactionsByCategory(self.user_id, "Bills"),
-            "Education":self.tm.repo.getTransactionsByCategory(self.user_id, "Education"),
-            "Entertainment":self.tm.repo.getTransactionsByCategory(self.user_id, "Entertainment"),
-            "Food & Drinks":self.tm.repo.getTransactionsByCategory(self.user_id, "Food & Drinks"),
-            "Grocery":self.tm.repo.getTransactionsByCategory(self.user_id, "Grocery"),
-            "Healthcare":self.tm.repo.getTransactionsByCategory(self.user_id, "Healthcare"),
-            "House":self.tm.repo.getTransactionsByCategory(self.user_id, "House"),
-            "Shopping":self.tm.repo.getTransactionsByCategory(self.user_id, "Shopping"),
-            "Transportation":self.tm.repo.getTransactionsByCategory(self.user_id, "Transportation"),
-            "Wellness":self.tm.repo.getTransactionsByCategory(self.user_id, "Wellness"),
-            "Other":self.tm.repo.getTransactionsByCategory(self.user_id, "Other"),
-            # savings
-            "Monthly Allowance":self.tm.repo.getTransactionsByCategory(self.user_id, "Monthly Allowance"),
-            "Change":self.tm.repo.getTransactionsByCategory(self.user_id, "Change"),
-            "Miscellaneous":self.tm.repo.getTransactionsByCategory(self.user_id, "Miscellaneous"),
-            # investment
-            "Stocks":self.tm.repo.getTransactionsByCategory(self.user_id, "Stocks"),
-            "Crypto":self.tm.repo.getTransactionsByCategory(self.user_id, "Crypto"),
-            "Bonds":self.tm.repo.getTransactionsByCategory(self.user_id, "Bonds"),
-            "Real Estate":self.tm.repo.getTransactionsByCategory(self.user_id, "Real Estate")
-        }
-        # for each category, separate transactions base on table page
-        all_transactions_by_category_per_page = {}
-        for t_type, transactions in all_transactions_by_category.items():
-            all_transactions_by_category_per_page[t_type] = self._groupTransactionsByTablePage(transactions)
-        return all_transactions_by_category_per_page
-    
     def showRowsInCurrentPage(self):
-        # hide previous rows
-        for rows_per_page in self.all_rows_by_type_per_page.values(): # concatenate all rows by categories per page later
+        # hide rows for all filters
+        for rows_per_page in self.all_rows_by_filter_per_page.values():
             for page_frame, rows in rows_per_page.items():
                 page_frame.pack_forget()
                 for row in rows:
@@ -266,8 +259,8 @@ class Table(ctk.CTkFrame):
         # show rows in current page
         page_frame = list(self.current_rows_per_page.keys())[self.current_page_num]
         page_frame.pack()
-        print("\n[Table Page]")
-        i = 0
+        # print("\n[Table Page]")
+        # i = 0
         for row in self.current_rows_per_page[page_frame]:
             row.pack(pady=(0,s.PAD_1))
             row.date_label.grid(row=0, column=0, padx=(0,s.PAD_2), pady=0)
@@ -276,8 +269,8 @@ class Table(ctk.CTkFrame):
             row.description_label.grid(row=0, column=3, padx=(0,s.PAD_2), pady=0)
             row.amount_label.grid(row=0, column=4, padx=(0,s.PAD_2), pady=0)
             # print(f"\t{row.date_label._text} | {row.type_label._text} | {row.category_label._text} | {row.description_label._text} | {row.amount_label._text}")
-            i += 1
-        print(f"\t{i = }")
+        #     i += 1
+        # print(f"\t{i = }")
 
 class History(ctk.CTkFrame):
     def __init__(self, user_id, tm, master, **kwargs):
@@ -295,7 +288,11 @@ class History(ctk.CTkFrame):
         self.table_section.pack(padx=s.PAD_3, pady=(s.PAD_2,0))
     
     def updatePageDisplay(self):
-        self.all_rows_by_type_per_page = self.table_section.loadAllRowsByTypePerTablePage()
-        # self.all_rows_by_categories_per_page = self.table_section.loadAllRowsByCategoryPerTablePage()
+        # destroy prev ver of the history
+        for page in self.table_section.table_body.winfo_children():
+            page.destroy()
+        # replace destroyed widgets with updated ones
+        self.table_section.all_rows_by_filter_per_page = self.table_section.loadAllRowsByFilterPerTablePage()
+        self.table_section.current_rows_per_page = self.table_section.all_rows_by_filter_per_page[self.table_section.filters.type_menu.get()]
         self.table_section.current_page_num = 0
         self.table_section.showRowsInCurrentPage()
