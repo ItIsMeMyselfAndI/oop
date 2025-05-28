@@ -2,7 +2,7 @@
 import customtkinter as ctk
 # our modules/libs
 from backend.transaction_manager import Transaction
-from frontend.utilities.styles import *
+from frontend.styles import Styles as s # contains paddings, dimensions, colors, etc
 
 
 # save section
@@ -12,11 +12,11 @@ class Save(ctk.CTkFrame):
         self.user_id = user_id
         self.tm = tm
         self.pages = pages
-        self.font = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_3, slant="italic", weight="normal")
-        self.btn = ctk.CTkButton(self, width=BTN_W2, height=BTN_H2, text="Save Changes",
-                                 font=self.font, text_color=WHITE,
-                                 fg_color=BLUE, hover_color=DARK_BLUE,
-                                 corner_radius=RAD_2, command=self.onClickSave)
+        self.font = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_3, slant="italic", weight="normal")
+        self.btn = ctk.CTkButton(self, width=s.BTN_W2, height=s.BTN_H2, text="Save Changes",
+                                 font=self.font, text_color=s.WHITE,
+                                 fg_color=s.BLUE, hover_color=s.DARK_BLUE,
+                                 corner_radius=s.RAD_2, command=self.onClickSave)
         self.btn.pack()
 
     def onClickSave(self):

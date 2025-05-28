@@ -1,18 +1,18 @@
 # external/built-in modules/libs
 import customtkinter as ctk
 # our modules/libs
-from frontend.utilities.styles import * # contains paddings, dimensions, colors, etc
+from frontend.styles import Styles as s # contains paddings, dimensions, colors, etc
 
 
 class HistoryHeader(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_6, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_6, slant="italic", weight="normal")
 
-        self.tile_label = ctk.CTkLabel(self, text="Transaction History", font=self.font1, text_color=WHITE,
-                                       anchor="w", fg_color=GREEN, width=1080, height=HEADER_LABEL_H)
+        self.tile_label = ctk.CTkLabel(self, text="Transaction History", font=self.font1, text_color=s.WHITE,
+                                       anchor="w", fg_color=s.GREEN, width=1080, height=s.HEADER_LABEL_H)
 
-        self.tile_label.grid(row=0, column=0, padx=PAD_4, pady=PAD_1)
+        self.tile_label.grid(row=0, column=0, padx=s.PAD_4, pady=s.PAD_1)
 
 
 class TableFilters(ctk.CTkFrame):
@@ -20,9 +20,9 @@ class TableFilters(ctk.CTkFrame):
         super().__init__(master, **kwargs)
         self.table = table
         # initialize fonts
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_1, slant="italic", weight="normal")
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_4, slant="italic", weight="normal")
-        self.font3 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_6, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_1, slant="italic", weight="normal")
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_4, slant="italic", weight="normal")
+        self.font3 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_6, slant="italic", weight="normal")
         # create options
         self.t_type = ["All Types", "Income", "Expenses", "Savings", "Investment"]
         self.categories_by_type = {
@@ -36,20 +36,20 @@ class TableFilters(ctk.CTkFrame):
         self.all_categories = ["All Categories"] + [c for categories in self.categories_by_type.values() for c in categories[1:]]
         self.current_categories = self.all_categories
         # create menus
-        self.type_menu = ctk.CTkOptionMenu(self, values=self.t_type, font=self.font1, text_color=DARK_GREY,
-                                           fg_color=WHITE, dropdown_font=self.font1,
-                                           dropdown_fg_color=WHITE, dropdown_hover_color=BLUE,
-                                           dropdown_text_color=DARK_GREY, button_color=WHITE,
-                                           button_hover_color=LIGHT_GREY, corner_radius=RAD_2,
-                                           width=FILTER_MENU_W, height=FILTER_MENU_H, command=self.onPickTypeMenu)
-        self.category_menu = ctk.CTkOptionMenu(self, values=self.current_categories, font=self.font1, text_color=DARK_GREY,
-                                               fg_color=WHITE, dropdown_font=self.font1,
-                                               dropdown_fg_color=WHITE, dropdown_hover_color=BLUE,
-                                               dropdown_text_color=DARK_GREY, button_color=WHITE,
-                                               button_hover_color=LIGHT_GREY, corner_radius=RAD_2,
-                                               width=FILTER_MENU_W, height=FILTER_MENU_H, command=None)
+        self.type_menu = ctk.CTkOptionMenu(self, values=self.t_type, font=self.font1, text_color=s.DARK_GREY,
+                                           fg_color=s.WHITE, dropdown_font=self.font1,
+                                           dropdown_fg_color=s.WHITE, dropdown_hover_color=s.BLUE,
+                                           dropdown_text_color=s.DARK_GREY, button_color=s.WHITE,
+                                           button_hover_color=s.LIGHT_GREY, corner_radius=s.RAD_2,
+                                           width=s.FILTER_MENU_W, height=s.FILTER_MENU_H, command=self.onPickTypeMenu)
+        self.category_menu = ctk.CTkOptionMenu(self, values=self.current_categories, font=self.font1, text_color=s.DARK_GREY,
+                                               fg_color=s.WHITE, dropdown_font=self.font1,
+                                               dropdown_fg_color=s.WHITE, dropdown_hover_color=s.BLUE,
+                                               dropdown_text_color=s.DARK_GREY, button_color=s.WHITE,
+                                               button_hover_color=s.LIGHT_GREY, corner_radius=s.RAD_2,
+                                               width=s.FILTER_MENU_W, height=s.FILTER_MENU_H, command=None)
         # display menus 
-        self.type_menu.grid(row=0, column=0, padx=(0,PAD_1))
+        self.type_menu.grid(row=0, column=0, padx=(0,s.PAD_1))
         self.category_menu.grid(row=0, column=1)
 
     def _updateCategoryMenuByType(self, t_type):
@@ -61,9 +61,13 @@ class TableFilters(ctk.CTkFrame):
         self.category_menu.set(self.current_categories[0])
     
     def _filterRowsByType(self, t_type):
+        # set new table body base on type
+        self.table.current_rows_per_page = self.table.all_rows_by_type_per_page[t_type]
+        # reset page num
+        self.table.current_page_num = 0
         # hide previous rows
-        for rows_by_type in self.table.all_rows_by_type_per_page.values():
-            for page_frame, rows in rows_by_type.items():
+        for rows_by_type_per_page in self.table.all_rows_by_type_per_page.values():
+            for page_frame, rows in rows_by_type_per_page.items():
                 page_frame.pack_forget()
                 for row in rows:
                     row.pack_forget()
@@ -71,12 +75,12 @@ class TableFilters(ctk.CTkFrame):
         page_frame = list(self.table.all_rows_by_type_per_page[t_type].keys())[0]
         page_frame.pack()
         for row in self.table.all_rows_by_type_per_page[t_type][page_frame]:
-            row.pack(pady=(0,PAD_1))
-            row.date_label.grid(row=0, column=0, padx=(0,PAD_2), pady=0)
-            row.type_label.grid(row=0, column=1, padx=(0,PAD_2), pady=0)
-            row.category_label.grid(row=0, column=2, padx=(0,PAD_2), pady=0)
-            row.description_label.grid(row=0, column=3, padx=(0,PAD_2), pady=0)
-            row.amount_label.grid(row=0, column=4, padx=(0,PAD_2), pady=0)
+            row.pack(pady=(0,s.PAD_1))
+            row.date_label.grid(row=0, column=0, padx=(0,s.PAD_2), pady=0)
+            row.type_label.grid(row=0, column=1, padx=(0,s.PAD_2), pady=0)
+            row.category_label.grid(row=0, column=2, padx=(0,s.PAD_2), pady=0)
+            row.description_label.grid(row=0, column=3, padx=(0,s.PAD_2), pady=0)
+            row.amount_label.grid(row=0, column=4, padx=(0,s.PAD_2), pady=0)
         
     def onPickTypeMenu(self, t_type):
         self._updateCategoryMenuByType(t_type)
@@ -88,37 +92,37 @@ class TableRow(ctk.CTkFrame):
         super().__init__(master, **kwargs)
         self.t = transaction
         # initialize font
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_2, slant="italic", weight="normal")
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_4, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_2, slant="italic", weight="normal")
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_4, slant="italic", weight="normal")
         
         self.date_label = ctk.CTkLabel(self, text=self.t.t_date, font=self.font1,
-                                       text_color=DARK_GREY, fg_color="yellow", anchor="w",
-                                       width=TABLE_COL_W1, wraplength=TABLE_COL_W1)
+                                       text_color=s.DARK_GREY, fg_color="yellow", anchor="w",
+                                       width=s.TABLE_COL_W1, wraplength=s.TABLE_COL_W1)
         self.type_label = ctk.CTkLabel(self, text=self.t.t_type, font=self.font1,
-                                       text_color=DARK_GREY, fg_color="green", anchor="w",
-                                       width=TABLE_COL_W2, wraplength=TABLE_COL_W2)
+                                       text_color=s.DARK_GREY, fg_color="green", anchor="w",
+                                       width=s.TABLE_COL_W2, wraplength=s.TABLE_COL_W2)
         self.category_label = ctk.CTkLabel(self, text=self.t.t_category, font=self.font1,
-                                           text_color=DARK_GREY, fg_color="orange", anchor="w",
-                                           width=TABLE_COL_W2, wraplength=TABLE_COL_W2)
+                                           text_color=s.DARK_GREY, fg_color="orange", anchor="w",
+                                           width=s.TABLE_COL_W2, wraplength=s.TABLE_COL_W2)
         self.description_label = ctk.CTkLabel(self, text=self.t.t_description, font=self.font1,
-                                              text_color=DARK_GREY, fg_color="red", anchor="w",
-                                              width=TABLE_COL_W3, wraplength=TABLE_COL_W3)
+                                              text_color=s.DARK_GREY, fg_color="red", anchor="w",
+                                              width=s.TABLE_COL_W3, wraplength=s.TABLE_COL_W3)
         self.amount_label = ctk.CTkLabel(self, text=f"₱ {self.t.t_amount:,}", font=self.font1,
-                                         text_color=DARK_GREY, fg_color="indigo", anchor="e",
-                                         width=TABLE_COL_W3, wraplength=TABLE_COL_W3)
+                                         text_color=s.DARK_GREY, fg_color="indigo", anchor="e",
+                                         width=s.TABLE_COL_W3, wraplength=s.TABLE_COL_W3)
         
         
 class TableNavigation(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_1, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_1, slant="italic", weight="normal")
         # create nav btns
-        self.prevBTN = ctk.CTkButton(self, text="Prev", text_color=WHITE, fg_color=BLUE, hover_color=DARK_BLUE,
-                                     font=self.font1, corner_radius=RAD_2, width=100, height=40)
-        self.nextBTN = ctk.CTkButton(self, text="Next", text_color=WHITE, fg_color=BLUE, hover_color=DARK_BLUE,
-                                     font=self.font1, corner_radius=RAD_2, width=100, height=40)
+        self.prevBTN = ctk.CTkButton(self, text="Prev", text_color=s.WHITE, fg_color=s.BLUE, hover_color=s.DARK_BLUE,
+                                     font=self.font1, corner_radius=s.RAD_2, width=100, height=40)
+        self.nextBTN = ctk.CTkButton(self, text="Next", text_color=s.WHITE, fg_color=s.BLUE, hover_color=s.DARK_BLUE,
+                                     font=self.font1, corner_radius=s.RAD_2, width=100, height=40)
         # display nav btns
-        self.prevBTN.grid(row=0, column=0, padx=(0,PAD_1))
+        self.prevBTN.grid(row=0, column=0, padx=(0,s.PAD_1))
         self.nextBTN.grid(row=0, column=1)
         
 
@@ -128,46 +132,48 @@ class Table(ctk.CTkFrame):
         self.user_id = user_id
         self.tm = tm
         # initialize font
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_3, slant="italic", weight="normal")
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=FONT_SIZE_4, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_3, slant="italic", weight="normal")
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_4, slant="italic", weight="normal")
         # table sections
         self.filters = TableFilters(table=self, master=header_section)
-        self.table_header = ctk.CTkFrame(self, fg_color=WHITE, corner_radius=RAD_2)
-        self.table_body = ctk.CTkScrollableFrame(self, fg_color=WHITE, orientation="vertical",
-                                                 corner_radius=RAD_2, height=500, width=TABLE_W)
+        self.table_header = ctk.CTkFrame(self, fg_color=s.WHITE, corner_radius=s.RAD_2)
+        self.table_body = ctk.CTkScrollableFrame(self, fg_color=s.WHITE, orientation="vertical",
+                                                 corner_radius=s.RAD_2, height=500, width=s.TABLE_W)
         self.table_nav = TableNavigation(self)
-        # table header content
+        # table header
         self.date_header = ctk.CTkLabel(self.table_header, text="Date", font=self.font1,
-                                       text_color=DARK_GREY, fg_color="yellow", anchor="w",
-                                       width=TABLE_COL_W1, height=TABLE_ROW_H)
+                                       text_color=s.DARK_GREY, fg_color="yellow", anchor="w",
+                                       width=s.TABLE_COL_W1, height=s.TABLE_ROW_H)
         self.type_header = ctk.CTkLabel(self.table_header, text="Type", font=self.font1,
-                                       text_color=DARK_GREY, fg_color="blue", anchor="w",
-                                       width=TABLE_COL_W2, height=TABLE_ROW_H)
+                                       text_color=s.DARK_GREY, fg_color="blue", anchor="w",
+                                       width=s.TABLE_COL_W2, height=s.TABLE_ROW_H)
         self.category_header = ctk.CTkLabel(self.table_header, text="Category", font=self.font1,
-                                       text_color=DARK_GREY, fg_color="orange", anchor="w",
-                                       width=TABLE_COL_W2, height=TABLE_ROW_H)
+                                       text_color=s.DARK_GREY, fg_color="orange", anchor="w",
+                                       width=s.TABLE_COL_W2, height=s.TABLE_ROW_H)
         self.description_header = ctk.CTkLabel(self.table_header, text="Description", font=self.font1,
-                                       text_color=DARK_GREY, fg_color="red", anchor="w",
-                                       width=TABLE_COL_W3, height=TABLE_ROW_H)
+                                       text_color=s.DARK_GREY, fg_color="red", anchor="w",
+                                       width=s.TABLE_COL_W3, height=s.TABLE_ROW_H)
         self.amount_header = ctk.CTkLabel(self.table_header, text="Amount", font=self.font1,
-                                       text_color=DARK_GREY, fg_color="indigo", anchor="e",
-                                       width=TABLE_COL_W3, height=TABLE_ROW_H)
-        # table body content
+                                       text_color=s.DARK_GREY, fg_color="indigo", anchor="e",
+                                       width=s.TABLE_COL_W3, height=s.TABLE_ROW_H)
+        # initialize table body
         self.all_rows_by_type_per_page = self.loadAllRowsByTypePerTablePage()
+        self.current_rows_per_page = self.all_rows_by_type_per_page["All Types"]
+        self.current_page_num = 0
         # display table sections
-        self.filters.grid(row=0, column=1, padx=(0, PAD_1), pady=(0,PAD_1), sticky="s")
-        self.table_header.pack(pady=(0,PAD_1))
+        self.filters.grid(row=0, column=1, padx=(0, s.PAD_1), pady=(0,s.PAD_1), sticky="s")
+        self.table_header.pack(pady=(0,s.PAD_1))
         self.table_body.pack()
-        self.table_nav.pack(pady=(PAD_1,0))
+        self.table_nav.pack(pady=(s.PAD_1,0))
         # display table header
-        self.date_header.grid(row=0, column=0, padx=(PAD_2,PAD_2), pady=PAD_1)
-        self.type_header.grid(row=0, column=1, padx=(0,PAD_2), pady=PAD_1)
-        self.category_header.grid(row=0, column=2, padx=(0,PAD_2), pady=PAD_1)
-        self.description_header.grid(row=0, column=3, padx=(0,PAD_2), pady=PAD_1)
-        self.amount_header.grid(row=0, column=4, padx=(0,PAD_2), pady=PAD_1)
+        self.date_header.grid(row=0, column=0, padx=(s.PAD_2,s.PAD_2), pady=s.PAD_1)
+        self.type_header.grid(row=0, column=1, padx=(0,s.PAD_2), pady=s.PAD_1)
+        self.category_header.grid(row=0, column=2, padx=(0,s.PAD_2), pady=s.PAD_1)
+        self.description_header.grid(row=0, column=3, padx=(0,s.PAD_2), pady=s.PAD_1)
+        self.amount_header.grid(row=0, column=4, padx=(0,s.PAD_2), pady=s.PAD_1)
         # display default table body
         self.filters._filterRowsByType("All Types")
-    
+
     def _groupTransactionsPerTablePage(self, transactions):
         # get number of pages
         num_of_pages = len(transactions) / 20 # 20 transactions per page
@@ -191,7 +197,6 @@ class Table(ctk.CTkFrame):
         rows_per_page = {}
         for transactions in transactions_per_page.values():
             page_frame = ctk.CTkFrame(self.table_body)
-            # page_frame.pack()
             rows = []
             for t in transactions:
                 row = TableRow(transaction=t, master=page_frame)
@@ -208,7 +213,6 @@ class Table(ctk.CTkFrame):
             "Expenses": self.tm.repo.getTransactionsByType(self.user_id, "expense"),
             "Investment": self.tm.repo.getTransactionsByType(self.user_id, "investment"),
         }
-        # all_transactions_by_type["All Types"] = [t for transactions in all_transactions_by_type.values() for t in transactions]
         # for each type, group the transactions base on table page
         all_transactions_by_type_per_page = {}
         for t_type, transactions in all_transactions_by_type.items():
@@ -250,12 +254,14 @@ class Table(ctk.CTkFrame):
             "Bonds":self.tm.repo.getTransactionsByCategory(self.user_id, "Bonds"),
             "Real Estate":self.tm.repo.getTransactionsByCategory(self.user_id, "Real Estate")
         }
-        # all_transactions_by_category["All Categories"] = [t for transactions in all_transactions_by_category.values() for t in transactions]
         # for each category, separate transactions base on table page
         all_transactions_by_category_per_page = {}
         for t_type, transactions in all_transactions_by_category.items():
             all_transactions_by_category_per_page[t_type] = self._groupTransactionsByTablePage(transactions)
         return all_transactions_by_category_per_page
+    
+    def showCurrentPage(self, current_page_num, rows_per_page):
+        pass
     
 
 class History(ctk.CTkFrame):
@@ -266,9 +272,9 @@ class History(ctk.CTkFrame):
         # initialize state
         self.isCurrentPage = False
         # create page sections
-        self.header_section = HistoryHeader(master=self, fg_color=BLUE, corner_radius=RAD_2, height=HEADER_H, width=HEADER_W)
+        self.header_section = HistoryHeader(master=self, fg_color=s.BLUE, corner_radius=s.RAD_2, height=s.HEADER_H, width=s.HEADER_W)
         self.table_section = Table(user_id=self.user_id, tm=self.tm, header_section=self.header_section,
-                                   master=self, fg_color=RED, corner_radius=0)
+                                   master=self, fg_color=s.RED, corner_radius=0)
         # display page sections
-        self.header_section.pack(pady=(PAD_5+PAD_5,0))
-        self.table_section.pack(padx=PAD_3, pady=(PAD_1,0))
+        self.header_section.pack(pady=(s.PAD_5+s.PAD_5,0))
+        self.table_section.pack(padx=s.PAD_3, pady=(s.PAD_1,0))
