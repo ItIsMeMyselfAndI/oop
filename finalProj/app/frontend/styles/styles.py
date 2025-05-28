@@ -29,6 +29,10 @@ class Styles:
     FONT_SIZE_5 = int(0.0463*SCREEN_H) #50
     FONT_SIZE_6 = int(0.0556*SCREEN_H) #60
 
+    # radii
+    RAD_1 = int(0.0093*SCREEN_H) #10
+    RAD_2 = int(0.0185*SCREEN_H) #20
+
     # colors
     WHITE = "white"
     # reds
@@ -54,44 +58,19 @@ class Styles:
     GREY = "grey"
     DARK_GREY = "#545454"
 
-    # entry sizes
-    ENTRY_W1 = int(1.3241*SCREEN_H) #1430
-    ENTRY_W2 = int(0.5556*SCREEN_H) #600
-    ENTRY_H = int(0.0556*SCREEN_H) #60
 
-    # menu sizes
-    MENU_W1 = int(0.7407*SCREEN_H) #800
-    MENU_W2 = int(1.2593*SCREEN_H) #1360 
-    MENU_H = int(0.0556*SCREEN_H) #60
-    # date menu sizes 1
-    YEAR_MENU_W1 = int(0.1667*SCREEN_H) #180
-    MONTH_MENU_W1 = int(0.2037*SCREEN_H) #220
-    DAY_MENU_W1 = int(0.1667*SCREEN_H) #180
-    # date menu sizes 1
-    YEAR_MENU_W2 = int(0.4167*SCREEN_H) #450
-    MONTH_MENU_W2 = int(0.4630*SCREEN_H) #500 
-    DAY_MENU_W2 = int(0.4167*SCREEN_H) #450
-
-    # button sizes 1
-    BTN_W1 = int(0.0648*SCREEN_H) #70
-    BTN_W2 = int(0.3241*SCREEN_H) #350
-    # button sizes 2
-    BTN_H1 = int(0.0648*SCREEN_H) #70
-    BTN_H2 = int(0.0556*SCREEN_H) #60
-
-    # radii
-    RAD_1 = int(0.0093*SCREEN_H) #10
-    RAD_2 = int(0.0185*SCREEN_H) #20
-
-    # header sizes
-    HEADER_H = int(0.2593*SCREEN_H) #280
-    HEADER_W = int(1.5093*SCREEN_H) #1630
-
-    HEADER_LABEL_H = int(0.1667*SCREEN_H) #180
-    HEADER_LABEL_W = int(0.9907*SCREEN_H) #1070
+    # ---- exclusive for sidebar ----
+    SIDEBAR_BTN_W = int(0.0648*SCREEN_H) #70
+    SIDEBAR_BTN_H = int(0.0648*SCREEN_H) #70
+    
+    SIDEBAR_IMG_W = int(0.0370*SCREEN_H) #40
+    SIDEBAR_IMG_H = int(0.0370*SCREEN_H) #40
 
 
     # ---- exclusive for profile page ----
+    PROFILE_HEADER_SECTION_H = int(0.2593*SCREEN_H) #280
+    PROFILE_HEADER_SECTION_W = int(1.5093*SCREEN_H) #1630
+
     PROFILE_IMG_W = int(0.1852*SCREEN_H) #200
     PROFILE_IMG_H = int(0.1852*SCREEN_H) #200
 
@@ -112,9 +91,58 @@ class Styles:
 
     SUMMARY_LABEL_W = int(0.4630*SCREEN_H) #500
 
+
+    # ---- exclusive for edit page ----
+    EDIT_HEADER_LABEL_W = int(1.5093*SCREEN_H) #1630
+    
+    EDIT_TAB_W = int(0.3241*SCREEN_H) #350
+    EDIT_TAB_H = int(0.0556*SCREEN_H) #60
+    
+    TRANSACTION_MENU_W = int(0.7407*SCREEN_H) #800
+    TRANSACTION_MENU_H = int(0.0556*SCREEN_H) #60
+    
+    EDIT_YEAR_MENU_W = int(0.1667*SCREEN_H) #180
+    EDIT_MONTH_MENU_W = int(0.2037*SCREEN_H) #220
+    EDIT_DAY_MENU_W = int(0.1667*SCREEN_H) #180
+    EDIT_DATE_MENU_H = int(0.0556*SCREEN_H) #60
+    
+    EDIT_CATEGORY_MENU_W = int(0.7407*SCREEN_H) #800
+    EDIT_CATEGORY_MENU_H = int(0.0556*SCREEN_H) #60
+    
+    EDIT_DESCRIPTION_ENTRY_W = int(0.5556*SCREEN_H) #600
+    EDIT_DESCRIPTION_ENTRY_H = int(0.0556*SCREEN_H) #60
+    
+    EDIT_AMOUNT_ENTRY_W = int(1.3241*SCREEN_H) #1430
+    EDIT_AMOUNT_ENTRY_H = int(0.0556*SCREEN_H) #60
+
+
+    # ---- exclusive for add page ----
+    ADD_HEADER_LABEL_W = int(1.5093*SCREEN_H) #1630
+    
+    ADD_TAB_W = int(0.3241*SCREEN_H) #350
+    ADD_TAB_H = int(0.0556*SCREEN_H) #60
+
+    ADD_YEAR_MENU_W = int(0.4167*SCREEN_H) #450
+    ADD_MONTH_MENU_W = int(0.4630*SCREEN_H) #500 
+    ADD_DAY_MENU_W = int(0.4167*SCREEN_H) #450
+    ADD_DATE_MENU_H = int(0.0556*SCREEN_H) #60
+    
+    ADD_CATEGORY_MENU_W = int(0.7407*SCREEN_H) #800
+    ADD_CATEGORY_MENU_H = int(0.0556*SCREEN_H) #60
+    
+    ADD_DESCRIPTION_ENTRY_W = int(0.5556*SCREEN_H) #600
+    ADD_DESCRIPTION_ENTRY_H = int(0.0556*SCREEN_H) #60
+    
+    ADD_AMOUNT_ENTRY_W = int(1.3241*SCREEN_H) #1430
+    ADD_AMOUNT_ENTRY_H = int(0.0556*SCREEN_H) #60
+
+
     # ---- exclusive for history page ----
-    FILTER_MENU_H = int(0.0370*SCREEN_H) #40
-    FILTER_MENU_W = int(0.2037*SCREEN_H) #220
+    HISTORY_HEADER_LABEL_H = int(0.1667*SCREEN_H) #180
+    HISTORY_HEADER_LABEL_W = int(1.0000*SCREEN_H) #1080
+    
+    TABLE_FILTER_MENU_H = int(0.0370*SCREEN_H) #40
+    TABLE_FILTER_MENU_W = int(0.2037*SCREEN_H) #220
 
     TABLE_COL_W1 = int(0.1667*SCREEN_H) #180
     TABLE_COL_W2 = int(0.2315*SCREEN_H) #250
@@ -122,10 +150,14 @@ class Styles:
 
     TABLE_ROW_H = int(0.0370*SCREEN_H) #40 
 
-    TABLE_W = int(1.4259*SCREEN_H) #1540
-    TABLE_H = int(0.5093*SCREEN_H) #550
+    TABLE_BODY_W = int(1.4259*SCREEN_H) #1540
+    TABLE_BODY_H = int(0.4630*SCREEN_H) #500
 
-    # ---- exclusive for sidebar ----
-    IMG_W = int(0.0370*SCREEN_H) #40
-    IMG_H = int(0.0370*SCREEN_H) #40
+    TABLE_NAV_BTN_W = int(0.0926*SCREEN_H) #100
+    TABLE_NAV_BTN_H = int(0.0370*SCREEN_H) #40
+
+
+    # ---- exclusive for save button ----
+    SAVE_BTN_W = int(0.3241*SCREEN_H) #350
+    SAVE_BTN_H = int(0.0556*SCREEN_H) #60
 

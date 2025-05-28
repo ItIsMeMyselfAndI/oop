@@ -12,7 +12,7 @@ class EditHeader(ctk.CTkFrame):
         super().__init__(master, **kwargs)
         self.font = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_6, slant="italic", weight="normal")
         self.label = ctk.CTkLabel(self, text="Edit Transaction", font=self.font,
-                                  text_color=s.DARK_GREY, anchor="w", width=s.HEADER_W)
+                                  text_color=s.DARK_GREY, anchor="w", width=s.EDIT_HEADER_LABEL_W)
         self.label.pack(anchor="w")
 
 
@@ -42,45 +42,40 @@ class EditTransactionForm(ctk.CTkFrame):
                                              font=self.font1, text_color=s.DARK_GREY)
         self.transactionMenu = ctk.CTkOptionMenu(self.frame1, values=self.transaction_options,
                                                  font=self.font3, text_color=s.DARK_GREY,
-                                                 fg_color=s.BLUE, dropdown_font=self.font2,
-                                                 dropdown_fg_color=s.WHITE,
-                                                 dropdown_hover_color=s.BLUE,
-                                                 dropdown_text_color=s.DARK_GREY,
-                                                 corner_radius=s.RAD_2, width=s.MENU_W1, height=s.MENU_H)
+                                                 fg_color=s.BLUE, corner_radius=s.RAD_2,
+                                                 dropdown_font=self.font2, dropdown_fg_color=s.WHITE,
+                                                 dropdown_hover_color=s.BLUE, dropdown_text_color=s.DARK_GREY,
+                                                 width=s.TRANSACTION_MENU_W, height=s.TRANSACTION_MENU_H)
         self.dateLabel = ctk.CTkLabel(self.frame1, text="Select New Date",
                                       font=self.font1, text_color=s.DARK_GREY)
-        self.dateMenu = DatePicker(picker_height=s.MENU_H, spacing=s.PAD_1, rad=s.RAD_2,
-                                   day_width=s.DAY_MENU_W1, month_width=s.MONTH_MENU_W1, year_width=s.YEAR_MENU_W1, 
+        self.dateMenu = DatePicker(picker_height=s.EDIT_DATE_MENU_H, spacing=s.PAD_1, rad=s.RAD_2,
+                                   day_width=s.EDIT_DAY_MENU_W, month_width=s.EDIT_MONTH_MENU_W, year_width=s.EDIT_YEAR_MENU_W, 
                                    master=self.frame1, ctk_font=self.font3, dropdown_ctk_font=self.font2,
                                    dropdown_fg_color=s.WHITE, dropdown_hover_color=s.BLUE, fg_color=s.WHITE)
         # create frame 2 components
         self.categoryLabel = ctk.CTkLabel(self.frame2, text="Select New Category",
                                           font=self.font1, text_color=s.DARK_GREY)
         self.categoryMenu = ctk.CTkOptionMenu(self.frame2, values=self.categories,
-                                                font=self.font3, text_color=s.DARK_GREY,
-                                                width=s.MENU_W1, fg_color=s.BLUE,
-                                                dropdown_font=self.font2,
-                                                dropdown_fg_color=s.WHITE,
-                                                dropdown_hover_color=s.BLUE,
-                                                dropdown_text_color=s.DARK_GREY,
-                                                corner_radius=s.RAD_2, height=s.MENU_H)
+                                              font=self.font3, text_color=s.DARK_GREY,
+                                              fg_color=s.BLUE, corner_radius=s.RAD_2,
+                                              dropdown_font=self.font2, dropdown_fg_color=s.WHITE,
+                                              dropdown_hover_color=s.BLUE, dropdown_text_color=s.DARK_GREY,
+                                              width=s.EDIT_CATEGORY_MENU_W, height=s.EDIT_CATEGORY_MENU_H)
         self.descriptionLabel = ctk.CTkLabel(self.frame2, text="Enter New Description",
                                              font=self.font1, text_color=s.DARK_GREY)
         self.descriptionEntry = ctk.CTkEntry(self.frame2, font=self.font3,
                                              text_color=s.DARK_GREY, fg_color=s.LIGHT_BLUE,
-                                             corner_radius=s.RAD_2, width=s.ENTRY_W2, height=s.ENTRY_H,
-                                             placeholder_text="Description",
-                                             placeholder_text_color=s.GREY,
-                                             border_width=0)
+                                             corner_radius=s.RAD_2, border_width=0,
+                                             placeholder_text="Description", placeholder_text_color=s.GREY,
+                                             width=s.EDIT_DESCRIPTION_ENTRY_W, height=s.EDIT_DESCRIPTION_ENTRY_H,)
         # create frame 3 components
         self.amountLabel = ctk.CTkLabel(self.frame3, text="Enter New Amount",
                                         font=self.font1, text_color=s.DARK_GREY)
         self.amountEntry = ctk.CTkEntry(self.frame3, font=self.font3,
                                         text_color=s.DARK_GREY, fg_color=s.LIGHT_BLUE,
-                                        corner_radius=s.RAD_2, width=s.ENTRY_W1, height=s.ENTRY_H,
-                                        placeholder_text="Philippine Peso",
-                                        placeholder_text_color=s.GREY,
-                                        border_width=0)
+                                        corner_radius=s.RAD_2, border_width=0,
+                                        placeholder_text="Philippine Peso", placeholder_text_color=s.GREY,
+                                        width=s.EDIT_AMOUNT_ENTRY_W, height=s.EDIT_AMOUNT_ENTRY_H,)
         # display guide frames
         self.frame1.pack(fill="both", pady=(s.PAD_4,0))
         self.frame2.pack(fill="both", pady=(s.PAD_4,0))
@@ -134,7 +129,7 @@ class EditPageTabs(ctk.CTkFrame):
         self._switchPageTo("expense")
 
     def createTabButton(self, text, command):
-        btn = ctk.CTkButton(self, text=text, text_color=s.DARK_GREY, height=s.BTN_H2, width=s.BTN_W2,
+        btn = ctk.CTkButton(self, text=text, text_color=s.DARK_GREY, height=s.EDIT_TAB_H, width=s.EDIT_TAB_W,
                             font=self.font, corner_radius=s.RAD_2, fg_color=s.WHITE, hover_color=s.LIGHT_GREY,
                             command=command)
         return btn

@@ -10,7 +10,7 @@ class HistoryHeader(ctk.CTkFrame):
         self.font1 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_6, slant="italic", weight="normal")
 
         self.tile_label = ctk.CTkLabel(self, text="Transaction History", font=self.font1, text_color=s.WHITE,
-                                       anchor="w", fg_color=s.BLUE, width=1080, height=s.HEADER_LABEL_H)
+                                       anchor="w", fg_color=s.BLUE, width=s.HISTORY_HEADER_LABEL_W, height=s.HISTORY_HEADER_LABEL_H)
 
         self.tile_label.grid(row=0, column=0, padx=s.PAD_4, pady=s.PAD_1)
 
@@ -41,13 +41,13 @@ class TableFilters(ctk.CTkFrame):
                                            dropdown_fg_color=s.WHITE, dropdown_hover_color=s.BLUE,
                                            dropdown_text_color=s.DARK_GREY, button_color=s.WHITE,
                                            button_hover_color=s.LIGHT_GREY, corner_radius=s.RAD_2,
-                                           width=s.FILTER_MENU_W, height=s.FILTER_MENU_H, command=self.onPickType)
+                                           width=s.TABLE_FILTER_MENU_W, height=s.TABLE_FILTER_MENU_H, command=self.onPickType)
         self.category_menu = ctk.CTkOptionMenu(self, values=self.current_categories, font=self.font1, text_color=s.DARK_GREY,
                                                fg_color=s.WHITE, dropdown_font=self.font1,
                                                dropdown_fg_color=s.WHITE, dropdown_hover_color=s.BLUE,
                                                dropdown_text_color=s.DARK_GREY, button_color=s.WHITE,
                                                button_hover_color=s.LIGHT_GREY, corner_radius=s.RAD_2,
-                                               width=s.FILTER_MENU_W, height=s.FILTER_MENU_H, command=self.onPickCategories)
+                                               width=s.TABLE_FILTER_MENU_W, height=s.TABLE_FILTER_MENU_H, command=self.onPickCategories)
         # display menus 
         self.type_menu.grid(row=0, column=0, padx=(0,s.PAD_1))
         self.category_menu.grid(row=0, column=1)
@@ -109,9 +109,11 @@ class TableNavigation(ctk.CTkFrame):
         self.font1 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_1, slant="italic", weight="normal")
         # create nav btns
         self.prevBTN = ctk.CTkButton(self, text="Prev", text_color=s.WHITE, fg_color=s.BLUE, hover_color=s.DARK_BLUE,
-                                     font=self.font1, corner_radius=s.RAD_2, width=100, height=40, command=self.onClickPrev)
+                                     font=self.font1, corner_radius=s.RAD_2, width=s.TABLE_NAV_BTN_W, height=s.TABLE_NAV_BTN_H,
+                                     command=self.onClickPrev)
         self.nextBTN = ctk.CTkButton(self, text="Next", text_color=s.WHITE, fg_color=s.BLUE, hover_color=s.DARK_BLUE,
-                                     font=self.font1, corner_radius=s.RAD_2, width=100, height=40, command=self.onClickNext)
+                                     font=self.font1, corner_radius=s.RAD_2, width=s.TABLE_NAV_BTN_W, height=s.TABLE_NAV_BTN_H,
+                                     command=self.onClickNext)
         # display nav btns
         self.prevBTN.grid(row=0, column=0, padx=(0,s.PAD_1))
         self.nextBTN.grid(row=0, column=1)
@@ -141,7 +143,7 @@ class Table(ctk.CTkFrame):
         self.filters = TableFilters(table=self, master=header_section, fg_color=s.BLUE)
         self.table_header = ctk.CTkFrame(self, fg_color=s.WHITE, corner_radius=s.RAD_2)
         self.table_body = ctk.CTkScrollableFrame(self, fg_color=s.WHITE, orientation="vertical",
-                                                 corner_radius=s.RAD_2, height=500, width=s.TABLE_W)
+                                                 corner_radius=s.RAD_2, height=s.TABLE_BODY_H, width=s.TABLE_BODY_W)
         self.table_nav = TableNavigation(table=self, master=self, fg_color=s.SKY_BLUE)
         # table header
         self.date_header = ctk.CTkLabel(self.table_header, text="Date", font=self.font1,
@@ -280,7 +282,7 @@ class History(ctk.CTkFrame):
         # initialize state
         self.isCurrentPage = False
         # create page sections
-        self.header_section = HistoryHeader(master=self, fg_color=s.BLUE, corner_radius=s.RAD_2, height=s.HEADER_H, width=s.HEADER_W)
+        self.header_section = HistoryHeader(master=self, fg_color=s.BLUE, corner_radius=s.RAD_2)
         self.table_section = Table(user_id=self.user_id, tm=self.tm, header_section=self.header_section,
                                    master=self, fg_color=s.SKY_BLUE, corner_radius=0)
         # display page sections

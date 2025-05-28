@@ -72,9 +72,9 @@ class Profile(ctk.CTkFrame):
         balance = self.tm.calculateOverallBalance(finance)
         # create page sections
         self.header_section = ProfileHeader(img=profile_icon, uname=f"User {self.user_id}", 
-                                            summary_type="Total Balance:", amount=balance, master=self,
-                                            fg_color=s.BLUE, corner_radius=s.RAD_2, height=s.HEADER_H,
-                                            width=s.HEADER_W)
+                                            summary_type="Total Balance:", amount=balance,
+                                            master=self, fg_color=s.BLUE, corner_radius=s.RAD_2,
+                                            height=s.PROFILE_HEADER_SECTION_H, width=s.PROFILE_HEADER_SECTION_W)
         self.summary_section = ctk.CTkFrame(self, fg_color=s.WHITE, corner_radius=s.RAD_2)
         # create summary sub-sections
         self.income = SummarySection(img=income_icon, summary_type="Total Income:",
