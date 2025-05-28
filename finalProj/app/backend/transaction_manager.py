@@ -6,6 +6,7 @@ import os
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from datetime import datetime, timedelta
 from collections import defaultdict
+from typing import List
 
 
 # data holder for a transaction
@@ -63,39 +64,39 @@ class TransactionRepository:
         self.connection.commit()
 
 
-    def getAllTransactions(self, user_id: int) -> list[Transaction]:
+    def getAllTransactions(self, user_id: int) -> List[Transaction]:
         # retrieve transaction data
         command = (
             "SELECT * FROM transactions "
             "WHERE user_id = ?"
         )
         values = (user_id,)
-        rows: list[tuple] = self.cursor.execute(command, values).fetchall()
+        rows: List[tuple] = self.cursor.execute(command, values).fetchall()
         # convert transaction tuple to obj
-        all_transactions: list[Transaction] = []
+        all_transactions: List[Transaction] = []
         for row in rows:
             t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2], t_category=row[3], t_amount=row[4], t_description=row[5])
             all_transactions.append(t)
         # return list of transaction obj
         return all_transactions
     
-    def getTransactionsByType(self, user_id: int, t_type: str) -> list[Transaction]:
+    def getTransactionsByType(self, user_id: int, t_type: str) -> List[Transaction]:
         # retrieve transaction data
         command = (
             "SELECT * FROM transactions "
             "WHERE user_id = ? AND transaction_type = ? "
         )
         values = (user_id, t_type)
-        rows: list[tuple] = self.cursor.execute(command, values).fetchall()
+        rows: List[tuple] = self.cursor.execute(command, values).fetchall()
         # convert transaction tuple to obj
-        type_transactions: list[Transaction] = []
+        type_transactions: List[Transaction] = []
         for row in rows:
             t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2], t_category=row[3], t_amount=row[4], t_description=row[5])
             type_transactions.append(t)
         # return list of transaction obj
         return type_transactions
     
-    def getTransactionsByCategory(self, user_id: int, t_category: str) -> list[Transaction]:
+    def getTransactionsByCategory(self, user_id: int, t_category: str) -> List[Transaction]:
         pass
     
     def addTransaction(self, user_id: int, new_transaction: Transaction) -> None:
@@ -247,7 +248,7 @@ class TransactionManager:
         overall_balance = overall_finance.total_income - overall_finance.total_expenses + overall_finance.total_savings
         return round(overall_balance, 2)
 
-    def calculateMonthlyFinances(self, user_id: int) -> list[Finance]:
+    def calculateMonthlyFinances(self, user_id: int) -> List[Finance]:
         transactions = self.repo.getAllTransactions(user_id)
         monthly_data = defaultdict(lambda: {"income": 0.0, "expense": 0.0, "savings": 0.0, "investment": 0.0})
         month_keys = set()
@@ -289,7 +290,7 @@ class TransactionManager:
 
         return monthly_finances
 
-    def calculateQuarterlyFinances(self, user_id: int) -> list[Finance]:
+    def calculateQuarterlyFinances(self, user_id: int) -> List[Finance]:
         transactions = self.repo.getAllTransactions(user_id)
         quarterly_data = defaultdict(lambda: {"income": 0.0, "expense": 0.0, "savings": 0.0, "investment": 0.0})
         quarter_keys = set()
@@ -352,7 +353,7 @@ class TransactionManager:
             sorted_quarterly_finances[k] = finance
         return sorted_quarterly_finances
 
-    def createMonthlyGraph(self, monthly_finances: list[Finance]) -> matplotlib.figure.Figure:
+    def createMonthlyGraph(self, monthly_finances: List[Finance]) -> matplotlib.figure.Figure:
         def filter_non_zero(data_dict, attr):
             filtered_months = []
             filtered_values = []
@@ -459,7 +460,7 @@ class TransactionManager:
         # plt.show()
         return fig # pabago nlng nito, return mo fig_income and fig_expenses
 
-    def createQuarterlyGraph(self, quarterly_finances: list[Finance]) -> matplotlib.figure.Figure:
+    def createQuarterlyGraph(self, quarterly_finances: List[Finance]) -> matplotlib.figure.Figure:
         pass
 
 # ------------------------------- Tests ------------------------------------------
