@@ -100,6 +100,7 @@ class TransactionRepository:
         pass
     
     def addTransaction(self, user_id: int, new_transaction: Transaction) -> None:
+        print(user_id)
         command = """
             INSERT INTO transactions (
                 transaction_date,

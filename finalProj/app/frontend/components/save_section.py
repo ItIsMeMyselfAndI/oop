@@ -29,4 +29,5 @@ class Save(ctk.CTkFrame):
         # self.updateAppMemory()
         self.pages["edit"].updatePageDisplay()
         self.pages["profile"].updatePageDisplay()
+        self.pages["history"].updatePageDisplay()
 

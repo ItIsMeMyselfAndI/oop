@@ -26,6 +26,7 @@ class EditTransactionForm(ctk.CTkFrame):
         self.t_type = t_type
         self.transaction_options = []
         self.updateTransactionMenuOptionsByType()
+        self.categories = categories
         # initialize state
         self.isCurrentEditTransactionForm = False
         # initialize fonts
@@ -55,7 +56,7 @@ class EditTransactionForm(ctk.CTkFrame):
         # create frame 2 components
         self.categoryLabel = ctk.CTkLabel(self.frame2, text="Select New Category",
                                           font=self.font1, text_color=s.DARK_GREY)
-        self.categoryMenu = ctk.CTkOptionMenu(self.frame2, values=categories,
+        self.categoryMenu = ctk.CTkOptionMenu(self.frame2, values=self.categories,
                                                 font=self.font3, text_color=s.DARK_GREY,
                                                 width=s.MENU_W1, fg_color=s.BLUE,
                                                 dropdown_font=self.font2,
@@ -235,6 +236,14 @@ class Edit(ctk.CTkFrame):
                 print(f"{new_category = }")
                 print(f"{new_description = }")
                 print(f"{new_amount = }")
+                # reset form
+                form.transactionMenu.set(form.transaction_options[0])
+                form.dateMenu.year_menu.set(form.dateMenu.years[0])
+                form.dateMenu.month_menu.set(form.dateMenu.months[0])
+                form.dateMenu.day_menu.set(form.dateMenu.days[0])
+                form.categoryMenu.set(form.categories[0])
+                form.descriptionEntry.delete(first_index=0, last_index=ctk.END)
+                form.amountEntry.delete(first_index=0, last_index=ctk.END)
 
     # update edit transaction forms
     def updatePageDisplay(self):
