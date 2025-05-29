@@ -87,19 +87,19 @@ class TableRow(ctk.CTkFrame):
         
         self.date_label = ctk.CTkLabel(self, text=self.t.t_date, font=self.font1,
                                        text_color=s.DARK_GREY, fg_color=s.WHITE, anchor="w",
-                                       width=s.TABLE_COL_W1, wraplength=s.TABLE_COL_W1)
+                                       width=s.TABLE_COL_W1, wraplength=s.TABLE_COL_W1, justify="left")
         self.type_label = ctk.CTkLabel(self, text=self.t.t_type, font=self.font1,
                                        text_color=s.DARK_GREY, fg_color=s.WHITE, anchor="w",
-                                       width=s.TABLE_COL_W2, wraplength=s.TABLE_COL_W2)
+                                       width=s.TABLE_COL_W2, wraplength=s.TABLE_COL_W2, justify="left")
         self.category_label = ctk.CTkLabel(self, text=self.t.t_category, font=self.font1,
                                            text_color=s.DARK_GREY, fg_color=s.WHITE, anchor="w",
-                                           width=s.TABLE_COL_W2, wraplength=s.TABLE_COL_W2)
+                                           width=s.TABLE_COL_W2, wraplength=s.TABLE_COL_W2, justify="left")
         self.description_label = ctk.CTkLabel(self, text=self.t.t_description, font=self.font1,
                                               text_color=s.DARK_GREY, fg_color=s.WHITE, anchor="w",
-                                              width=s.TABLE_COL_W3, wraplength=s.TABLE_COL_W3)
+                                              width=s.TABLE_COL_W3, wraplength=s.TABLE_COL_W3, justify="left")
         self.amount_label = ctk.CTkLabel(self, text=f"₱ {self.t.t_amount:,}", font=self.font1,
                                          text_color=s.DARK_GREY, fg_color=s.WHITE, anchor="e",
-                                         width=s.TABLE_COL_W3, wraplength=s.TABLE_COL_W3)
+                                         width=s.TABLE_COL_W3, wraplength=s.TABLE_COL_W3, justify="right")
         
         
 class TableNavigation(ctk.CTkFrame):
@@ -265,11 +265,11 @@ class Table(ctk.CTkFrame):
         # i = 0
         for row in self.current_rows_per_page[page_frame]:
             row.pack(pady=(0,s.PAD_1))
-            row.date_label.grid(row=0, column=0, padx=(0,s.PAD_2), pady=0)
-            row.type_label.grid(row=0, column=1, padx=(0,s.PAD_2), pady=0)
-            row.category_label.grid(row=0, column=2, padx=(0,s.PAD_2), pady=0)
-            row.description_label.grid(row=0, column=3, padx=(0,s.PAD_2), pady=0)
-            row.amount_label.grid(row=0, column=4, padx=(0,s.PAD_2), pady=0)
+            row.date_label.grid(row=0, column=0, padx=(0,s.PAD_2), pady=0, sticky="n")
+            row.type_label.grid(row=0, column=1, padx=(0,s.PAD_2), pady=0, sticky="n")
+            row.category_label.grid(row=0, column=2, padx=(0,s.PAD_2), pady=0, sticky="n")
+            row.description_label.grid(row=0, column=3, padx=(0,s.PAD_2), pady=0, sticky="n")
+            row.amount_label.grid(row=0, column=4, padx=(0,s.PAD_2), pady=0, sticky="n")
             # print(f"\t{row.date_label._text} | {row.type_label._text} | {row.category_label._text} | {row.description_label._text} | {row.amount_label._text}")
         #     i += 1
         # print(f"\t{i = }")

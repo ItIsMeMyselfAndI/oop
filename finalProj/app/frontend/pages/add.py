@@ -28,39 +28,39 @@ class AddTransactionForm(ctk.CTkFrame):
         # initialize state
         self.isCurrentEditTransactionForm = False
         # initialize fonts
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_4, slant="italic", weight="normal")
+        self.font3 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_4, slant="italic", weight="normal")
         self.font2 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_3, slant="italic", weight="normal")
-        self.font3 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_2, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_2, slant="italic", weight="normal")
         # create guide frames
         self.frame1 = ctk.CTkFrame(self, fg_color=s.WHITE, corner_radius=0)
         self.frame2 = ctk.CTkFrame(self, fg_color=s.WHITE, corner_radius=0)
         self.frame3 = ctk.CTkFrame(self, fg_color=s.WHITE, corner_radius=0)
         # create frame 1 components
         self.dateLabel = ctk.CTkLabel(self.frame1, text="Select Date",
-                                      font=self.font1, text_color=s.DARK_GREY)
+                                      font=self.font3, text_color=s.DARK_GREY)
         self.dateMenu = DatePicker(picker_height=s.ADD_DATE_MENU_H, spacing=s.PAD_1, rad=s.RAD_2,
                                    day_width=s.ADD_DAY_MENU_W, month_width=s.ADD_MONTH_MENU_W, year_width=s.ADD_YEAR_MENU_W, 
-                                   master=self.frame1, ctk_font=self.font3, dropdown_ctk_font=self.font2,
+                                   master=self.frame1, ctk_font=self.font1, dropdown_ctk_font=self.font1,
                                    dropdown_fg_color=s.WHITE, dropdown_hover_color=s.BLUE, fg_color=s.WHITE)
         # create frame 2 components
         self.categoryLabel = ctk.CTkLabel(self.frame2, text="Select Category",
-                                          font=self.font1, text_color=s.DARK_GREY)
-        self.categoryMenu = ctk.CTkOptionMenu(self.frame2, values=self.categories, font=self.font3,
+                                          font=self.font3, text_color=s.DARK_GREY)
+        self.categoryMenu = ctk.CTkOptionMenu(self.frame2, values=self.categories, font=self.font1,
                                               text_color=s.DARK_GREY,fg_color=s.BLUE, corner_radius=s.RAD_2,
-                                              dropdown_font=self.font2, dropdown_fg_color=s.WHITE,
+                                              dropdown_font=self.font1, dropdown_fg_color=s.WHITE,
                                               dropdown_hover_color=s.BLUE, dropdown_text_color=s.DARK_GREY,
                                               width=s.ADD_CATEGORY_MENU_W, height=s.ADD_CATEGORY_MENU_H)
         self.descriptionLabel = ctk.CTkLabel(self.frame2, text="Enter Description",
-                                             font=self.font1, text_color=s.DARK_GREY)
-        self.descriptionEntry = ctk.CTkEntry(self.frame2, font=self.font3,
+                                             font=self.font3, text_color=s.DARK_GREY)
+        self.descriptionEntry = ctk.CTkEntry(self.frame2, font=self.font1,
                                              text_color=s.DARK_GREY, fg_color=s.LIGHT_BLUE,
                                              corner_radius=s.RAD_2, border_width=0,
                                              placeholder_text="Description", placeholder_text_color=s.GREY,
                                              width=s.ADD_DESCRIPTION_ENTRY_W, height=s.ADD_DESCRIPTION_ENTRY_H,)
         # create frame 3 components
         self.amountLabel = ctk.CTkLabel(self.frame3, text="Enter Amount",
-                                        font=self.font1, text_color=s.DARK_GREY)
-        self.amountEntry = ctk.CTkEntry(self.frame3, font=self.font3,
+                                        font=self.font3, text_color=s.DARK_GREY)
+        self.amountEntry = ctk.CTkEntry(self.frame3, font=self.font1,
                                         text_color=s.DARK_GREY, fg_color=s.LIGHT_BLUE,
                                         corner_radius=s.RAD_2, border_width=0,
                                         placeholder_text="Philippine Peso", placeholder_text_color=s.GREY,

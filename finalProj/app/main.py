@@ -58,9 +58,9 @@ class App(ctk.CTk):
         # create sidebar tabs
         self.sidebar = Sidebar(pages=self.pages, master=self, fg_color=s.WHITE, corner_radius=0)
         # create save btn
-        self.editSaveBtn = Save(user_id=self.user_id, tm=self.tm, pages=self.pages,
+        self.editSaveBtn = Save(user_id=self.user_id, tm=self.tm, pages=self.pages, app=self,
                                 master=self.editPage, fg_color=s.SKY_BLUE)
-        self.addSaveBtn = Save(user_id=self.user_id, tm=self.tm, pages=self.pages,
+        self.addSaveBtn = Save(user_id=self.user_id, tm=self.tm, pages=self.pages, app=self,
                                master=self.addPage, fg_color=s.SKY_BLUE)
         # display sidebar/page-tabs and content[profile, home, edit, history, add]
         self.sidebar.pack(side="left", fill="y")

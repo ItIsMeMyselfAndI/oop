@@ -4,9 +4,9 @@ import customtkinter as ctk
 def initScreenDimensions():
     temp_root = ctk.CTk()
     screen_w = temp_root.winfo_screenwidth() #1920
-    temp_root.destroy()
     screen_h = int(0.5625*screen_w) #1080
     print(screen_w, screen_h)
+    temp_root.destroy()
     return screen_w, screen_h
 
 
@@ -14,14 +14,16 @@ class Styles:
     # get full screen size
     SCREEN_W, SCREEN_H = initScreenDimensions()
 
-    # paddings
+
+    # ---- paddings ----
     PAD_1 = int(0.0093*SCREEN_H) #10
     PAD_2 = int(0.0185*SCREEN_H) #20
     PAD_3 = int(0.0278*SCREEN_H) #30
     PAD_4 = int(0.0370*SCREEN_H) #40
     PAD_5 = int(0.0463*SCREEN_H) #50
 
-    # font sizes
+
+    # ---- font sizes ----
     FONT_SIZE_1 = int(0.0185*SCREEN_H) #20
     FONT_SIZE_2 = int(0.0231*SCREEN_H) #25
     FONT_SIZE_3 = int(0.0278*SCREEN_H) #30
@@ -29,11 +31,13 @@ class Styles:
     FONT_SIZE_5 = int(0.0463*SCREEN_H) #50
     FONT_SIZE_6 = int(0.0556*SCREEN_H) #60
 
+
     # radii
     RAD_1 = int(0.0093*SCREEN_H) #10
     RAD_2 = int(0.0185*SCREEN_H) #20
 
-    # colors
+
+    # ---- colors ----
     WHITE = "white"
     # reds
     WHITE_RED = "#fdecec"
