@@ -3,7 +3,7 @@ import customtkinter as ctk
 import os
 from PIL import Image
 # our modules/libs
-from frontend.styles import Styles as s # contains paddings, dimensions, colors, etc
+from frontend.styles import Styles as s # paddings, dimensions, colors, etc
 
 
 class Sidebar(ctk.CTkFrame):

@@ -1,7 +1,7 @@
 # external/built-in modules/libs
 import customtkinter as ctk
 # our modules/libs
-from frontend.styles import Styles as s # contains paddings, dimensions, colors, etc
+from frontend.styles import Styles as s # paddings, dimensions, colors, etc
 from frontend.components.date_picker import DatePicker
 from backend.transaction_manager import Transaction
 

@@ -2,28 +2,15 @@
 import customtkinter as ctk
 import os
 # our modules/libs
-from frontend.styles import Styles as s # contains paddings, dimensions, colors, etc
+from frontend.styles import Styles as s # paddings, dimensions, colors, etc
 from frontend.components import Sidebar # navigation page-tabs
 from frontend.pages import Profile # profile page
+from frontend.pages import Home # home page
 from frontend.pages import Edit # edit page
 from frontend.pages import History # history page
 from frontend.pages import Add # edit page
 from frontend.components import Save # save btn
 from backend import TransactionManager # db manager
-
-
-class Home(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
-        # initialize state
-        self.isCurrentPage = False
-        # edit nyo nlng dito inyo
-        # pag mahaba gawa nyo, pede nyo sya gawin sa 
-        # separate file tas import nyo nlng dito,
-        # lalo na kung kailangan nyo gumawa ng ibang classes
-        # (gaya nung edit page & sidebar)
-        label = ctk.CTkLabel(self, text="Home page", text_color=s.DARK_GREY, font=("Arial", 24))
-        label.pack(pady=50)
 
 
 # main app class
@@ -46,7 +33,7 @@ class App(ctk.CTk):
         self.content = ctk.CTkScrollableFrame(self, orientation="vertical", corner_radius=0, fg_color=s.SKY_BLUE)
         # create app pages
         self.profilePage = Profile(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=s.SKY_BLUE, corner_radius=0) 
-        self.homePage = Home(master=self.content, fg_color=s.SKY_BLUE, corner_radius=0) 
+        self.homePage = Home(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=s.SKY_BLUE, corner_radius=0) 
         self.editPage = Edit(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=s.SKY_BLUE, corner_radius=0) 
         self.historyPage = History(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=s.SKY_BLUE, corner_radius=0) 
         self.addPage = Add(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=s.SKY_BLUE, corner_radius=0) 
@@ -69,7 +56,28 @@ class App(ctk.CTk):
         self.editSaveBtn.pack(pady=s.PAD_4)
         self.addSaveBtn.pack(pady=s.PAD_4)
 
+        self.protocol("WM_DELETE_WINDOW", self.onCloseApp) # close the app and db properly
+
+    def onCloseApp(self):
+        self.tm.repo.connection.close()
+        print("\nClosed DB connection.")
+        print("Closing the app...")
+        self.destroy()
+        print("Closed app.")
+
 
 if __name__ == "__main__":
-    app = App()
-    app.mainloop()
+    try:
+        app = App()
+    except KeyboardInterrupt:
+        print("\nClosed app.")
+        exit(0)
+
+    try:
+        app.mainloop()
+    except KeyboardInterrupt:
+        app.tm.repo.connection.close()
+        print("\nClosed DB connection.")
+        print("Closing the app...")
+        app.destroy()
+        print("Closed app.")

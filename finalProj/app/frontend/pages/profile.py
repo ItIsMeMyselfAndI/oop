@@ -3,7 +3,7 @@ import customtkinter as ctk
 from PIL import Image
 import os
 # our modules/libs
-from frontend.styles import Styles as s # contains paddings, dimensions, colors, etc
+from frontend.styles import Styles as s # paddings, dimensions, colors, etc
 
 
 

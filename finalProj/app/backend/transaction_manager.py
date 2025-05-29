@@ -97,6 +97,11 @@ class TransactionRepository:
         return type_transactions
     
     def getTransactionsByCategory(self, user_id: int, t_category: str) -> List[Transaction]:
+        # kailangan toh para sa table filter ng history page
+        pass
+
+    def getRecentTransactions(sef, user_id: int, t_count: int) -> List[Transaction]:
+        # kailangan toh para sa table ng home page
         pass
     
     def addTransaction(self, user_id: int, new_transaction: Transaction) -> None:
@@ -160,8 +165,8 @@ class TransactionRepository:
         self.connection.commit()
         return values
 
-    def deleteTransaction(self, user_id: int, t_id: int) -> None:
-        pass
+    # def deleteTransaction(self, user_id: int, t_id: int) -> None:
+    #     pass
 
 # ------------------------------- Tests ------------------------------------------
 
@@ -184,6 +189,13 @@ class TransactionRepository:
         # display results
         print("\n[Category (Salary) Transactions]\n")
         for t in category_transactions:
+            print(f" {t.t_id:<10} | {t.t_date:<13} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description}")
+    
+    def testAzcarragaGetRecentTransactions(self):
+        recent_transactions = self.getRecentTransactions(user_id=self.user_id, t_count=5)
+        # display results
+        print("\n[Five Recent Transactions]\n")
+        for t in recent_transactions:
             print(f" {t.t_id:<10} | {t.t_date:<13} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description}")
     
     def testNicolasAddTransaction(self):
@@ -209,9 +221,9 @@ class TransactionRepository:
         # pang check kung na update sa db; dat pareho toh sa tuple moh
         print(self.cursor.execute("SELECT * FROM transactions WHERE transaction_id = 1455").fetchone())    
 
-    def testAzcarragaDeleteTransaction(self):
-        # delete last row
-        self.deleteTransaction(user_id=self.user_id, t_id=1445)
+    # def testAzcarragaDeleteTransaction(self):
+    #     # delete last row
+    #     self.deleteTransaction(user_id=self.user_id, t_id=1445)
 
 
 class TransactionManager:
@@ -542,6 +554,7 @@ if __name__ == "__main__":
     # tm.repo.testMirasolGetAllTransactions()
     # tm.repo.testMirasolGetTransactionByType()
     # tm.repo.testNicolasGetTransactionsByCategory()
+    # tm.repo.testAzcarragaGetRecentTransactions()
     # tm.repo.testNicolasAddTransaction()
     # tm.repo.testAzcarragaModifyTransaction()
     # tm.repo.testAzcarragaDeleteTransaction()

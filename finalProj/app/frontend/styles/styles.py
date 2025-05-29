@@ -162,6 +162,9 @@ class Styles:
 
 
     # ---- exclusive for save button ----
+    POPUP_WIN_W = int(0.3704*SCREEN_H) #400
+    POPUP_WIN_H = int(0.1852*SCREEN_H) #200
+
     SAVE_BTN_W = int(0.3241*SCREEN_H) #350
     SAVE_BTN_H = int(0.0556*SCREEN_H) #60
 

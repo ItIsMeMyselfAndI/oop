@@ -1,6 +1,8 @@
+# external/built-in modules/libs
 import customtkinter as ctk
 from datetime import datetime
-from frontend.styles import Styles as s # contains paddings, dimensions, colors, etc
+# our modules/libs
+from frontend.styles import Styles as s # paddings, dimensions, colors, etc
 
 
 class DatePicker(ctk.CTkFrame):
