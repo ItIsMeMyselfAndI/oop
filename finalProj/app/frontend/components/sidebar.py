@@ -6,7 +6,7 @@ from PIL import Image
 from frontend.styles import BaseStyles, SidebarStyles # paddings, dimensions, colors, etc
 
 
-class Sidebar(ctk.CTkFrame):
+class SidebarTabs(ctk.CTkFrame):
     def __init__(self, pages, master, **kwargs):
         super().__init__(master, **kwargs)
         self.pages = pages

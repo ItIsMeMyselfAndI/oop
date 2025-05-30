@@ -41,7 +41,7 @@ class PopUpWin(ctk.CTkToplevel):
 
 
 # save section
-class Save(ctk.CTkFrame):
+class SaveBTN(ctk.CTkFrame):
     def __init__(self, user_id, tm, pages, app, master, **kwargs):
         super().__init__(master, **kwargs)
         self.app = app

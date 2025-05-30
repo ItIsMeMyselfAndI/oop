@@ -35,7 +35,6 @@ class ProfileHeader(ctk.CTkFrame):
         self.amount_label.pack(anchor="e")
 
 
-
 class SummarySection(ctk.CTkFrame):
     def __init__(self, img, img_bg_color, summary_type, amount, master, **kwargs):
         super().__init__(master, ** kwargs)
@@ -58,7 +57,7 @@ class SummarySection(ctk.CTkFrame):
         self.amount_label.pack(anchor="w")
 
 
-class Profile(ctk.CTkFrame):
+class ProfilePage(ctk.CTkFrame):
     def __init__(self, user_id, tm, master, **kwargs):
         super().__init__(master, ** kwargs)
         self.user_id = user_id

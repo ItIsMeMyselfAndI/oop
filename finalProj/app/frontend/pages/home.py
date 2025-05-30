@@ -122,7 +122,7 @@ class Table(ctk.CTkFrame):
             row.amount_label.grid(row=0, column=4, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
 
 
-class Home(ctk.CTkFrame):
+class HomePage(ctk.CTkFrame):
     def __init__(self, user_id, tm, master, **kwargs):
         super().__init__(master, **kwargs)
         self.user_id = user_id

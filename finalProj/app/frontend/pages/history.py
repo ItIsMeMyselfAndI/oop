@@ -274,7 +274,7 @@ class Table(ctk.CTkFrame):
         #     i += 1
         # print(f"\t{i = }")
 
-class History(ctk.CTkFrame):
+class HistoryPage(ctk.CTkFrame):
     def __init__(self, user_id, tm, master, **kwargs):
         super().__init__(master, **kwargs)
         self.user_id = user_id

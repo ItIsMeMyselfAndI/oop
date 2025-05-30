@@ -131,7 +131,7 @@ class AddPageTabs(ctk.CTkFrame):
 
 
 # main add page class
-class Add(ctk.CTkFrame):
+class AddPage(ctk.CTkFrame):
     def __init__(self, user_id, tm, master, **kwargs):
         super().__init__(master, **kwargs)
         self.user_id = user_id

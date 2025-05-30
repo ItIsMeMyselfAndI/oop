@@ -154,7 +154,7 @@ class EditPageTabs(ctk.CTkFrame):
 
 
 # main edit page
-class Edit(ctk.CTkFrame):
+class EditPage(ctk.CTkFrame):
     def __init__(self, user_id, tm, master, **kwargs):
         super().__init__(master, **kwargs)
         self.user_id = user_id

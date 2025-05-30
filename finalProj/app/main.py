@@ -3,13 +3,13 @@ import customtkinter as ctk
 import os
 # our modules/libs
 from frontend.styles import BaseStyles # paddings, dimensions, colors, etc
-from frontend.components import Sidebar # navigation page-tabs
-from frontend.pages import Profile # profile page
-from frontend.pages import Home # home page
-from frontend.pages import Edit # edit page
-from frontend.pages import History # history page
-from frontend.pages import Add # edit page
-from frontend.components import Save # save btn
+from frontend.components import SidebarTabs # navigation page-tabs
+from frontend.pages import ProfilePage # profile page
+from frontend.pages import HomePage # home page
+from frontend.pages import EditPage # edit page
+from frontend.pages import HistoryPage # history page
+from frontend.pages import AddPage # edit page
+from frontend.components import SaveBTN # save btn
 from backend import TransactionManager # db manager
 
 
@@ -32,22 +32,22 @@ class App(ctk.CTk):
         # create scrollable screen (vertical)
         self.content = ctk.CTkScrollableFrame(self, orientation="vertical", corner_radius=0, fg_color=BaseStyles.SKY_BLUE)
         # create app pages
-        self.profilePage = Profile(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=BaseStyles.SKY_BLUE, corner_radius=0) 
-        self.homePage = Home(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=BaseStyles.SKY_BLUE, corner_radius=0) 
-        self.editPage = Edit(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=BaseStyles.SKY_BLUE, corner_radius=0) 
-        self.historyPage = History(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=BaseStyles.SKY_BLUE, corner_radius=0) 
-        self.addPage = Add(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=BaseStyles.SKY_BLUE, corner_radius=0) 
+        self.profilePage = ProfilePage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=BaseStyles.SKY_BLUE, corner_radius=0) 
+        self.homePage = HomePage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=BaseStyles.SKY_BLUE, corner_radius=0) 
+        self.editPage = EditPage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=BaseStyles.SKY_BLUE, corner_radius=0) 
+        self.historyPage = HistoryPage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=BaseStyles.SKY_BLUE, corner_radius=0) 
+        self.addPage = AddPage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=BaseStyles.SKY_BLUE, corner_radius=0) 
         self.pages = {
             "profile":self.profilePage, "home":self.homePage,
             "edit":self.editPage, "history":self.historyPage,
             "add":self.addPage
         }
         # create sidebar tabs
-        self.sidebar = Sidebar(pages=self.pages, master=self, fg_color=BaseStyles.WHITE, corner_radius=0)
+        self.sidebar = SidebarTabs(pages=self.pages, master=self, fg_color=BaseStyles.WHITE, corner_radius=0)
         # create save btn
-        self.editSaveBtn = Save(user_id=self.user_id, tm=self.tm, pages=self.pages, app=self,
+        self.editSaveBtn = SaveBTN(user_id=self.user_id, tm=self.tm, pages=self.pages, app=self,
                                 master=self.editPage, fg_color=BaseStyles.SKY_BLUE)
-        self.addSaveBtn = Save(user_id=self.user_id, tm=self.tm, pages=self.pages, app=self,
+        self.addSaveBtn = SaveBTN(user_id=self.user_id, tm=self.tm, pages=self.pages, app=self,
                                master=self.addPage, fg_color=BaseStyles.SKY_BLUE)
         # display sidebar/page-tabs and content[profile, home, edit, history, add]
         self.sidebar.pack(side="left", fill="y")
