@@ -154,7 +154,7 @@ class AddPage(ctk.CTkFrame):
         self.tabs = AddPageTabs(transactionForms=self.transactionForms, master=self,
                          fg_color=BaseStyles.SKY_BLUE, corner_radius=0)
         # show page sections 
-        self.title.pack(anchor="w", padx=(BaseStyles.PAD_4+BaseStyles.PAD_4,0), pady=(BaseStyles.PAD_4+BaseStyles.PAD_4,0))
+        self.title.pack(pady=(BaseStyles.PAD_4+BaseStyles.PAD_4,0))
         self.tabs.pack(pady=(BaseStyles.PAD_4,0))
         self.forms_section.pack(pady=(BaseStyles.PAD_3,0))
 

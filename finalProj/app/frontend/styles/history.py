@@ -15,7 +15,7 @@ class HistoryStyles:
 
     TABLE_ROW_H = scale(40) 
 
-    TABLE_BODY_W = scale(1540)
+    TABLE_BODY_W = scale(1560) - 20 # minus unchangeable sidebar width
     TABLE_BODY_H = scale(500)
 
     TABLE_NAV_BTN_W = scale(100)

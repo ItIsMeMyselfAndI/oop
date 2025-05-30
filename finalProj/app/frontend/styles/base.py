@@ -8,23 +8,26 @@ def screenDimensions():
     temp_root = ctk.CTk()
     screen_w = temp_root.winfo_screenwidth() #1920
     screen_h = int(0.5625*screen_w) #1080
+    dpi = temp_root.winfo_fpixels("1i") #dpi: px per in
     temp_root.destroy()
-    return screen_w, screen_h
+    return screen_w, screen_h, dpi
 
 
 # ---- ideal screen dimensions ----
 IDEAL_SCREEN_W = 1920
 IDEAL_SCREEN_H = 1080
+# IDEAL_SCREEN_H = 2000
 
 
 # ---- actual screen dimensions ----
-SCREEN_W, SCREEN_H = screenDimensions()
+SCREEN_W, SCREEN_H, DPI = screenDimensions()
 
 
 class BaseStyles:
     # ---- actual screen dimensions ----
     SCREEN_W = SCREEN_W
     SCREEN_H = SCREEN_H
+    DPI = DPI
 
     # ---- paddings ----
     PAD_1 = scale(10)

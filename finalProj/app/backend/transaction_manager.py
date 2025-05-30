@@ -2,6 +2,7 @@ import sqlite3
 import customtkinter as ctk
 import matplotlib
 import matplotlib.pyplot as plt
+from pathlib import Path
 import os
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from datetime import datetime, timedelta
@@ -231,6 +232,7 @@ class TransactionManager:
         self.user_id: int = 1
         self.repo = TransactionRepository(db_path)
 
+
     def calculateOverallFinance(self, user_id: int) -> Finance:
         transactions = self.repo.getAllTransactions(user_id)
 
@@ -257,9 +259,11 @@ class TransactionManager:
             total_investment=round(total_investment, 2)
         )
 
+
     def calculateOverallBalance(self, overall_finance: Finance) -> float:
         overall_balance = overall_finance.total_income - overall_finance.total_expenses + overall_finance.total_savings
         return round(overall_balance, 2)
+
 
     def calculateMonthlyFinances(self, user_id: int) -> List[Finance]:
         transactions = self.repo.getAllTransactions(user_id)
@@ -302,6 +306,7 @@ class TransactionManager:
             monthly_finances[month] = finance
 
         return monthly_finances
+
 
     def calculateQuarterlyFinances(self, user_id: int) -> List[Finance]:
         transactions = self.repo.getAllTransactions(user_id)
@@ -366,7 +371,9 @@ class TransactionManager:
             sorted_quarterly_finances[k] = finance
         return sorted_quarterly_finances
 
-    def createMonthlyGraph(self, monthly_finances: List[Finance]) -> matplotlib.figure.Figure:
+
+    def createMonthlyGraph(self, user_id:int, width_in:int, height_in:int, dpi:int, title_size:int, label_size:int) -> tuple[plt.Figure, plt.Figure]:
+        monthly_finances = self.calculateMonthlyFinances(user_id=user_id)
         def filter_non_zero(data_dict, attr):
             filtered_months = []
             filtered_values = []
@@ -377,101 +384,39 @@ class TransactionManager:
                     filtered_values.append(value)
             return filtered_months, filtered_values
 
-        fig, axs = plt.subplots(4, 1, figsize=(14, 12), sharex=False)
+        # === Income Figure ===
+        fig_income = plt.Figure(figsize=(width_in, height_in), dpi=dpi) # 1 in = 100 px
+        ax_income = fig_income.add_subplot(111)
 
-        # Remove top and bottom borders from all subplots
-        for ax in axs:
-            ax.spines['top'].set_visible(False)
-            ax.spines['bottom'].set_visible(False)
-
-        # Income
         months_inc, incomes = filter_non_zero(monthly_finances, "total_income")
-        bars_income = axs[0].bar(months_inc, incomes, color='blue')
-        axs[0].set_title("Income")
-        axs[0].set_ylabel("Amount")
-        axs[0].grid(axis='y')
+        ax_income.plot(months_inc, incomes, color='green', marker='o', linestyle='-')
+        ax_income.set_title("Income", fontsize=title_size)
+        ax_income.set_ylabel("Amount (₱)")
+        ax_income.grid(axis='y')
+        ax_income.set_xticks(months_inc)
+        ax_income.set_xticklabels(months_inc, rotation=80, ha='center', fontsize=label_size)
 
-        # Cap Income y-axis
         if len(incomes) > 1:
             sorted_incomes = sorted(incomes, reverse=True)
             second_largest = sorted_incomes[1]
             cap = second_largest * 1.1
             if cap < sorted_incomes[0]:
-                axs[0].set_ylim(0, cap)
+                ax_income.set_ylim(0, cap)
 
-        # Expenses
+        # === Expenses Figure ===
+        fig_expenses = plt.Figure(figsize=(width_in, height_in), dpi=dpi) # 1 in = 100 px
+        ax_expenses = fig_expenses.add_subplot(111)
+
         months_exp, expenses = filter_non_zero(monthly_finances, "total_expenses")
-        bars_expenses = axs[1].bar(months_exp, expenses, color='orange')
-        axs[1].set_title("Expenses")
-        axs[1].set_ylabel("Amount")
-        axs[1].grid(axis='y')
+        ax_expenses.plot(months_exp, expenses, color='red', marker='o', linestyle='-')
+        ax_expenses.set_title("Expenses", fontsize=title_size)
+        ax_expenses.set_ylabel("Amount (₱)")
+        ax_expenses.grid(axis='y')
+        ax_expenses.set_xticks(months_exp)
+        ax_expenses.set_xticklabels(months_exp, rotation=80, ha='center', fontsize=label_size)
 
-        # Savings
-        months_sav, savings = filter_non_zero(monthly_finances, "total_savings")
-        bars_savings = axs[2].bar(months_sav, savings, color='green')
-        axs[2].set_title("Savings")
-        axs[2].set_ylabel("Amount")
-        axs[2].grid(axis='y')
+        return fig_income, fig_expenses
 
-        # Investments
-        months_inv, investments = filter_non_zero(monthly_finances, "total_investment")
-        bars_investments = axs[3].bar(months_inv, investments, color='red')
-        axs[3].set_title("Investments")
-        axs[3].set_ylabel("Amount")
-        axs[3].set_xlabel("Month")
-        axs[3].grid(axis='y')
-
-        plt.suptitle("Monthly Finances Overview", fontsize=16)
-        plt.tight_layout(rect=[0, 0, 1, 0.96])
-
-        def human_format(num):
-            for unit in ['', 'K', 'M', 'B', 'T']:
-                if abs(num) < 1000:
-                    return f"{num:.0f}{unit}"
-                num /= 1000
-            return f"{num:.0f}P"
-
-        def annotate_bars(ax, bars, values, months):
-            ax.set_xticks([bar.get_x() + bar.get_width() / 2 for bar in bars])
-            ax.set_xticklabels(months, rotation=0)
-
-            bar_heights = [bar.get_height() for bar in bars]
-            max_bar_height = max(bar_heights) if bar_heights else 0
-            padding_above = max_bar_height * 0.08  # 8% headroom above tallest bar
-            ax.set_ylim(top=max_bar_height + padding_above)
-
-            for bar, val in zip(bars, values):
-                height = bar.get_height()
-                x_pos = bar.get_x() + bar.get_width() / 2
-
-                if height == 0:
-                    continue  # Skip zero bars
-
-                # Label position logic
-                if height >= max_bar_height * 0.92:
-                    y_pos = height + padding_above * 0.5
-                    va = 'bottom'
-                else:
-                    y_pos = height * 0.5
-                    va = 'center'
-
-                ax.annotate(
-                    human_format(float(val)),
-                    xy=(x_pos, y_pos),
-                    ha='center',
-                    va=va,
-                    fontsize=9,
-                    color='black',
-                    clip_on=False
-                )
-
-        annotate_bars(axs[0], bars_income, incomes, months_inc)
-        annotate_bars(axs[1], bars_expenses, expenses, months_exp)
-        annotate_bars(axs[2], bars_savings, savings, months_sav)
-        annotate_bars(axs[3], bars_investments, investments, months_inv)
-
-        # plt.show()
-        return fig # pabago nlng nito, return mo fig_income and fig_expenses
 
     def createQuarterlyGraph(self, quarterly_finances: List[Finance]) -> matplotlib.figure.Figure:
         pass
@@ -517,27 +462,41 @@ class TransactionManager:
             print(f"\t\ttotal_investment: {finance.total_investment}\n")
 
     def testCreateMonthlyGraph(self):
-        monthly_finances = self.calculateMonthlyFinances(user_id=self.user_id)
-        graph_income, graph_expenses = self.createMonthlyGraph(monthly_finances=monthly_finances)
         # display result
         root = ctk.CTk()
         root.title("Monthly Graph")
-        root.geometry("1920x1080")
-        canvas_income = FigureCanvasTkAgg(graph_income, master=root)
-        canvas_expenses = FigureCanvasTkAgg(graph_expenses, master=root)
+        root.geometry("1630x1000")
+        dpi = root.winfo_fpixels("1i") # px per in
+        print(dpi)
+        width_in = int(780 / dpi)
+        height_in = int(500 / dpi)
+        graph_income, graph_expenses = self.createMonthlyGraph(user_id=self.user_id, width_in=width_in, height_in=height_in, dpi=dpi, title_size=20, label_size=15)
+
+        income_frame = ctk.CTkFrame(root) 
+        canvas_income = FigureCanvasTkAgg(graph_income, master=income_frame)
         canvas_income.draw()
+        canvas_income.get_tk_widget().pack()
+        
+        expense_frame = ctk.CTkFrame(root) 
+        canvas_expenses = FigureCanvasTkAgg(graph_expenses, master=expense_frame)
         canvas_expenses.draw()
-        canvas_income.get_tk_widget().pack(fill="both", expand=True)
-        canvas_expenses.get_tk_widget().pack(fill="both", expand=True)
+        canvas_expenses.get_tk_widget().pack()
+        
+        income_frame.pack()
+        expense_frame.pack()
+       
         root.mainloop()
 
+
+
     def testCreateQuarterlyGraph(self):
+        root = ctk.CTk()
+        root.title("Quarterly Graph")
+        root.geometry("700x500")
+        dpi = root.winfo_fpixels("1i") # px per in
         quarterly_finances = self.calculateQuarterlyFinances(user_id=self.user_id)
         graph = self.createQuarterlyGraph(quarterly_finances=quarterly_finances)
         # display result
-        root = ctk.CTk()
-        root.title("Quarterly Graph")
-        root.geometry("1920x1080")
         canvas = FigureCanvasTkAgg(graph, master=root)
         canvas.draw()
         canvas.get_tk_widget().pack(fill="both", expand=True)
@@ -546,7 +505,9 @@ class TransactionManager:
         
 if __name__ == "__main__":
 
-    db_path = os.path.abspath("../db/transactions.db")
+    # db_path = os.path.abspath("../db/transactions.db")
+    db_path = Path(__file__).parent.parent / "db/transactions.db"
+    print(db_path)
     tm = TransactionManager(db_path)
     # uncomment nyo inyo if magsasample run kayo
 
@@ -564,7 +525,7 @@ if __name__ == "__main__":
     # tm.testCalculateOverallBalance()
     # tm.testCalculateMonthlyFinances()
     # tm.testCalculateQuarterlyFinances()
-    # tm.testCreateMonthlyGraph()
+    tm.testCreateMonthlyGraph()
     # tm.testCreateQuarterlyGraph()
 
     tm.repo.connection.close()

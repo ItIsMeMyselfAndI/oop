@@ -177,7 +177,7 @@ class EditPage(ctk.CTkFrame):
         self.tabs = EditPageTabs(transactionForms=self.transactionForms, master=self,
                          fg_color=BaseStyles.SKY_BLUE, corner_radius=0)
         # show page sections 
-        self.header_section.pack(anchor="w", padx=(BaseStyles.PAD_4+BaseStyles.PAD_4,0), pady=(BaseStyles.PAD_4+BaseStyles.PAD_4,0))
+        self.header_section.pack(pady=(BaseStyles.PAD_4+BaseStyles.PAD_4,0))
         self.tabs.pack(padx=BaseStyles.PAD_3, pady=(BaseStyles.PAD_4,0))
         self.forms_section.pack(pady=(BaseStyles.PAD_3,0))
 

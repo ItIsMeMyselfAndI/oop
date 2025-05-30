@@ -99,7 +99,9 @@ class TableRow(ctk.CTkFrame):
                                               width=HistoryStyles.TABLE_COL_W3, wraplength=HistoryStyles.TABLE_COL_W3, justify="left")
         self.amount_label = ctk.CTkLabel(self, text=f"₱ {self.t.t_amount:,}", font=self.font1,
                                          text_color=BaseStyles.DARK_GREY, fg_color=BaseStyles.WHITE, anchor="e",
-                                         width=HistoryStyles.TABLE_COL_W3, wraplength=HistoryStyles.TABLE_COL_W3, justify="right")
+                                         width=HistoryStyles.TABLE_COL_W3-BaseStyles.PAD_1,
+                                         wraplength=HistoryStyles.TABLE_COL_W3-BaseStyles.PAD_1,
+                                         justify="right")
         
         
 class TableNavigation(ctk.CTkFrame):
@@ -269,7 +271,7 @@ class Table(ctk.CTkFrame):
             row.type_label.grid(row=0, column=1, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
             row.category_label.grid(row=0, column=2, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
             row.description_label.grid(row=0, column=3, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
-            row.amount_label.grid(row=0, column=4, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
+            row.amount_label.grid(row=0, column=4, padx=(0,BaseStyles.PAD_2), pady=0, sticky="nw")
             # print(f"\t{row.date_label._text} | {row.type_label._text} | {row.category_label._text} | {row.description_label._text} | {row.amount_label._text}")
         #     i += 1
         # print(f"\t{i = }")

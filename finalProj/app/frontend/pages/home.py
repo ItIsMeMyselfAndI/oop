@@ -2,6 +2,7 @@
 import customtkinter as ctk
 from PIL import Image
 import os
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 # our modules/libs
 from frontend.styles import BaseStyles, HomeStyles # paddings, dimensions, colors, etc
 
@@ -13,14 +14,15 @@ class HomeHeader(ctk.CTkFrame):
         self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, slant="italic", weight="normal")
         self.img = img
         # create guide frames
-        self.balance_frame = ctk.CTkFrame(self, fg_color="red", corner_radius=0)
+        self.balance_frame = ctk.CTkFrame(self, fg_color="transparent", corner_radius=0)
         self.img_bg = ctk.CTkLabel(self, corner_radius=0, image=img, text="",
-                                   width=HomeStyles.IMG_BG_W, height=HomeStyles.IMG_BG_H, fg_color="yellow")
+                                   width=HomeStyles.IMG_BG_W, height=HomeStyles.IMG_BG_H)
         # create label
         self.summary_type_label = ctk.CTkLabel(self.balance_frame, text=summary_type, font=self.font1,
-                                               text_color=BaseStyles.WHITE, anchor="w", fg_color="green")
+                                               text_color=BaseStyles.WHITE, anchor="w")
         self.amount_label = ctk.CTkLabel(self.balance_frame, text=f"₱ {amount:,}", font=self.font2,
-                                         text_color=BaseStyles.WHITE, width=HomeStyles.LABEL_W, anchor="w", justify="left", fg_color="orange")
+                                         text_color=BaseStyles.WHITE, width=HomeStyles.LABEL_W,
+                                         anchor="w", justify="left")
         # display guide frames
         self.balance_frame.grid(row=0, column=0, padx=(BaseStyles.PAD_4,0))
         self.img_bg.grid(row=0, column=1, pady=BaseStyles.PAD_3, padx=BaseStyles.PAD_3, sticky="e")
@@ -51,7 +53,9 @@ class TableRow(ctk.CTkFrame):
                                               width=HomeStyles.TABLE_COL_W3, wraplength=HomeStyles.TABLE_COL_W3, justify="left")
         self.amount_label = ctk.CTkLabel(self, text=f"₱ {self.t.t_amount:,}", font=self.font1,
                                          text_color=BaseStyles.DARK_GREY, fg_color=BaseStyles.WHITE, anchor="e",
-                                         width=HomeStyles.TABLE_COL_W3, wraplength=HomeStyles.TABLE_COL_W3, justify="right")
+                                         width=HomeStyles.TABLE_COL_W3-BaseStyles.PAD_1,
+                                         wraplength=HomeStyles.TABLE_COL_W3-BaseStyles.PAD_1,
+                                         justify="right")
         
 
 class Table(ctk.CTkFrame):
@@ -63,9 +67,12 @@ class Table(ctk.CTkFrame):
         self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, slant="italic", weight="normal")
         self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, slant="italic", weight="normal")
         # table sections
+        self.title_section = ctk.CTkLabel(self, text="Recent Transactions", text_color=BaseStyles.WHITE,
+                                          fg_color=BaseStyles.BLUE, font=self.font2, corner_radius=BaseStyles.RAD_2,
+                                          width=HomeStyles.TABLE_TITLE_SECTION_W, height=HomeStyles.TABLE_TITLE_SECTION_H)
         self.table_header = ctk.CTkFrame(self, fg_color=BaseStyles.WHITE, corner_radius=BaseStyles.RAD_2)
-        self.table_body = ctk.CTkScrollableFrame(self, fg_color=BaseStyles.WHITE, orientation="vertical",
-                                                 corner_radius=BaseStyles.RAD_2, height=HomeStyles.TABLE_BODY_H, width=HomeStyles.TABLE_BODY_W)
+        self.table_body = ctk.CTkScrollableFrame(self, fg_color=BaseStyles.WHITE, orientation="vertical", corner_radius=BaseStyles.RAD_2,
+                                                 height=HomeStyles.TABLE_BODY_H, width=HomeStyles.TABLE_BODY_W)
         # table header
         self.date_header = ctk.CTkLabel(self.table_header, text="Date", font=self.font1,
                                        text_color=BaseStyles.DARK_GREY, fg_color="transparent", anchor="w",
@@ -85,6 +92,7 @@ class Table(ctk.CTkFrame):
         # initialize table content
         self.recent_rows = self.loadRecentRows()
         # display table sections
+        self.title_section.pack(pady=(0, BaseStyles.PAD_2))
         self.table_header.pack(pady=(0,BaseStyles.PAD_1))
         self.table_body.pack()
         # display table header
@@ -119,7 +127,77 @@ class Table(ctk.CTkFrame):
             row.type_label.grid(row=0, column=1, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
             row.category_label.grid(row=0, column=2, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
             row.description_label.grid(row=0, column=3, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
-            row.amount_label.grid(row=0, column=4, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
+            row.amount_label.grid(row=0, column=4, padx=(0,BaseStyles.PAD_2), pady=0, sticky="nw")
+
+
+class MonthlyReport(ctk.CTkFrame):
+    def __init__(self, user_id, tm, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.user_id = user_id
+        self.tm = tm
+        # initialize font
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, slant="italic", weight="normal")
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, slant="italic", weight="normal")
+        # sections
+        self.title_section = ctk.CTkLabel(self, text="Monthly Report", text_color=BaseStyles.WHITE,
+                                          fg_color=BaseStyles.BLUE, corner_radius=BaseStyles.RAD_2, font=self.font2,
+                                          width=HomeStyles.REPORT_TITLE_SECTION_W, height=HomeStyles.REPORT_TITLE_SECTION_H)
+        self.graphs_sections = ctk.CTkFrame(self, fg_color=BaseStyles.SKY_BLUE)
+        # graph dimensions in inches
+        graph_w_in = HomeStyles.MONTHLY_INCOME_GRAPH_W / BaseStyles.DPI
+        graph_h_in = HomeStyles.MONTHLY_EXPENSE_GRAPH_H / BaseStyles.DPI
+        self.income_graph, self.expense_graph = self.tm.createMonthlyGraph(user_id=self.user_id, width_in=graph_w_in,
+                                                                           height_in=graph_h_in, dpi=BaseStyles.DPI,
+                                                                           title_size=HomeStyles.MONTHLY_GRAPH_TITLE_SIZE,
+                                                                           label_size=HomeStyles.MONTHLY_GRAPH_LABEL_SIZE)
+        # create guide frames
+        self.left_frame = ctk.CTkFrame(self.graphs_sections, fg_color=BaseStyles.WHITE, corner_radius=BaseStyles.RAD_2)
+        self.right_frame = ctk.CTkFrame(self.graphs_sections, fg_color=BaseStyles.WHITE, corner_radius=BaseStyles.RAD_2)
+        # layout income
+        self.income_canvas = FigureCanvasTkAgg(figure=self.income_graph, master=self.left_frame)
+        self.income_canvas.draw()
+        self.income_canvas.get_tk_widget().pack(padx=BaseStyles.PAD_1, pady=(BaseStyles.PAD_1,BaseStyles.PAD_3))
+        # layout expense
+        self.expense_canvas = FigureCanvasTkAgg(figure=self.expense_graph, master=self.right_frame)
+        self.expense_canvas.draw()
+        self.expense_canvas.get_tk_widget().pack(padx=BaseStyles.PAD_1, pady=(BaseStyles.PAD_1,BaseStyles.PAD_3))
+        # display sections
+        self.title_section.pack(pady=(0,BaseStyles.PAD_2))
+        self.graphs_sections.pack()
+        # display guide frames
+        self.left_frame.grid(row=0, column=0, padx=(0,BaseStyles.PAD_2))
+        self.right_frame.grid(row=0, column=1)
+
+
+class QuarterlyReport(ctk.CTkFrame):
+    def __init__(self, user_id, tm, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.user_id = user_id
+        self.tm = tm
+        # initialize font
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, slant="italic", weight="normal")
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, slant="italic", weight="normal")
+        # sections
+        self.title_section = ctk.CTkLabel(self, text="Quarterly Report", text_color=BaseStyles.WHITE,
+                                          fg_color=BaseStyles.BLUE, corner_radius=BaseStyles.RAD_2, font=self.font2,
+                                          width=HomeStyles.REPORT_TITLE_SECTION_W, height=HomeStyles.REPORT_TITLE_SECTION_H)
+        self.graphs_sections = ctk.CTkFrame(self, fg_color=BaseStyles.WHITE, corner_radius=BaseStyles.RAD_2,
+                                            width=HomeStyles.QUARTERLY_GRAPH_SECTION_W, height=HomeStyles.QUARTERLY_GRAPH_SECTION_H)
+        # graph
+        # dpi = self.winfo_fpixels("1i") # pixels per inch
+        # graph_width = 760 / dpi
+        # graph_height = 700 / dpi
+        # title_size = 15
+        # label_size = 10
+        # self.graph = self.tm.createQuarterlyGraph(user_id=self.user_id, width=graph_width, height=graph_height,
+        #                                           dpi=dpi, title_size=title_size, label_size=label_size)
+        # # layout graph
+        # self.graph_canvas = FigureCanvasTkAgg(figure=self.income_graph, master=self.left_frame)
+        # self.graph_canvas.draw()
+        # self.graph_canvas.get_tk_widget().pack(padx=BaseStyles.PAD_1, pady=(BaseStyles.PAD_1,BaseStyles.PAD_3))
+        # display sections
+        self.title_section.pack(pady=(0,BaseStyles.PAD_2))
+        self.graphs_sections.pack()
 
 
 class HomePage(ctk.CTkFrame):
@@ -134,12 +212,17 @@ class HomePage(ctk.CTkFrame):
         # calculate balance 
         finance = self.tm.calculateOverallFinance(self.user_id)
         balance = self.tm.calculateOverallBalance(finance)
+        # create page sections
         self.header_section = HomeHeader(img=home_icon, summary_type="Total Balance:", amount=balance,
                                          master=self, fg_color=BaseStyles.BLUE, corner_radius=BaseStyles.RAD_2)
         self.table_section = Table(user_id=self.user_id, tm=self.tm, master=self, fg_color=BaseStyles.SKY_BLUE, corner_radius=0)
+        self.monthly_section = MonthlyReport(user_id=self.user_id, tm=self.tm, master=self, fg_color=BaseStyles.SKY_BLUE)
+        self.quarterly_section = QuarterlyReport(user_id=self.user_id, tm=self, master=self, fg_color=BaseStyles.SKY_BLUE)
         # display sections
-        self.header_section.pack(pady=(BaseStyles.PAD_5+BaseStyles.PAD_5,0))
+        self.header_section.pack(pady=(BaseStyles.PAD_5*2,0))
         self.table_section.pack(pady=(BaseStyles.PAD_2,0))
+        self.monthly_section.pack(pady=(BaseStyles.PAD_2,0))
+        self.quarterly_section.pack(pady=(BaseStyles.PAD_2,BaseStyles.PAD_5*2))
 
     def loadIcons(self):
         # icon path

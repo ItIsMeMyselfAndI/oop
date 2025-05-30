@@ -25,7 +25,8 @@ class App(ctk.CTk):
         # set app title
         self.title("Personal Finance Tracker")
         # initialize dimensions
-        self.geometry(f"{BaseStyles.SCREEN_W}x{BaseStyles.SCREEN_H}")
+        x_pos, y_pos = 0, 0
+        self.geometry(f"{BaseStyles.SCREEN_W}x{BaseStyles.SCREEN_H}+{x_pos}+{y_pos}")
         self.maxsize(BaseStyles.SCREEN_W, BaseStyles.SCREEN_H)
         self.minsize(BaseStyles.SCREEN_W, BaseStyles.SCREEN_H)
         self.resizable(width=True, height=True)
