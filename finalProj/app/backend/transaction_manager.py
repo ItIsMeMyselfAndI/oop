@@ -372,7 +372,8 @@ class TransactionManager:
         return sorted_quarterly_finances
 
 
-    def createMonthlyGraph(self, user_id:int, width_in:int, height_in:int, dpi:int, title_size:int, label_size:int) -> tuple[plt.Figure, plt.Figure]:
+    def createMonthlyGraph(self, user_id:int, width_in:float, height_in:float,
+                           dpi:float, title_size:int, label_size:int) -> tuple[plt.Figure, plt.Figure]:
         monthly_finances = self.calculateMonthlyFinances(user_id=user_id)
         def filter_non_zero(data_dict, attr):
             filtered_months = []
@@ -392,6 +393,7 @@ class TransactionManager:
         ax_income.plot(months_inc, incomes, color='green', marker='o', linestyle='-')
         ax_income.set_title("Income", fontsize=title_size)
         ax_income.set_ylabel("Amount (₱)")
+        ax_income.tick_params(axis="y", labelsize=label_size)
         ax_income.grid(axis='y')
         ax_income.set_xticks(months_inc)
         ax_income.set_xticklabels(months_inc, rotation=80, ha='center', fontsize=label_size)
@@ -411,6 +413,7 @@ class TransactionManager:
         ax_expenses.plot(months_exp, expenses, color='red', marker='o', linestyle='-')
         ax_expenses.set_title("Expenses", fontsize=title_size)
         ax_expenses.set_ylabel("Amount (₱)")
+        ax_expenses.tick_params(axis="y", labelsize=label_size)
         ax_expenses.grid(axis='y')
         ax_expenses.set_xticks(months_exp)
         ax_expenses.set_xticklabels(months_exp, rotation=80, ha='center', fontsize=label_size)
@@ -468,9 +471,11 @@ class TransactionManager:
         root.geometry("1630x1000")
         dpi = root.winfo_fpixels("1i") # px per in
         print(dpi)
-        width_in = int(780 / dpi)
-        height_in = int(500 / dpi)
-        graph_income, graph_expenses = self.createMonthlyGraph(user_id=self.user_id, width_in=width_in, height_in=height_in, dpi=dpi, title_size=20, label_size=15)
+        width_in = 780 / dpi
+        height_in = 500 / dpi
+        graph_income, graph_expenses = self.createMonthlyGraph(user_id=self.user_id,
+                                                               width_in=width_in, height_in=height_in, dpi=dpi,
+                                                               title_size=20, label_size=15)
 
         income_frame = ctk.CTkFrame(root) 
         canvas_income = FigureCanvasTkAgg(graph_income, master=income_frame)
