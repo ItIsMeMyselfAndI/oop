@@ -89,7 +89,7 @@ class ProfilePage(ctk.CTkFrame):
                                          master=self.summary_section, fg_color=BaseStyles.WHITE_PURPLE, corner_radius=BaseStyles.RAD_2)
         # display page sections
         self.header_section.pack(pady=(BaseStyles.PAD_5+BaseStyles.PAD_5,0))
-        self.summary_section.pack(pady=(BaseStyles.PAD_4,0))
+        self.summary_section.pack(pady=(BaseStyles.PAD_2,0))
         # display summary sections
         self.income.grid(row=0, column=0, padx=(BaseStyles.PAD_4,0), pady=(BaseStyles.PAD_4,0), sticky="nsew")
         self.expense.grid(row=0, column=1, padx=BaseStyles.PAD_4, pady=(BaseStyles.PAD_4,0), sticky="nsew")

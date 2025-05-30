@@ -10,6 +10,7 @@ from frontend.pages import EditPage # edit page
 from frontend.pages import HistoryPage # history page
 from frontend.pages import AddPage # edit page
 from frontend.components import SaveBTN # save btn
+from frontend.components import PopUpWin # pop up win
 from backend import TransactionManager # db manager
 
 
@@ -57,28 +58,56 @@ class App(ctk.CTk):
         self.editSaveBtn.pack(pady=BaseStyles.PAD_4)
         self.addSaveBtn.pack(pady=BaseStyles.PAD_4)
 
-        self.protocol("WM_DELETE_WINDOW", self.onCloseApp) # close the app and db properly
+        # create pop ups
+        self.loadPopUp = PopUpWin(title="[Start] Loading App", msg="App pages are loading.\nPlease wait...",
+                                  enable_close=False, master=self, fg_color=BaseStyles.WHITE)
+        self.closePopUp = PopUpWin(title="[Exit] Closing App", msg="App pages is closing.\nPlease wait...",
+                                  enable_close=False, master=self, fg_color=BaseStyles.WHITE)
+        # load all pages
+        print("App started...")
+        print("\nLoading pages...")
+        self.loadPopUp.showWin()
+        self.loadPopUp.after(100, self.loadPages)
+        self.loadPopUp.hideWin()
+        print("Pages loaded.")
+        # close the app and db properly
+        self.protocol("WM_DELETE_WINDOW", self.onCloseApp)
 
-    def onCloseApp(self):
+    def loadPages(self):
+        for page in reversed(self.pages.values()):
+            page.pack()
+            page.pack_forget()
+        # display default page
+        self.sidebar.onClickProfilePage()
+
+    def _closeAll(self):
+        print("\nClosing DB connection...")
         self.tm.repo.connection.close()
-        print("\nClosed DB connection.")
-        print("Closing the app...")
+        print("DB connection closed.")
+        print("\nClosing app...")
         self.destroy()
         print("Closed app.")
 
+    def onCloseApp(self):
+        self.closePopUp.showWin()
+        self.closePopUp.after(100, self._closeAll)
+        self.closePopUp.hideWin()
+
 
 if __name__ == "__main__":
+    print("\nStarting app...")
     try:
         app = App()
     except KeyboardInterrupt:
-        print("\nClosed app.")
+        print("\nApp closed.")
         exit(0)
     # exit properly during keyboard interrupt
     try:
         app.mainloop()
     except KeyboardInterrupt:
+        print("\nClosing DB connection...")
         app.tm.repo.connection.close()
-        print("\nClosed DB connection.")
-        print("Closing the app...")
+        print("DB connection closed.")
+        print("\nClosing app...")
         app.destroy()
-        print("Closed app.")
+        print("App closed.")

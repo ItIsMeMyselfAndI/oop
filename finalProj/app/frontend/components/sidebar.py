@@ -31,7 +31,7 @@ class SidebarTabs(ctk.CTkFrame):
         self.addBTN.pack(pady=BaseStyles.PAD_2, padx=BaseStyles.PAD_1)
         # open default page
         # self.onClickEditPage()
-        self.onClickProfilePage()
+        # self.onClickProfilePage()
 
     def loadIcons(self):
         # icon path
@@ -65,5 +65,5 @@ class SidebarTabs(ctk.CTkFrame):
             self.tabBTNs[name].configure(fg_color=BaseStyles.WHITE, hover_color=BaseStyles.LIGHT_GREY)
         # open selected page and change fg, hover & text color
         self.pages[page_name].isCurrentPage = True
-        self.pages[page_name].pack(fill="both", expand=True)
+        self.pages[page_name].pack()
         self.tabBTNs[page_name].configure(fg_color=BaseStyles.BLUE, hover_color=BaseStyles.DARK_BLUE)

@@ -6,3 +6,4 @@ from .edit import EditStyles
 from .history import HistoryStyles
 from .add import AddStyles
 from .save import SaveStyles
+from .popup_win import PopUpWinStyles

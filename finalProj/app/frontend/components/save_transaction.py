@@ -3,41 +3,9 @@ import customtkinter as ctk
 # our modules/libs
 from backend.transaction_manager import Transaction
 from frontend.styles import BaseStyles, SaveStyles # paddings, dimensions, colors, etc
+from frontend.components.popup_win import PopUpWin
 
 
-# updatePopUp pop up
-class PopUpWin(ctk.CTkToplevel):
-    def __init__(self, title, msg, enable_close, master, **kwargs):
-        super().__init__(master, **kwargs)
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, slant="italic", weight="normal")
-        # initialize win dimensions
-        self.x_pos = int((BaseStyles.SCREEN_W / 2) - (SaveStyles.SAVE_POPUP_WIN_W / 2))
-        self.y_pos = int((BaseStyles.SCREEN_H / 2) - (SaveStyles.SAVE_POPUP_WIN_H / 2))
-        # create win
-        self.title(title)
-        self.geometry(f"{SaveStyles.SAVE_POPUP_WIN_W}x{SaveStyles.SAVE_POPUP_WIN_H}+{self.x_pos}+{self.y_pos}")
-        self.resizable(width=False, height=False)
-        # create content
-        self.label = ctk.CTkLabel(self, font=self.font1, width=SaveStyles.SAVE_POPUP_WIN_W, height=SaveStyles.SAVE_POPUP_WIN_H, text=msg, text_color=BaseStyles.DARK_GREY, wraplength=SaveStyles.SAVE_POPUP_WIN_W)
-        self.label.pack(anchor="center")
-        # hide win
-        self.withdraw()
-        # block app input w/ frame
-        self.input_blocker_frame = ctk.CTkFrame(master=master, fg_color=BaseStyles.SKY_BLUE, width=BaseStyles.SCREEN_W, height=BaseStyles.SCREEN_H)
-        # disable manual close -> closes automatically
-        if not enable_close:
-            self.protocol("WM_DELETE_WINDOW", self.disabledCloseWin)
-
-    def disabledCloseWin(self):
-        pass
-
-    def showWin(self):
-        self.input_blocker_frame.place(relx=0.0, rely=0.0) # cover screen w/ transparent frame
-        self.deiconify() # show win
-
-    def hideWin(self):
-        self.input_blocker_frame.place_forget() # uncover screen w/ transparent frame
-        self.withdraw() # hide win
 
 
 # save section
@@ -53,8 +21,8 @@ class SaveBTN(ctk.CTkFrame):
         self.btn = ctk.CTkButton(self, width=SaveStyles.SAVE_BTN_W, height=SaveStyles.SAVE_BTN_H, text="Save Changes", font=self.font, text_color=BaseStyles.WHITE,
                                  fg_color=BaseStyles.BLUE, hover_color=BaseStyles.DARK_BLUE, corner_radius=BaseStyles.RAD_2, command=self.onClickSave)
         # create update popup
-        self.updatePopUp = PopUpWin(title="[Update] Database", msg="Updating transactions.\nPlease wait...", enable_close=False,
-                                    master=self.app, fg_color=BaseStyles.WHITE)
+        self.updatePopUp = PopUpWin(title="[Update] Database", msg="Updating transactions.\nPlease wait...",
+                                    enable_close=False, master=self.app, fg_color=BaseStyles.WHITE)
         # # create invalid input popups
         # self.emptyDescriptionPopUp = PopUpWin(title="[Err] Invalid Input", msg="Only submit non-empty description.\nTry again.", enable_close=True,
         #                                       master=self.app, fg_color=BaseStyles.WHITE)
@@ -76,9 +44,6 @@ class SaveBTN(ctk.CTkFrame):
         self.pages["edit"].updatePageDisplay()
         self.pages["profile"].updatePageDisplay()
         self.pages["history"].updatePageDisplay()
-        # end updatePopUp
-        self.updatePopUp.hideWin()
-        print("\nend update")
 
     def onClickSave(self):
         # start updatePopUp
@@ -86,4 +51,7 @@ class SaveBTN(ctk.CTkFrame):
         self.updatePopUp.showWin()
         # w8 for the updatePopUp win to initialize then update
         self.updatePopUp.after(100, self._updateBackendAndFrontend)
+        # end updatePopUp
+        self.updatePopUp.hideWin()
+        print("\nend update")
 
