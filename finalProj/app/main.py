@@ -19,8 +19,8 @@ class App(ctk.CTk):
         super().__init__()
         db_path = os.path.abspath("db/transactions.db")
         # user
-        # create transaction manager
         self.user_id = 1
+        # create transaction manager
         self.tm = TransactionManager(db_path)
         # set app title
         self.title("Personal Finance Tracker")
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\nClosed app.")
         exit(0)
-
+    # exit properly during keyboard interrupt
     try:
         app.mainloop()
     except KeyboardInterrupt:

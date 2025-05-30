@@ -41,13 +41,13 @@ class TableFilters(ctk.CTkFrame):
                                            dropdown_fg_color=s.WHITE, dropdown_hover_color=s.BLUE,
                                            dropdown_text_color=s.DARK_GREY, button_color=s.WHITE,
                                            button_hover_color=s.LIGHT_GREY, corner_radius=s.RAD_2,
-                                           width=s.TABLE_FILTER_MENU_W, height=s.TABLE_FILTER_MENU_H, command=self.onPickType)
+                                           width=s.HISTORY_TABLE_FILTER_MENU_W, height=s.HISTORY_TABLE_FILTER_MENU_H, command=self.onPickType)
         self.category_menu = ctk.CTkOptionMenu(self, values=self.current_categories, font=self.font1, text_color=s.DARK_GREY,
                                                fg_color=s.WHITE, dropdown_font=self.font1,
                                                dropdown_fg_color=s.WHITE, dropdown_hover_color=s.BLUE,
                                                dropdown_text_color=s.DARK_GREY, button_color=s.WHITE,
                                                button_hover_color=s.LIGHT_GREY, corner_radius=s.RAD_2,
-                                               width=s.TABLE_FILTER_MENU_W, height=s.TABLE_FILTER_MENU_H, command=self.onPickCategories)
+                                               width=s.HISTORY_TABLE_FILTER_MENU_W, height=s.HISTORY_TABLE_FILTER_MENU_H, command=self.onPickCategories)
         # display menus 
         self.type_menu.grid(row=0, column=0, padx=(0,s.PAD_1))
         self.category_menu.grid(row=0, column=1)
@@ -87,19 +87,19 @@ class TableRow(ctk.CTkFrame):
         
         self.date_label = ctk.CTkLabel(self, text=self.t.t_date, font=self.font1,
                                        text_color=s.DARK_GREY, fg_color=s.WHITE, anchor="w",
-                                       width=s.TABLE_COL_W1, wraplength=s.TABLE_COL_W1, justify="left")
+                                       width=s.HISTORY_TABLE_COL_W1, wraplength=s.HISTORY_TABLE_COL_W1, justify="left")
         self.type_label = ctk.CTkLabel(self, text=self.t.t_type, font=self.font1,
                                        text_color=s.DARK_GREY, fg_color=s.WHITE, anchor="w",
-                                       width=s.TABLE_COL_W2, wraplength=s.TABLE_COL_W2, justify="left")
+                                       width=s.HISTORY_TABLE_COL_W2, wraplength=s.HISTORY_TABLE_COL_W2, justify="left")
         self.category_label = ctk.CTkLabel(self, text=self.t.t_category, font=self.font1,
                                            text_color=s.DARK_GREY, fg_color=s.WHITE, anchor="w",
-                                           width=s.TABLE_COL_W2, wraplength=s.TABLE_COL_W2, justify="left")
+                                           width=s.HISTORY_TABLE_COL_W2, wraplength=s.HISTORY_TABLE_COL_W2, justify="left")
         self.description_label = ctk.CTkLabel(self, text=self.t.t_description, font=self.font1,
                                               text_color=s.DARK_GREY, fg_color=s.WHITE, anchor="w",
-                                              width=s.TABLE_COL_W3, wraplength=s.TABLE_COL_W3, justify="left")
+                                              width=s.HISTORY_TABLE_COL_W3, wraplength=s.HISTORY_TABLE_COL_W3, justify="left")
         self.amount_label = ctk.CTkLabel(self, text=f"₱ {self.t.t_amount:,}", font=self.font1,
                                          text_color=s.DARK_GREY, fg_color=s.WHITE, anchor="e",
-                                         width=s.TABLE_COL_W3, wraplength=s.TABLE_COL_W3, justify="right")
+                                         width=s.HISTORY_TABLE_COL_W3, wraplength=s.HISTORY_TABLE_COL_W3, justify="right")
         
         
 class TableNavigation(ctk.CTkFrame):
@@ -109,10 +109,10 @@ class TableNavigation(ctk.CTkFrame):
         self.font1 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_1, slant="italic", weight="normal")
         # create nav btns
         self.prevBTN = ctk.CTkButton(self, text="Prev", text_color=s.WHITE, fg_color=s.BLUE, hover_color=s.DARK_BLUE,
-                                     font=self.font1, corner_radius=s.RAD_2, width=s.TABLE_NAV_BTN_W, height=s.TABLE_NAV_BTN_H,
+                                     font=self.font1, corner_radius=s.RAD_2, width=s.HISTORY_TABLE_NAV_BTN_W, height=s.HISTORY_TABLE_NAV_BTN_H,
                                      command=self.onClickPrev)
         self.nextBTN = ctk.CTkButton(self, text="Next", text_color=s.WHITE, fg_color=s.BLUE, hover_color=s.DARK_BLUE,
-                                     font=self.font1, corner_radius=s.RAD_2, width=s.TABLE_NAV_BTN_W, height=s.TABLE_NAV_BTN_H,
+                                     font=self.font1, corner_radius=s.RAD_2, width=s.HISTORY_TABLE_NAV_BTN_W, height=s.HISTORY_TABLE_NAV_BTN_H,
                                      command=self.onClickNext)
         # display nav btns
         self.prevBTN.grid(row=0, column=0, padx=(0,s.PAD_1))
@@ -143,25 +143,25 @@ class Table(ctk.CTkFrame):
         self.filters = TableFilters(table=self, master=header_section, fg_color=s.BLUE)
         self.table_header = ctk.CTkFrame(self, fg_color=s.WHITE, corner_radius=s.RAD_2)
         self.table_body = ctk.CTkScrollableFrame(self, fg_color=s.WHITE, orientation="vertical",
-                                                 corner_radius=s.RAD_2, height=s.TABLE_BODY_H, width=s.TABLE_BODY_W)
+                                                 corner_radius=s.RAD_2, height=s.HISTORY_TABLE_BODY_H, width=s.HISTORY_TABLE_BODY_W)
         self.table_nav = TableNavigation(table=self, master=self, fg_color=s.SKY_BLUE)
         # table header
         self.date_header = ctk.CTkLabel(self.table_header, text="Date", font=self.font1,
                                        text_color=s.DARK_GREY, fg_color="transparent", anchor="w",
-                                       width=s.TABLE_COL_W1, height=s.TABLE_ROW_H)
+                                       width=s.HISTORY_TABLE_COL_W1, height=s.HISTORY_TABLE_ROW_H)
         self.type_header = ctk.CTkLabel(self.table_header, text="Type", font=self.font1,
                                        text_color=s.DARK_GREY, fg_color="transparent", anchor="w",
-                                       width=s.TABLE_COL_W2, height=s.TABLE_ROW_H)
+                                       width=s.HISTORY_TABLE_COL_W2, height=s.HISTORY_TABLE_ROW_H)
         self.category_header = ctk.CTkLabel(self.table_header, text="Category", font=self.font1,
                                        text_color=s.DARK_GREY, fg_color="transparent", anchor="w",
-                                       width=s.TABLE_COL_W2, height=s.TABLE_ROW_H)
+                                       width=s.HISTORY_TABLE_COL_W2, height=s.HISTORY_TABLE_ROW_H)
         self.description_header = ctk.CTkLabel(self.table_header, text="Description", font=self.font1,
                                        text_color=s.DARK_GREY, fg_color="transparent", anchor="w",
-                                       width=s.TABLE_COL_W3, height=s.TABLE_ROW_H)
+                                       width=s.HISTORY_TABLE_COL_W3, height=s.HISTORY_TABLE_ROW_H)
         self.amount_header = ctk.CTkLabel(self.table_header, text="Amount", font=self.font1,
                                        text_color=s.DARK_GREY, fg_color="transparent", anchor="e",
-                                       width=s.TABLE_COL_W3, height=s.TABLE_ROW_H)
-        # initialize table body
+                                       width=s.HISTORY_TABLE_COL_W3, height=s.HISTORY_TABLE_ROW_H)
+        # initialize table content
         self.all_rows_by_filter_per_page = self.loadAllRowsByFilterPerTablePage()
         self.current_rows_per_page = self.all_rows_by_filter_per_page["All Types"]
         self.current_page_num = 0
@@ -176,7 +176,7 @@ class Table(ctk.CTkFrame):
         self.category_header.grid(row=0, column=2, padx=(0,s.PAD_2), pady=s.PAD_1)
         self.description_header.grid(row=0, column=3, padx=(0,s.PAD_2), pady=s.PAD_1)
         self.amount_header.grid(row=0, column=4, padx=(0,s.PAD_2), pady=s.PAD_1)
-        # display default table body
+        # display default table page
         self.showRowsInCurrentPage()
 
     def _groupTransactionsPerTablePage(self, transactions):

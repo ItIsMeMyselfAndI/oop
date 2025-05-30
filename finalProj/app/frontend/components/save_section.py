@@ -11,14 +11,14 @@ class PopUpWin(ctk.CTkToplevel):
         super().__init__(master, **kwargs)
         self.font1 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_2, slant="italic", weight="normal")
         # initialize win dimensions
-        self.x_pos = int((s.SCREEN_W / 2) - (s.POPUP_WIN_W / 2))
-        self.y_pos = int((s.SCREEN_H / 2) - (s.POPUP_WIN_H / 2))
+        self.x_pos = int((s.SCREEN_W / 2) - (s.SAVE_POPUP_WIN_W / 2))
+        self.y_pos = int((s.SCREEN_H / 2) - (s.SAVE_POPUP_WIN_H / 2))
         # create win
         self.title(title)
-        self.geometry(f"{s.POPUP_WIN_W}x{s.POPUP_WIN_H}+{self.x_pos}+{self.y_pos}")
+        self.geometry(f"{s.SAVE_POPUP_WIN_W}x{s.SAVE_POPUP_WIN_H}+{self.x_pos}+{self.y_pos}")
         self.resizable(width=False, height=False)
         # create content
-        self.label = ctk.CTkLabel(self, font=self.font1, width=s.POPUP_WIN_W, height=s.POPUP_WIN_H, text=msg, text_color=s.DARK_GREY, wraplength=s.POPUP_WIN_W)
+        self.label = ctk.CTkLabel(self, font=self.font1, width=s.SAVE_POPUP_WIN_W, height=s.SAVE_POPUP_WIN_H, text=msg, text_color=s.DARK_GREY, wraplength=s.SAVE_POPUP_WIN_W)
         self.label.pack(anchor="center")
         # hide win
         self.withdraw()

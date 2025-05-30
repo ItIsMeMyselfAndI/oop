@@ -16,8 +16,8 @@ class ProfileHeader(ctk.CTkFrame):
         # create guide frames
         self.img_bg = ctk.CTkLabel(self, corner_radius=s.RAD_2, fg_color="transparent", image=img,
                                    text="", width=s.PROFILE_IMG_BG_W, height=s.PROFILE_IMG_BG_H)
-        self.uname_frame = ctk.CTkFrame(self, corner_radius=s.RAD_2, fg_color="transparent", width=s.SUMMARY_IMG_FRAME_W)
-        self.balance_frame = ctk.CTkFrame(self, corner_radius=s.RAD_2, fg_color="transparent", width=s.SUMMARY_IMG_FRAME_W)
+        self.uname_frame = ctk.CTkFrame(self, corner_radius=s.RAD_2, fg_color="transparent")
+        self.balance_frame = ctk.CTkFrame(self, corner_radius=s.RAD_2, fg_color="transparent")
         # create label
         self.uname_label = ctk.CTkLabel(self.uname_frame, text=uname, font=self.font2, text_color=s.WHITE,
                                         anchor="w", width=s.PROFILE_LABEL_W1)
@@ -43,13 +43,13 @@ class SummarySection(ctk.CTkFrame):
         self.font2 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_6, slant="italic", weight="normal")
         self.img = img
         # create guide frames
-        self.img_bg = ctk.CTkLabel(self, height=s.SUMMARY_IMG_FRAME_H, width=s.SUMMARY_IMG_FRAME_W,
+        self.img_bg = ctk.CTkLabel(self, height=s.PROFILE_SUMMARY_IMG_FRAME_H, width=s.PROFILE_SUMMARY_IMG_FRAME_W,
                                    corner_radius=s.RAD_2, fg_color=img_bg_color, image=img, text="")
-        self.details_frame = ctk.CTkFrame(self, width=s.SUMMARY_IMG_FRAME_W, corner_radius=s.RAD_2, fg_color="transparent")
+        self.details_frame = ctk.CTkFrame(self, width=s.PROFILE_SUMMARY_IMG_FRAME_W, corner_radius=s.RAD_2, fg_color="transparent")
         # create labels
         self.summary_type_label = ctk.CTkLabel(self.details_frame, text=summary_type, font=self.font1, text_color=s.DARK_GREY, anchor="w")
         self.amount_label = ctk.CTkLabel(self.details_frame, text=f"₱ {amount:,}", font=self.font2, text_color=s.DARK_GREY,
-                                         width=s.SUMMARY_LABEL_W, anchor="w")
+                                         width=s.PROFILE_SUMMARY_LABEL_W, anchor="w")
         # display guide frames
         self.img_bg.grid(row=0, column=0, padx=(s.PAD_5, 0), pady=s.PAD_5)
         self.details_frame.grid(row=0, column=1, padx=(s.PAD_3, s.PAD_5), pady=s.PAD_1)
@@ -73,29 +73,24 @@ class Profile(ctk.CTkFrame):
         # create page sections
         self.header_section = ProfileHeader(img=profile_icon, uname=f"User {self.user_id}", 
                                             summary_type="Total Balance:", amount=balance,
-                                            master=self, fg_color=s.BLUE, corner_radius=s.RAD_2,
-                                            height=s.PROFILE_HEADER_SECTION_H, width=s.PROFILE_HEADER_SECTION_W)
+                                            master=self, fg_color=s.BLUE, corner_radius=s.RAD_2)
         self.summary_section = ctk.CTkFrame(self, fg_color=s.WHITE, corner_radius=s.RAD_2)
         # create summary sub-sections
-        self.income = SummarySection(img=income_icon, summary_type="Total Income:",
-                                     amount=finance.total_income, master=self.summary_section,
-                                     fg_color=s.WHITE_BLUE, corner_radius=s.RAD_2, height=s.SUMMARY_ELEM_H,
-                                     width=s.SUMMARY_ELEM_W, img_bg_color=s.LIGHT_BLUE)
-        self.expense = SummarySection(img=expense_icon, summary_type="Total Expenses:",
-                                      amount=finance.total_expenses, master=self.summary_section,
-                                      fg_color=s.WHITE_RED, corner_radius=s.RAD_2, height=s.SUMMARY_ELEM_H,
-                                      width=s.SUMMARY_ELEM_W, img_bg_color=s.LIGHT_RED)
-        self.savings = SummarySection(img=savings_icon, summary_type="Total Savings:",
-                                      amount=finance.total_savings, master=self.summary_section,
-                                      fg_color=s.WHITE_GREEN, corner_radius=s.RAD_2, height=s.SUMMARY_ELEM_H,
-                                      width=s.SUMMARY_ELEM_W, img_bg_color=s.LIGHT_GREEN)
-        self.investment = SummarySection(img=investment_icon, summary_type="Total Investment:",
-                                         amount=finance.total_investment, master=self.summary_section,
-                                         fg_color=s.WHITE_PURPLE, corner_radius=s.RAD_2, height=s.SUMMARY_ELEM_H,
-                                         width=s.SUMMARY_ELEM_W, img_bg_color=s.LIGHT_PURPLE)
+        self.income = SummarySection(img=income_icon, img_bg_color=s.LIGHT_BLUE,
+                                     summary_type="Total Income:", amount=finance.total_income,
+                                     master=self.summary_section, fg_color=s.WHITE_BLUE, corner_radius=s.RAD_2)
+        self.expense = SummarySection(img=expense_icon, img_bg_color=s.LIGHT_RED,
+                                      summary_type="Total Expenses:", amount=finance.total_expenses,
+                                      master=self.summary_section, fg_color=s.WHITE_RED, corner_radius=s.RAD_2)
+        self.savings = SummarySection(img=savings_icon, img_bg_color=s.LIGHT_GREEN,
+                                      summary_type="Total Savings:", amount=finance.total_savings,
+                                      master=self.summary_section, fg_color=s.WHITE_GREEN, corner_radius=s.RAD_2)
+        self.investment = SummarySection(img=investment_icon, img_bg_color=s.LIGHT_PURPLE, 
+                                         summary_type="Total Investment:", amount=finance.total_investment,
+                                         master=self.summary_section, fg_color=s.WHITE_PURPLE, corner_radius=s.RAD_2)
         # display page sections
         self.header_section.pack(pady=(s.PAD_5+s.PAD_5,0))
-        self.summary_section.pack(padx=s.PAD_5, pady=(s.PAD_4, s.PAD_5+s.PAD_5))
+        self.summary_section.pack(pady=(s.PAD_4,0))
         # display summary sections
         self.income.grid(row=0, column=0, padx=(s.PAD_4,0), pady=(s.PAD_4,0), sticky="nsew")
         self.expense.grid(row=0, column=1, padx=s.PAD_4, pady=(s.PAD_4,0), sticky="nsew")
@@ -107,10 +102,10 @@ class Profile(ctk.CTkFrame):
         ICONS_FOLDER = os.path.abspath("assets/icons")
         # load images
         profile_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/profile1.png"), size=(s.PROFILE_IMG_H, s.PROFILE_IMG_W))
-        income_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/income.png"), size=(s.SUMMARY_IMG_H, s.SUMMARY_IMG_W))
-        savings_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/savings.png"), size=(s.SUMMARY_IMG_H, s.SUMMARY_IMG_W))
-        expense_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/expense.png"), size=(s.SUMMARY_IMG_H, s.SUMMARY_IMG_W))
-        investment_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/investment.png"), size=(s.SUMMARY_IMG_H, s.SUMMARY_IMG_W))
+        income_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/income.png"), size=(s.PROFILE_SUMMARY_IMG_H, s.PROFILE_SUMMARY_IMG_W))
+        savings_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/savings.png"), size=(s.PROFILE_SUMMARY_IMG_H, s.PROFILE_SUMMARY_IMG_W))
+        expense_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/expense.png"), size=(s.PROFILE_SUMMARY_IMG_H, s.PROFILE_SUMMARY_IMG_W))
+        investment_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/investment.png"), size=(s.PROFILE_SUMMARY_IMG_H, s.PROFILE_SUMMARY_IMG_W))
         return profile_icon, income_icon, savings_icon, expense_icon, investment_icon
     
     def updatePageDisplay(self):

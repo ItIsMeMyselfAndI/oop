@@ -45,7 +45,7 @@ class EditTransactionForm(ctk.CTkFrame):
                                                  fg_color=s.BLUE, corner_radius=s.RAD_2,
                                                  dropdown_font=self.font1, dropdown_fg_color=s.WHITE,
                                                  dropdown_hover_color=s.BLUE, dropdown_text_color=s.DARK_GREY,
-                                                 width=s.TRANSACTION_MENU_W, height=s.TRANSACTION_MENU_H)
+                                                 width=s.EDIT_TRANSACTION_MENU_W, height=s.EDIT_TRANSACTION_MENU_H)
         self.dateLabel = ctk.CTkLabel(self.frame1, text="Select New Date",
                                       font=self.font3, text_color=s.DARK_GREY)
         self.dateMenu = DatePicker(picker_height=s.EDIT_DATE_MENU_H, spacing=s.PAD_1, rad=s.RAD_2,
@@ -177,9 +177,9 @@ class Edit(ctk.CTkFrame):
         self.tabs = EditPageTabs(transactionForms=self.transactionForms, master=self,
                          fg_color=s.SKY_BLUE, corner_radius=0)
         # show page sections 
-        self.header_section.pack(anchor="w", padx=s.PAD_4+s.PAD_4, pady=(s.PAD_4+s.PAD_4,0))
+        self.header_section.pack(anchor="w", padx=(s.PAD_4+s.PAD_4,0), pady=(s.PAD_4+s.PAD_4,0))
         self.tabs.pack(padx=s.PAD_3, pady=(s.PAD_4,0))
-        self.forms_section.pack(padx=s.PAD_3, pady=(s.PAD_3,0))
+        self.forms_section.pack(pady=(s.PAD_3,0))
 
     def createEditTransactionForm(self, transaction_type):
         # valid categories
