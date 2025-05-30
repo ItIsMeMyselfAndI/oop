@@ -3,7 +3,7 @@ import customtkinter as ctk
 import os
 from PIL import Image
 # our modules/libs
-from frontend.styles import Styles as s # paddings, dimensions, colors, etc
+from frontend.styles import BaseStyles, SidebarStyles # paddings, dimensions, colors, etc
 
 
 class Sidebar(ctk.CTkFrame):
@@ -24,11 +24,11 @@ class Sidebar(ctk.CTkFrame):
             "add":self.addBTN
         }
         # display page buttons/tabs
-        self.profileBTN.pack(pady=(s.PAD_1,0), padx=s.PAD_1)
-        self.homeBTN.pack(pady=(s.PAD_2,0), padx=s.PAD_1)
-        self.editBTN.pack(pady=(s.PAD_2,0), padx=s.PAD_1)
-        self.historyBTN.pack(pady=(s.PAD_2,0), padx=s.PAD_1)
-        self.addBTN.pack(pady=s.PAD_2, padx=s.PAD_1)
+        self.profileBTN.pack(pady=(BaseStyles.PAD_1,0), padx=BaseStyles.PAD_1)
+        self.homeBTN.pack(pady=(BaseStyles.PAD_2,0), padx=BaseStyles.PAD_1)
+        self.editBTN.pack(pady=(BaseStyles.PAD_2,0), padx=BaseStyles.PAD_1)
+        self.historyBTN.pack(pady=(BaseStyles.PAD_2,0), padx=BaseStyles.PAD_1)
+        self.addBTN.pack(pady=BaseStyles.PAD_2, padx=BaseStyles.PAD_1)
         # open default page
         # self.onClickEditPage()
         self.onClickProfilePage()
@@ -37,16 +37,16 @@ class Sidebar(ctk.CTkFrame):
         # icon path
         ICONS_FOLDER = os.path.abspath("assets/icons")
         # load images
-        home_icon = ctk.CTkImage(light_image=Image.open(f"{ICONS_FOLDER}/home.png"), size=(s.SIDEBAR_IMG_W,s.SIDEBAR_IMG_H))
-        profile_icon = ctk.CTkImage(light_image=Image.open(f"{ICONS_FOLDER}/profile.png"), size=(s.SIDEBAR_IMG_W,s.SIDEBAR_IMG_H))
-        add_icon = ctk.CTkImage(light_image=Image.open(f"{ICONS_FOLDER}/add.png"), size=(s.SIDEBAR_IMG_W,s.SIDEBAR_IMG_H))
-        edit_icon = ctk.CTkImage(light_image=Image.open(f"{ICONS_FOLDER}/edit.png"), size=(s.SIDEBAR_IMG_W,s.SIDEBAR_IMG_H))
-        history_icon = ctk.CTkImage( light_image=Image.open(f"{ICONS_FOLDER}/history.png"), size=(s.SIDEBAR_IMG_W,s.SIDEBAR_IMG_H))
+        home_icon = ctk.CTkImage(light_image=Image.open(f"{ICONS_FOLDER}/home.png"), size=(SidebarStyles.IMG_W,SidebarStyles.IMG_H))
+        profile_icon = ctk.CTkImage(light_image=Image.open(f"{ICONS_FOLDER}/profile.png"), size=(SidebarStyles.IMG_W,SidebarStyles.IMG_H))
+        add_icon = ctk.CTkImage(light_image=Image.open(f"{ICONS_FOLDER}/add.png"), size=(SidebarStyles.IMG_W,SidebarStyles.IMG_H))
+        edit_icon = ctk.CTkImage(light_image=Image.open(f"{ICONS_FOLDER}/edit.png"), size=(SidebarStyles.IMG_W,SidebarStyles.IMG_H))
+        history_icon = ctk.CTkImage( light_image=Image.open(f"{ICONS_FOLDER}/history.png"), size=(SidebarStyles.IMG_W,SidebarStyles.IMG_H))
         return home_icon, profile_icon, add_icon, edit_icon, history_icon
 
     def createTabBtn(self, image, command):
-        btn = ctk.CTkButton(self, text="", corner_radius=s.RAD_1, fg_color=s.WHITE, hover_color=s.LIGHT_GREY,
-                            image=image, height=s.SIDEBAR_BTN_H, width=s.SIDEBAR_BTN_W, command=command)
+        btn = ctk.CTkButton(self, text="", corner_radius=BaseStyles.RAD_1, fg_color=BaseStyles.WHITE, hover_color=BaseStyles.LIGHT_GREY,
+                            image=image, height=SidebarStyles.BTN_H, width=SidebarStyles.BTN_W, command=command)
         return btn
 
     def onClickProfilePage(self): self._switchTabTo("profile")
@@ -62,8 +62,8 @@ class Sidebar(ctk.CTkFrame):
             # close all pages
             page.pack_forget()
             # reset all buttons
-            self.tabBTNs[name].configure(fg_color=s.WHITE, hover_color=s.LIGHT_GREY)
+            self.tabBTNs[name].configure(fg_color=BaseStyles.WHITE, hover_color=BaseStyles.LIGHT_GREY)
         # open selected page and change fg, hover & text color
         self.pages[page_name].isCurrentPage = True
         self.pages[page_name].pack(fill="both", expand=True)
-        self.tabBTNs[page_name].configure(fg_color=s.BLUE, hover_color=s.DARK_BLUE)
+        self.tabBTNs[page_name].configure(fg_color=BaseStyles.BLUE, hover_color=BaseStyles.DARK_BLUE)

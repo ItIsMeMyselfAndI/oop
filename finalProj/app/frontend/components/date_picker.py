@@ -2,7 +2,7 @@
 import customtkinter as ctk
 from datetime import datetime
 # our modules/libs
-from frontend.styles import Styles as s # paddings, dimensions, colors, etc
+from frontend.styles import * # paddings, dimensions, colors, etc
 
 
 class DatePicker(ctk.CTkFrame):
@@ -20,27 +20,27 @@ class DatePicker(ctk.CTkFrame):
         self.days = [f"{str(i):0>2}" for i in range(1, 32)]
         # create date menu
         self.year_menu = ctk.CTkOptionMenu(self, values=self.years,
-                                      font=ctk_font, text_color=s.DARK_GREY,
-                                      fg_color=s.BLUE, dropdown_font=dropdown_ctk_font,
+                                      font=ctk_font, text_color=BaseStyles.DARK_GREY,
+                                      fg_color=BaseStyles.BLUE, dropdown_font=dropdown_ctk_font,
                                       dropdown_fg_color=dropdown_fg_color,
                                       dropdown_hover_color=dropdown_hover_color,
-                                      dropdown_text_color=s.DARK_GREY, corner_radius=rad,
+                                      dropdown_text_color=BaseStyles.DARK_GREY, corner_radius=rad,
                                       width=year_width, height=picker_height,
                                       command=self.updateDaysFromYear)
         self.month_menu = ctk.CTkOptionMenu(self, values=self.months,
-                                       font=ctk_font, text_color=s.DARK_GREY,
-                                       fg_color=s.BLUE, dropdown_font=dropdown_ctk_font,
+                                       font=ctk_font, text_color=BaseStyles.DARK_GREY,
+                                       fg_color=BaseStyles.BLUE, dropdown_font=dropdown_ctk_font,
                                        dropdown_fg_color=dropdown_fg_color,
                                        dropdown_hover_color=dropdown_hover_color,
-                                       dropdown_text_color=s.DARK_GREY, corner_radius=rad,
+                                       dropdown_text_color=BaseStyles.DARK_GREY, corner_radius=rad,
                                        width=month_width, height=picker_height,
                                        command=self.updateDaysFromMonth)
         self.day_menu = ctk.CTkOptionMenu(self, values=self.days,
-                                     font=ctk_font, text_color=s.DARK_GREY,
-                                     fg_color=s.BLUE, dropdown_font=dropdown_ctk_font,
+                                     font=ctk_font, text_color=BaseStyles.DARK_GREY,
+                                     fg_color=BaseStyles.BLUE, dropdown_font=dropdown_ctk_font,
                                      dropdown_fg_color=dropdown_fg_color,
                                      dropdown_hover_color=dropdown_hover_color,
-                                     dropdown_text_color=s.DARK_GREY,
+                                     dropdown_text_color=BaseStyles.DARK_GREY,
                                      corner_radius=rad, width=day_width, height=picker_height)
         # display date menu
         self.year_menu.grid(row=0, column=0, padx=(0,spacing))

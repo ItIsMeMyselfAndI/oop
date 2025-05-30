@@ -2,28 +2,28 @@
 import customtkinter as ctk
 # our modules/libs
 from backend.transaction_manager import Transaction
-from frontend.styles import Styles as s # paddings, dimensions, colors, etc
+from frontend.styles import BaseStyles, SaveStyles # paddings, dimensions, colors, etc
 
 
 # updatePopUp pop up
 class PopUpWin(ctk.CTkToplevel):
     def __init__(self, title, msg, enable_close, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_2, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, slant="italic", weight="normal")
         # initialize win dimensions
-        self.x_pos = int((s.SCREEN_W / 2) - (s.SAVE_POPUP_WIN_W / 2))
-        self.y_pos = int((s.SCREEN_H / 2) - (s.SAVE_POPUP_WIN_H / 2))
+        self.x_pos = int((BaseStyles.SCREEN_W / 2) - (SaveStyles.SAVE_POPUP_WIN_W / 2))
+        self.y_pos = int((BaseStyles.SCREEN_H / 2) - (SaveStyles.SAVE_POPUP_WIN_H / 2))
         # create win
         self.title(title)
-        self.geometry(f"{s.SAVE_POPUP_WIN_W}x{s.SAVE_POPUP_WIN_H}+{self.x_pos}+{self.y_pos}")
+        self.geometry(f"{SaveStyles.SAVE_POPUP_WIN_W}x{SaveStyles.SAVE_POPUP_WIN_H}+{self.x_pos}+{self.y_pos}")
         self.resizable(width=False, height=False)
         # create content
-        self.label = ctk.CTkLabel(self, font=self.font1, width=s.SAVE_POPUP_WIN_W, height=s.SAVE_POPUP_WIN_H, text=msg, text_color=s.DARK_GREY, wraplength=s.SAVE_POPUP_WIN_W)
+        self.label = ctk.CTkLabel(self, font=self.font1, width=SaveStyles.SAVE_POPUP_WIN_W, height=SaveStyles.SAVE_POPUP_WIN_H, text=msg, text_color=BaseStyles.DARK_GREY, wraplength=SaveStyles.SAVE_POPUP_WIN_W)
         self.label.pack(anchor="center")
         # hide win
         self.withdraw()
         # block app input w/ frame
-        self.input_blocker_frame = ctk.CTkFrame(master=master, fg_color=s.SKY_BLUE, width=s.SCREEN_W, height=s.SCREEN_H)
+        self.input_blocker_frame = ctk.CTkFrame(master=master, fg_color=BaseStyles.SKY_BLUE, width=BaseStyles.SCREEN_W, height=BaseStyles.SCREEN_H)
         # disable manual close -> closes automatically
         if not enable_close:
             self.protocol("WM_DELETE_WINDOW", self.disabledCloseWin)
@@ -48,20 +48,20 @@ class Save(ctk.CTkFrame):
         self.user_id = user_id
         self.tm = tm
         self.pages = pages
-        self.font = ctk.CTkFont(family="Bodoni MT", size=s.FONT_SIZE_3, slant="italic", weight="normal")
+        self.font = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, slant="italic", weight="normal")
         # create button
-        self.btn = ctk.CTkButton(self, width=s.SAVE_BTN_W, height=s.SAVE_BTN_H, text="Save Changes", font=self.font, text_color=s.WHITE,
-                                 fg_color=s.BLUE, hover_color=s.DARK_BLUE, corner_radius=s.RAD_2, command=self.onClickSave)
+        self.btn = ctk.CTkButton(self, width=SaveStyles.SAVE_BTN_W, height=SaveStyles.SAVE_BTN_H, text="Save Changes", font=self.font, text_color=BaseStyles.WHITE,
+                                 fg_color=BaseStyles.BLUE, hover_color=BaseStyles.DARK_BLUE, corner_radius=BaseStyles.RAD_2, command=self.onClickSave)
         # create update popup
         self.updatePopUp = PopUpWin(title="[Update] Database", msg="Updating transactions.\nPlease wait...", enable_close=False,
-                                    master=self.app, fg_color=s.WHITE)
+                                    master=self.app, fg_color=BaseStyles.WHITE)
         # # create invalid input popups
         # self.emptyDescriptionPopUp = PopUpWin(title="[Err] Invalid Input", msg="Only submit non-empty description.\nTry again.", enable_close=True,
-        #                                       master=self.app, fg_color=s.WHITE)
+        #                                       master=self.app, fg_color=BaseStyles.WHITE)
         # self.invalidAmountPopUp = PopUpWin(title="[Err] Invalid Input", msg="Only submit decimal number for amount.\nTry again.", enable_close=True,
-        #                                    master=self.app, fg_color=s.WHITE)
+        #                                    master=self.app, fg_color=BaseStyles.WHITE)
         # self.emptyAmountPopUp = PopUpWin(title="[Err] Invalid Input", msg="Only submit non-empty amount.\nTry again.", enable_close=True,
-        #                                  master=self.app, fg_color=s.WHITE)
+        #                                  master=self.app, fg_color=BaseStyles.WHITE)
         # display button
         self.btn.pack()
     
