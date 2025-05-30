@@ -21,7 +21,7 @@ class SaveBTN(ctk.CTkFrame):
         self.btn = ctk.CTkButton(self, width=SaveStyles.SAVE_BTN_W, height=SaveStyles.SAVE_BTN_H, text="Save Changes", font=self.font, text_color=BaseStyles.WHITE,
                                  fg_color=BaseStyles.BLUE, hover_color=BaseStyles.DARK_BLUE, corner_radius=BaseStyles.RAD_2, command=self.onClickSave)
         # create update popup
-        self.updatePopUp = PopUpWin(title="[Update] Database", msg="Updating transactions.\nPlease wait...",
+        self.updatePopUp = PopUpWin(title="[Update] Database", msg="Updating transactions...\nPlease wait...",
                                     enable_close=False, master=self.app, fg_color=BaseStyles.WHITE)
         # # create invalid input popups
         # self.emptyDescriptionPopUp = PopUpWin(title="[Err] Invalid Input", msg="Only submit non-empty description.\nTry again.", enable_close=True,

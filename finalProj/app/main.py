@@ -59,9 +59,9 @@ class App(ctk.CTk):
         self.addSaveBtn.pack(pady=BaseStyles.PAD_4)
 
         # create pop ups
-        self.loadPopUp = PopUpWin(title="[Start] Loading App", msg="App pages are loading.\nPlease wait...",
+        self.loadPopUp = PopUpWin(title="[Start] Loading App", msg="App pages are loading...\nPlease wait...",
                                   enable_close=False, master=self, fg_color=BaseStyles.WHITE)
-        self.closePopUp = PopUpWin(title="[Exit] Closing App", msg="App pages is closing.\nPlease wait...",
+        self.closePopUp = PopUpWin(title="[Exit] Closing App", msg="App pages is closing...\nPlease wait...",
                                   enable_close=False, master=self, fg_color=BaseStyles.WHITE)
         # load all pages
         print("App started...")
