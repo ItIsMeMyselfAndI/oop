@@ -1,24 +1,60 @@
-from frontend.styles.base import scale
+from frontend.styles.base import BaseStyles, scale
 
 
 # ---- exclusive for profile page ----
 class ProfileStyles:
-    HEADER_SECTION_H = scale(280)
-    HEADER_SECTION_W = scale(1630)
 
-    IMG_W = scale(200)
-    IMG_H = scale(200)
+    # header (ideal w: 1630)
+    PROFILE_IMG_W = scale(200)
+    PROFILE_IMG_H = scale(200)
 
-    IMG_BG_W = scale(240)
-    IMG_BG_H = scale(240)
+    PROFILE_IMG_BG_W = scale(240)
+    PROFILE_IMG_BG_H = scale(240)
 
-    LABEL_W1 = scale(500)
-    LABEL_W2 = scale(780)
+    UNAME_LABEL_W = scale(500)
+    BALANCE_AMOUNT_LABEL_W = scale(780)
+    
+    PROFILE_IMG_BG_COLOR = BaseStyles.TRANSPARENT
+    UNAME_FRAME_FG_COLOR = BaseStyles.TRANSPARENT
+    BALANCE_FRAME_FG_COLOR = BaseStyles.TRANSPARENT
 
+    UNAME_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
+    BALANCE_TITLE_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
+    BALANCE_AMOUNT_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
+    
+    UNAME_TEXT_COLOR = BaseStyles.WHITE
+    BALANCE_TITLE_TEXT_COLOR = BaseStyles.WHITE
+    BALANCE_AMOUNT_TEXT_COLOR = BaseStyles.WHITE
+
+
+    # summary
     SUMMARY_IMG_W = scale(50)
     SUMMARY_IMG_H = scale(50)
 
     SUMMARY_IMG_FRAME_W = scale(120)
     SUMMARY_IMG_FRAME_H = scale(120)
 
-    SUMMARY_LABEL_W = scale(500)
+    SUMMARY_AMOUNT_LABEL_W = scale(500)
+    
+    SUMMARY_DETAILS_FRAME_FG_COLOR = BaseStyles.TRANSPARENT
+    SUMMARY_TITLE_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
+    SUMMARY_AMOUNT_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
+
+    SUMMARY_TITLE_TEXT_COLOR = BaseStyles.DARK_GREY
+    SUMMARY_AMOUNT_TEXT_COLOR = BaseStyles.DARK_GREY
+
+    INCOME_IMG_BG_COLOR = BaseStyles.LIGHT_BLUE
+    EXPENSE_IMG_BG_COLOR = BaseStyles.LIGHT_RED
+    SAVINGS_IMG_BG_COLOR = BaseStyles.LIGHT_GREEN
+    INVESTMENT_IMG_BG_COLOR = BaseStyles.LIGHT_PURPLE
+
+    INCOME_FRAME_FG_COLOR = BaseStyles.WHITE_BLUE
+    EXPENSE_FRAME_FG_COLOR = BaseStyles.WHITE_RED
+    SAVINGS_FRAME_FG_COLOR = BaseStyles.WHITE_GREEN
+    INVESTMENT_FRAME_FG_COLOR = BaseStyles.WHITE_PURPLE
+    
+
+    # main page
+    HEADER_SECTION_COLOR = BaseStyles.BLUE
+    SUMMARY_SECTION_COLOR = BaseStyles.WHITE
+    

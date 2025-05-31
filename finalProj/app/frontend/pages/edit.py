@@ -10,7 +10,7 @@ from backend.transaction_manager import Transaction
 class EditHeader(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, slant="italic", weight="normal")
+        self.font = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, weight="normal", slant="italic" )
         self.label = ctk.CTkLabel(self, text="Edit Transaction", font=self.font,
                                   text_color=BaseStyles.DARK_GREY, anchor="w", width=EditStyles.HEADER_LABEL_W)
         self.label.pack(anchor="w")
@@ -30,9 +30,9 @@ class EditTransactionForm(ctk.CTkFrame):
         # initialize state
         self.isCurrentEditTransactionForm = False
         # initialize fonts
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, slant="italic", weight="normal")
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, slant="italic", weight="normal")
-        self.font3 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, weight="normal", slant="italic" )
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, weight="normal", slant="italic" )
+        self.font3 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
         # create guide frames
         self.frame1 = ctk.CTkFrame(self, fg_color=BaseStyles.WHITE, corner_radius=0)
         self.frame2 = ctk.CTkFrame(self, fg_color=BaseStyles.WHITE, corner_radius=0)
@@ -110,7 +110,7 @@ class EditPageTabs(ctk.CTkFrame):
         super().__init__(master, **kwargs)
         self.transactionForms = transactionForms
         # initialize ctk font
-        self.font = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, slant="italic", weight="normal")
+        self.font = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, weight="normal", slant="italic" )
         # create buttons/tabs
         self.expenseBTN = self.createTabButton(text="Expense", command=self.onClickExpenseTab)
         self.savingsBTN = self.createTabButton(text="Savings", command=self.onClickSavingsTab)

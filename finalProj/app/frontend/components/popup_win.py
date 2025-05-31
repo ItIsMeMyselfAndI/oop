@@ -7,7 +7,7 @@ from frontend.styles import BaseStyles, PopUpWinStyles # paddings, dimensions, c
 class PopUpWin(ctk.CTkToplevel):
     def __init__(self, title, msg, enable_close, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, weight="normal", slant="italic" )
         # initialize win dimensions
         self.x_pos = int((BaseStyles.SCREEN_W / 2) - (PopUpWinStyles.POPUP_WIN_W / 2))
         self.y_pos = int((BaseStyles.SCREEN_H / 2) - (PopUpWinStyles.POPUP_WIN_H / 2))

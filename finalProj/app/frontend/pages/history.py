@@ -7,7 +7,7 @@ from frontend.styles import BaseStyles, HistoryStyles # paddings, dimensions, co
 class HistoryHeader(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, weight="normal", slant="italic" )
 
         self.tile_label = ctk.CTkLabel(self, text="Transaction History", font=self.font1, text_color=BaseStyles.WHITE,
                                        anchor="w", fg_color=BaseStyles.BLUE, width=HistoryStyles.HEADER_LABEL_W, height=HistoryStyles.HEADER_LABEL_H)
@@ -20,9 +20,9 @@ class TableFilters(ctk.CTkFrame):
         super().__init__(master, **kwargs)
         self.table = table
         # initialize fonts
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_1, slant="italic", weight="normal")
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, slant="italic", weight="normal")
-        self.font3 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_1, weight="normal", slant="italic" )
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
+        self.font3 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, weight="normal", slant="italic" )
         # create options
         self.t_type = ["All Types", "Income", "Expenses", "Savings", "Investment"]
         self.categories_by_type = {
@@ -82,8 +82,8 @@ class TableRow(ctk.CTkFrame):
         super().__init__(master, **kwargs)
         self.t = transaction
         # initialize font
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, slant="italic", weight="normal")
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, weight="normal", slant="italic" )
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
         
         self.date_label = ctk.CTkLabel(self, text=self.t.t_date, font=self.font1,
                                        text_color=BaseStyles.DARK_GREY, fg_color=BaseStyles.WHITE, anchor="w",
@@ -108,7 +108,7 @@ class TableNavigation(ctk.CTkFrame):
     def __init__(self, table, master, **kwargs):
         super().__init__(master, **kwargs)
         self.table = table
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_1, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_1, weight="normal", slant="italic" )
         # create nav btns
         self.prevBTN = ctk.CTkButton(self, text="Prev", text_color=BaseStyles.WHITE, fg_color=BaseStyles.BLUE, hover_color=BaseStyles.DARK_BLUE,
                                      font=self.font1, corner_radius=BaseStyles.RAD_2, width=HistoryStyles.TABLE_NAV_BTN_W, height=HistoryStyles.TABLE_NAV_BTN_H,
@@ -139,8 +139,8 @@ class Table(ctk.CTkFrame):
         self.user_id = user_id
         self.tm = tm
         # initialize font
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, slant="italic", weight="normal")
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, weight="normal", slant="italic" )
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
         # table sections
         self.filters = TableFilters(table=self, master=header_section, fg_color=BaseStyles.BLUE)
         self.table_header = ctk.CTkFrame(self, fg_color=BaseStyles.WHITE, corner_radius=BaseStyles.RAD_2)

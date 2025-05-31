@@ -41,12 +41,13 @@ class SidebarTabs(ctk.CTkFrame):
         profile_icon = ctk.CTkImage(light_image=Image.open(f"{ICONS_FOLDER}/profile.png"), size=(SidebarStyles.IMG_W,SidebarStyles.IMG_H))
         add_icon = ctk.CTkImage(light_image=Image.open(f"{ICONS_FOLDER}/add.png"), size=(SidebarStyles.IMG_W,SidebarStyles.IMG_H))
         edit_icon = ctk.CTkImage(light_image=Image.open(f"{ICONS_FOLDER}/edit.png"), size=(SidebarStyles.IMG_W,SidebarStyles.IMG_H))
-        history_icon = ctk.CTkImage( light_image=Image.open(f"{ICONS_FOLDER}/history.png"), size=(SidebarStyles.IMG_W,SidebarStyles.IMG_H))
+        history_icon = ctk.CTkImage(light_image=Image.open(f"{ICONS_FOLDER}/history.png"), size=(SidebarStyles.IMG_W,SidebarStyles.IMG_H))
         return home_icon, profile_icon, add_icon, edit_icon, history_icon
 
     def createTabBtn(self, image, command):
-        btn = ctk.CTkButton(self, text="", corner_radius=BaseStyles.RAD_1, fg_color=BaseStyles.WHITE, hover_color=BaseStyles.LIGHT_GREY,
-                            image=image, height=SidebarStyles.BTN_H, width=SidebarStyles.BTN_W, command=command)
+        btn = ctk.CTkButton(self, text="", corner_radius=BaseStyles.RAD_1,image=image, 
+                            fg_color=SidebarStyles.OFF_BTN_FG_COLOR, hover_color=SidebarStyles.OFF_BTN_HOVER_COLOR,
+                            height=SidebarStyles.BTN_H, width=SidebarStyles.BTN_W, command=command)
         return btn
 
     def onClickProfilePage(self): self._switchTabTo("profile")
@@ -62,8 +63,8 @@ class SidebarTabs(ctk.CTkFrame):
             # close all pages
             page.pack_forget()
             # reset all buttons
-            self.tabBTNs[name].configure(fg_color=BaseStyles.WHITE, hover_color=BaseStyles.LIGHT_GREY)
+            self.tabBTNs[name].configure(fg_color=SidebarStyles.OFF_BTN_FG_COLOR, hover_color=SidebarStyles.OFF_BTN_HOVER_COLOR)
         # open selected page and change fg, hover & text color
         self.pages[page_name].isCurrentPage = True
         self.pages[page_name].pack()
-        self.tabBTNs[page_name].configure(fg_color=BaseStyles.BLUE, hover_color=BaseStyles.DARK_BLUE)
+        self.tabBTNs[page_name].configure(fg_color=SidebarStyles.ON_BTN_FG_COLOR, hover_color=SidebarStyles.ON_BTN_HOVER_COLOR)

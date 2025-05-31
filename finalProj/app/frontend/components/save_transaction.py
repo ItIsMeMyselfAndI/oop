@@ -16,7 +16,7 @@ class SaveBTN(ctk.CTkFrame):
         self.user_id = user_id
         self.tm = tm
         self.pages = pages
-        self.font = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, slant="italic", weight="normal")
+        self.font = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, weight="normal", slant="italic" )
         # create button
         self.btn = ctk.CTkButton(self, width=SaveStyles.SAVE_BTN_W, height=SaveStyles.SAVE_BTN_H, text="Save Changes", font=self.font, text_color=BaseStyles.WHITE,
                                  fg_color=BaseStyles.BLUE, hover_color=BaseStyles.DARK_BLUE, corner_radius=BaseStyles.RAD_2, command=self.onClickSave)

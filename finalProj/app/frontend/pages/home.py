@@ -10,8 +10,8 @@ from frontend.styles import BaseStyles, HomeStyles # paddings, dimensions, color
 class HomeHeader(ctk.CTkFrame):
     def __init__(self, img, summary_type, amount, master, **kwargs):
         super().__init__(master, ** kwargs)
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, slant="italic", weight="normal")
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, weight="normal", slant="italic" )
         self.img = img
         # create guide frames
         self.balance_frame = ctk.CTkFrame(self, fg_color="transparent", corner_radius=0)
@@ -36,8 +36,8 @@ class TableRow(ctk.CTkFrame):
         super().__init__(master, **kwargs)
         self.t = transaction
         # initialize font
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, slant="italic", weight="normal")
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, weight="normal", slant="italic" )
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
         
         self.date_label = ctk.CTkLabel(self, text=self.t.t_date, font=self.font1,
                                        text_color=BaseStyles.DARK_GREY, fg_color=BaseStyles.WHITE, anchor="w",
@@ -64,8 +64,8 @@ class Table(ctk.CTkFrame):
         self.user_id = user_id
         self.tm = tm
         # initialize font
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, slant="italic", weight="normal")
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, weight="normal", slant="italic" )
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
         # table sections
         self.title_section = ctk.CTkLabel(self, text="Recent Transactions", text_color=BaseStyles.WHITE,
                                           fg_color=BaseStyles.BLUE, font=self.font2, corner_radius=BaseStyles.RAD_2,
@@ -136,8 +136,8 @@ class MonthlyReport(ctk.CTkFrame):
         self.user_id = user_id
         self.tm = tm
         # initialize font
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, slant="italic", weight="normal")
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, weight="normal", slant="italic" )
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
         # sections
         self.title_section = ctk.CTkLabel(self, text="Monthly Report", text_color=BaseStyles.WHITE,
                                           fg_color=BaseStyles.BLUE, corner_radius=BaseStyles.RAD_2, font=self.font2,
@@ -175,8 +175,8 @@ class QuarterlyReport(ctk.CTkFrame):
         self.user_id = user_id
         self.tm = tm
         # initialize font
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, slant="italic", weight="normal")
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, slant="italic", weight="normal")
+        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, weight="normal", slant="italic" )
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
         # sections
         self.title_section = ctk.CTkLabel(self, text="Quarterly Report", text_color=BaseStyles.WHITE,
                                           fg_color=BaseStyles.BLUE, corner_radius=BaseStyles.RAD_2, font=self.font2,

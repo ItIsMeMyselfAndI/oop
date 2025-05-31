@@ -52,6 +52,7 @@ class BaseStyles:
 
 
     # ---- colors ----
+    TRANSPARENT = "transparent"
     WHITE = "white"
     # reds
     WHITE_RED = "#fdecec"
