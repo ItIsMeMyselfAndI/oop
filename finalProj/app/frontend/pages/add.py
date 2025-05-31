@@ -10,10 +10,10 @@ from backend.transaction_manager import Transaction
 class AddHeader(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, weight="normal", slant="italic" )
-        self.label = ctk.CTkLabel(self, text="Add Transaction", font=self.font,
-                                  text_color=BaseStyles.DARK_GREY, anchor="w", width=AddStyles.HEADER_LABEL_W)
-        self.label.pack(anchor="w")
+        self.font6 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, weight="normal", slant="italic" )
+        self.title_label = ctk.CTkLabel(self, text="Add Transaction", font=self.font6, text_color=AddStyles.HEADER_TITLE_TEXT_COLOR,
+                                  width=AddStyles.HEADER_TITLE_LABEL_W, fg_color=AddStyles.HEADER_TITLE_LABEL_FG_COLOR, anchor="w")
+        self.title_label.pack(anchor="w")
 
 
 # same with class selection sa edit
@@ -31,53 +31,54 @@ class AddTransactionForm(ctk.CTkFrame):
         self.font3 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
         self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, weight="normal", slant="italic" )
         self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, weight="normal", slant="italic" )
-        # create guide frames
-        self.frame1 = ctk.CTkFrame(self, fg_color=BaseStyles.WHITE, corner_radius=0)
-        self.frame2 = ctk.CTkFrame(self, fg_color=BaseStyles.WHITE, corner_radius=0)
-        self.frame3 = ctk.CTkFrame(self, fg_color=BaseStyles.WHITE, corner_radius=0)
-        # create frame 1 components
-        self.dateLabel = ctk.CTkLabel(self.frame1, text="Select Date",
-                                      font=self.font3, text_color=BaseStyles.DARK_GREY)
+        # create sections
+        self.first_section = ctk.CTkFrame(self, fg_color=BaseStyles.WHITE, corner_radius=0)
+        self.second_section = ctk.CTkFrame(self, fg_color=BaseStyles.WHITE, corner_radius=0)
+        self.third_section = ctk.CTkFrame(self, fg_color=BaseStyles.WHITE, corner_radius=0)
+        # create first section components
+        self.dateLabel = ctk.CTkLabel(self.first_section, text="Select Date", font=self.font3,
+                                      text_color=AddStyles.DATE_LABEL_TEXT_COLOR, fg_color=AddStyles.DATE_LABEL_FG_COLOR)
         self.dateMenu = DatePicker(picker_height=AddStyles.DATE_MENU_H, spacing=BaseStyles.PAD_1, rad=BaseStyles.RAD_2,
                                    day_width=AddStyles.DAY_MENU_W, month_width=AddStyles.MONTH_MENU_W, year_width=AddStyles.YEAR_MENU_W, 
-                                   master=self.frame1, ctk_font=self.font1, dropdown_ctk_font=self.font1,
-                                   dropdown_fg_color=BaseStyles.WHITE, dropdown_hover_color=BaseStyles.BLUE, fg_color=BaseStyles.WHITE)
-        # create frame 2 components
-        self.categoryLabel = ctk.CTkLabel(self.frame2, text="Select Category",
-                                          font=self.font3, text_color=BaseStyles.DARK_GREY)
-        self.categoryMenu = ctk.CTkOptionMenu(self.frame2, values=self.categories, font=self.font1,
-                                              text_color=BaseStyles.DARK_GREY,fg_color=BaseStyles.BLUE, corner_radius=BaseStyles.RAD_2,
-                                              dropdown_font=self.font1, dropdown_fg_color=BaseStyles.WHITE,
-                                              dropdown_hover_color=BaseStyles.BLUE, dropdown_text_color=BaseStyles.DARK_GREY,
+                                   master=self.first_section, ctk_font=self.font1, fg_color=AddStyles.DATE_MENU_FRAME_FG_COLOR,
+                                   menu_fg_color=AddStyles.DATE_MENU_FG_COLOR, menu_text_color=AddStyles.DATE_MENU_TEXT_COLOR,
+                                   dropdown_ctk_font=self.font1, dropdown_text_color=AddStyles.DATE_DROPDOWN_TEXT_COLOR,
+                                   dropdown_fg_color=AddStyles.DATE_DROPDOWN_FG_COLOR, dropdown_hover_color=AddStyles.DATE_DROPDOWN_HOVER_COLOR)
+        # create second section components
+        self.categoryLabel = ctk.CTkLabel(self.second_section, text="Select Category", font=self.font3,
+                                          text_color=AddStyles.CATEGORY_LABEL_TEXT_COLOR, fg_color=AddStyles.CATEGORY_LABEL_FG_COLOR)
+        self.categoryMenu = ctk.CTkOptionMenu(self.second_section, values=self.categories, font=self.font1, corner_radius=BaseStyles.RAD_2,
+                                              text_color=AddStyles.CATEGORY_MENU_TEXT_COLOR, fg_color=AddStyles.CATEGORY_MENU_FG_COLOR,
+                                              dropdown_font=self.font1, dropdown_fg_color=AddStyles.CATEGORY_DROPDOWN_FG_COLOR,
+                                              dropdown_hover_color=AddStyles.CATEGORY_DROPDOWN_HOVER_COLOR,
+                                              dropdown_text_color=AddStyles.CATEGORY_DROPDOWN_TEXT_COLOR,
                                               width=AddStyles.CATEGORY_MENU_W, height=AddStyles.CATEGORY_MENU_H)
-        self.descriptionLabel = ctk.CTkLabel(self.frame2, text="Enter Description",
-                                             font=self.font3, text_color=BaseStyles.DARK_GREY)
-        self.descriptionEntry = ctk.CTkEntry(self.frame2, font=self.font1,
-                                             text_color=BaseStyles.DARK_GREY, fg_color=BaseStyles.LIGHT_BLUE,
-                                             corner_radius=BaseStyles.RAD_2, border_width=0,
-                                             placeholder_text="Description", placeholder_text_color=BaseStyles.GREY,
+        self.descriptionLabel = ctk.CTkLabel(self.second_section, text="Enter Description", font=self.font3,
+                                             text_color=AddStyles.DESCRIPTION_LABEL_TEXT_COLOR, fg_color=AddStyles.DESCRIPTION_LABEL_FG_COLOR)
+        self.descriptionEntry = ctk.CTkEntry(self.second_section, font=self.font1, border_width=0, corner_radius=BaseStyles.RAD_2,
+                                             text_color=AddStyles.DESCRIPTION_ENTRY_TEXT_COLOR, fg_color=AddStyles.DESCRIPTION_ENTRY_FG_COLOR,
+                                             placeholder_text="Description", placeholder_text_color=AddStyles.DESCRIPTION_PLACEHOLDER_TEXT_COLOR,
                                              width=AddStyles.DESCRIPTION_ENTRY_W, height=AddStyles.DESCRIPTION_ENTRY_H,)
-        # create frame 3 components
-        self.amountLabel = ctk.CTkLabel(self.frame3, text="Enter Amount",
-                                        font=self.font3, text_color=BaseStyles.DARK_GREY)
-        self.amountEntry = ctk.CTkEntry(self.frame3, font=self.font1,
-                                        text_color=BaseStyles.DARK_GREY, fg_color=BaseStyles.LIGHT_BLUE,
-                                        corner_radius=BaseStyles.RAD_2, border_width=0,
-                                        placeholder_text="Philippine Peso", placeholder_text_color=BaseStyles.GREY,
+        # create third section components
+        self.amountLabel = ctk.CTkLabel(self.third_section, text="Enter Amount", font=self.font3,
+                                        text_color=AddStyles.AMOUNT_LABEL_TEXT_COLOR, fg_color=AddStyles.AMOUNT_LABEL_FG_COLOR)
+        self.amountEntry = ctk.CTkEntry(self.third_section, font=self.font1, border_width=0, corner_radius=BaseStyles.RAD_2,
+                                        text_color=AddStyles.AMOUNT_ENTRY_TEXT_COLOR, fg_color=AddStyles.AMOUNT_ENTRY_FG_COLOR,
+                                        placeholder_text="Philippine Peso", placeholder_text_color=AddStyles.AMOUNT_PLACEHOLDER_TEXT_COLOR,
                                         width=AddStyles.AMOUNT_ENTRY_W, height=AddStyles.AMOUNT_ENTRY_H,)
-        # display guide frames
-        self.frame1.pack(fill="both", pady=(BaseStyles.PAD_4,0))
-        self.frame2.pack(fill="both", pady=(BaseStyles.PAD_4,0))
-        self.frame3.pack(fill="both", pady=BaseStyles.PAD_4)
-        # display frame 1 
+        # display sections
+        self.first_section.pack(fill="both", pady=(BaseStyles.PAD_4,0))
+        self.second_section.pack(fill="both", pady=(BaseStyles.PAD_4,0))
+        self.third_section.pack(fill="both", pady=BaseStyles.PAD_4)
+        # display first section 
         self.dateLabel.grid(row=0, column=0, sticky="w", padx=BaseStyles.PAD_3, pady=(0,BaseStyles.PAD_3))
         self.dateMenu.grid(row=1, column=0, sticky="w", padx=BaseStyles.PAD_3, pady=0)
-        # display frame 2 
+        # display second section 
         self.categoryLabel.grid(row=0, column=0, sticky="w", padx=(BaseStyles.PAD_3,0), pady=(0,BaseStyles.PAD_3))
         self.categoryMenu.grid(row=1, column=0, sticky="w", padx=(BaseStyles.PAD_3,0), pady=0)
         self.descriptionLabel.grid(row=0, column=1, sticky="w", padx=BaseStyles.PAD_3, pady=(0,BaseStyles.PAD_3))
         self.descriptionEntry.grid(row=1, column=1, sticky="w", padx=BaseStyles.PAD_3, pady=0)
-        # display frame 3 
+        # display third section 
         self.amountLabel.pack(anchor="w", padx=BaseStyles.PAD_3, pady=(0,BaseStyles.PAD_3))
         self.amountEntry.pack(anchor="w", padx=BaseStyles.PAD_3, pady=0)
     
@@ -86,6 +87,7 @@ class AddPageTabs(ctk.CTkFrame):
     def __init__(self, transactionForms, master, **kwargs):
         super().__init__(master, **kwargs)
         self.transactionForms = transactionForms
+        # initialize ctk font
         self.font = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, weight="normal", slant="italic" )
         # create buttons/tabs
         self.expenseBTN = self.createTabButton(text="Expense", command=self.onClickExpenseTab)
@@ -105,9 +107,10 @@ class AddPageTabs(ctk.CTkFrame):
         self._switchPageTo("expense")
 
     def createTabButton(self, text, command):
-        btn = ctk.CTkButton(self, text=text, text_color=BaseStyles.DARK_GREY, height=AddStyles.TAB_H, width=AddStyles.TAB_W,
-                            font=self.font, corner_radius=BaseStyles.RAD_2, fg_color=BaseStyles.WHITE, hover_color=BaseStyles.LIGHT_GREY,
-                            command=command)
+        btn = ctk.CTkButton(self, text=text, font=self.font, corner_radius=BaseStyles.RAD_2,
+                            text_color=AddStyles.OFF_TAB_TEXT_COLOR, fg_color=AddStyles.OFF_TAB_BUTTON_FG_COLOR,
+                            hover_color=AddStyles.OFF_TAB_BUTTON_HOVER_COLOR,
+                            height=AddStyles.TAB_H, width=AddStyles.TAB_W, command=command)
         return btn
     
     def onClickExpenseTab(self): self._switchPageTo("expense")
@@ -115,7 +118,6 @@ class AddPageTabs(ctk.CTkFrame):
     def onClickInvestmentTab(self): self._switchPageTo("investment")
     def onClickIncomeTab(self): self._switchPageTo("income")
     
-    # method for switching between tabs
     def _switchPageTo(self, transaction_type):
         for t_type, form in self.transactionForms.items():
             # set all transaction forms's isCurrentEditTransactionForm attr to false
@@ -123,11 +125,13 @@ class AddPageTabs(ctk.CTkFrame):
             # close all transaction forms
             form.grid_forget()
             # reset all buttons
-            self.tabBTNs[t_type].configure(fg_color=BaseStyles.WHITE, hover_color=BaseStyles.LIGHT_GREY, text_color=BaseStyles.DARK_GREY)
+            self.tabBTNs[t_type].configure(fg_color=AddStyles.OFF_TAB_BUTTON_FG_COLOR, hover_color=AddStyles.OFF_TAB_BUTTON_HOVER_COLOR,
+                                           text_color=AddStyles.OFF_TAB_TEXT_COLOR)
         # open selected and change fg, hover & text color
         self.transactionForms[transaction_type].isCurrentEditTransactionForm = True
         self.transactionForms[transaction_type].grid(row=2, column=0, sticky="nsew")
-        self.tabBTNs[transaction_type].configure(fg_color=BaseStyles.BLUE, hover_color=BaseStyles.DARK_BLUE, text_color=BaseStyles.WHITE)
+        self.tabBTNs[transaction_type].configure(fg_color=AddStyles.ON_TAB_BUTTON_FG_COLOR, hover_color=AddStyles.ON_TAB_BUTTON_HOVER_COLOR,
+                                                 text_color=AddStyles.ON_TAB_TEXT_COLOR)
 
 
 # main add page class
@@ -139,8 +143,8 @@ class AddPage(ctk.CTkFrame):
         # initialize state
         self.isCurrentPage = False
         # create page sections 
-        self.title = AddHeader(self, fg_color=BaseStyles.SKY_BLUE, corner_radius=0)
-        self.forms_section = ctk.CTkFrame(self, fg_color=BaseStyles.SKY_BLUE, corner_radius=BaseStyles.RAD_2)
+        self.header_section = AddHeader(self, fg_color=AddStyles.HEADER_SECTION_FG_COLOR, corner_radius=0)
+        self.forms_section = ctk.CTkFrame(self, fg_color=AddStyles.FORMS_SECTION_FG_COLOR, corner_radius=BaseStyles.RAD_2)
         # create transaction forms
         self.expenseForm = self.createAddTransactionForm("expense")
         self.savingsForm = self.createAddTransactionForm("savings")
@@ -152,9 +156,9 @@ class AddPage(ctk.CTkFrame):
         }
         # create sub-pages tabs
         self.tabs = AddPageTabs(transactionForms=self.transactionForms, master=self,
-                         fg_color=BaseStyles.SKY_BLUE, corner_radius=0)
+                                 fg_color=AddStyles.TABS_FRAME_FG_COLOR, corner_radius=0)
         # show page sections 
-        self.title.pack(pady=(BaseStyles.PAD_4+BaseStyles.PAD_4,0))
+        self.header_section.pack(pady=(BaseStyles.PAD_4+BaseStyles.PAD_4,0))
         self.tabs.pack(pady=(BaseStyles.PAD_4,0))
         self.forms_section.pack(pady=(BaseStyles.PAD_3,0))
 
@@ -170,8 +174,8 @@ class AddPage(ctk.CTkFrame):
         }
         # create form
         form = AddTransactionForm(tm=self.tm, user_id=self.user_id, t_type=transaction_type,
-                                   categories=categories_by_type[transaction_type],
-                                   master=self.forms_section, fg_color=BaseStyles.WHITE, corner_radius=BaseStyles.RAD_2)
+                                   categories=categories_by_type[transaction_type], master=self.forms_section,
+                                   fg_color=AddStyles.FORM_FRAME_FG_COLOR, corner_radius=BaseStyles.RAD_2)
         return form
 
     def saveNewTransactionToDatabase(self):
