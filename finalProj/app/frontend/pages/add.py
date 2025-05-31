@@ -28,41 +28,40 @@ class AddTransactionForm(ctk.CTkFrame):
         # initialize state
         self.isCurrentEditTransactionForm = False
         # initialize fonts
-        self.font3 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, weight="normal", slant="italic" )
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, weight="normal", slant="italic" )
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, weight="normal", slant="italic" )
+        self.font4 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
         # create sections
         self.first_section = ctk.CTkFrame(self, fg_color=BaseStyles.WHITE, corner_radius=0)
         self.second_section = ctk.CTkFrame(self, fg_color=BaseStyles.WHITE, corner_radius=0)
         self.third_section = ctk.CTkFrame(self, fg_color=BaseStyles.WHITE, corner_radius=0)
         # create first section components
-        self.dateLabel = ctk.CTkLabel(self.first_section, text="Select Date", font=self.font3,
+        self.dateLabel = ctk.CTkLabel(self.first_section, text="Select Date", font=self.font4,
                                       text_color=AddStyles.DATE_LABEL_TEXT_COLOR, fg_color=AddStyles.DATE_LABEL_FG_COLOR)
         self.dateMenu = DatePicker(picker_height=AddStyles.DATE_MENU_H, spacing=BaseStyles.PAD_1, rad=BaseStyles.RAD_2,
                                    day_width=AddStyles.DAY_MENU_W, month_width=AddStyles.MONTH_MENU_W, year_width=AddStyles.YEAR_MENU_W, 
-                                   master=self.first_section, ctk_font=self.font1, fg_color=AddStyles.DATE_MENU_FRAME_FG_COLOR,
+                                   master=self.first_section, ctk_font=self.font2, fg_color=AddStyles.DATE_MENU_FRAME_FG_COLOR,
                                    menu_fg_color=AddStyles.DATE_MENU_FG_COLOR, menu_text_color=AddStyles.DATE_MENU_TEXT_COLOR,
-                                   dropdown_ctk_font=self.font1, dropdown_text_color=AddStyles.DATE_DROPDOWN_TEXT_COLOR,
+                                   dropdown_ctk_font=self.font2, dropdown_text_color=AddStyles.DATE_DROPDOWN_TEXT_COLOR,
                                    dropdown_fg_color=AddStyles.DATE_DROPDOWN_FG_COLOR, dropdown_hover_color=AddStyles.DATE_DROPDOWN_HOVER_COLOR)
         # create second section components
-        self.categoryLabel = ctk.CTkLabel(self.second_section, text="Select Category", font=self.font3,
+        self.categoryLabel = ctk.CTkLabel(self.second_section, text="Select Category", font=self.font4,
                                           text_color=AddStyles.CATEGORY_LABEL_TEXT_COLOR, fg_color=AddStyles.CATEGORY_LABEL_FG_COLOR)
-        self.categoryMenu = ctk.CTkOptionMenu(self.second_section, values=self.categories, font=self.font1, corner_radius=BaseStyles.RAD_2,
+        self.categoryMenu = ctk.CTkOptionMenu(self.second_section, values=self.categories, font=self.font2, corner_radius=BaseStyles.RAD_2,
                                               text_color=AddStyles.CATEGORY_MENU_TEXT_COLOR, fg_color=AddStyles.CATEGORY_MENU_FG_COLOR,
-                                              dropdown_font=self.font1, dropdown_fg_color=AddStyles.CATEGORY_DROPDOWN_FG_COLOR,
+                                              dropdown_font=self.font2, dropdown_fg_color=AddStyles.CATEGORY_DROPDOWN_FG_COLOR,
                                               dropdown_hover_color=AddStyles.CATEGORY_DROPDOWN_HOVER_COLOR,
                                               dropdown_text_color=AddStyles.CATEGORY_DROPDOWN_TEXT_COLOR,
                                               width=AddStyles.CATEGORY_MENU_W, height=AddStyles.CATEGORY_MENU_H)
-        self.descriptionLabel = ctk.CTkLabel(self.second_section, text="Enter Description", font=self.font3,
+        self.descriptionLabel = ctk.CTkLabel(self.second_section, text="Enter Description", font=self.font4,
                                              text_color=AddStyles.DESCRIPTION_LABEL_TEXT_COLOR, fg_color=AddStyles.DESCRIPTION_LABEL_FG_COLOR)
-        self.descriptionEntry = ctk.CTkEntry(self.second_section, font=self.font1, border_width=0, corner_radius=BaseStyles.RAD_2,
+        self.descriptionEntry = ctk.CTkEntry(self.second_section, font=self.font2, border_width=0, corner_radius=BaseStyles.RAD_2,
                                              text_color=AddStyles.DESCRIPTION_ENTRY_TEXT_COLOR, fg_color=AddStyles.DESCRIPTION_ENTRY_FG_COLOR,
                                              placeholder_text="Description", placeholder_text_color=AddStyles.DESCRIPTION_PLACEHOLDER_TEXT_COLOR,
                                              width=AddStyles.DESCRIPTION_ENTRY_W, height=AddStyles.DESCRIPTION_ENTRY_H,)
         # create third section components
-        self.amountLabel = ctk.CTkLabel(self.third_section, text="Enter Amount", font=self.font3,
+        self.amountLabel = ctk.CTkLabel(self.third_section, text="Enter Amount", font=self.font4,
                                         text_color=AddStyles.AMOUNT_LABEL_TEXT_COLOR, fg_color=AddStyles.AMOUNT_LABEL_FG_COLOR)
-        self.amountEntry = ctk.CTkEntry(self.third_section, font=self.font1, border_width=0, corner_radius=BaseStyles.RAD_2,
+        self.amountEntry = ctk.CTkEntry(self.third_section, font=self.font2, border_width=0, corner_radius=BaseStyles.RAD_2,
                                         text_color=AddStyles.AMOUNT_ENTRY_TEXT_COLOR, fg_color=AddStyles.AMOUNT_ENTRY_FG_COLOR,
                                         placeholder_text="Philippine Peso", placeholder_text_color=AddStyles.AMOUNT_PLACEHOLDER_TEXT_COLOR,
                                         width=AddStyles.AMOUNT_ENTRY_W, height=AddStyles.AMOUNT_ENTRY_H,)
@@ -88,7 +87,7 @@ class AddPageTabs(ctk.CTkFrame):
         super().__init__(master, **kwargs)
         self.transactionForms = transactionForms
         # initialize ctk font
-        self.font = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, weight="normal", slant="italic" )
+        self.font3 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, weight="normal", slant="italic" )
         # create buttons/tabs
         self.expenseBTN = self.createTabButton(text="Expense", command=self.onClickExpenseTab)
         self.savingsBTN = self.createTabButton(text="Savings", command=self.onClickSavingsTab)
@@ -107,7 +106,7 @@ class AddPageTabs(ctk.CTkFrame):
         self._switchPageTo("expense")
 
     def createTabButton(self, text, command):
-        btn = ctk.CTkButton(self, text=text, font=self.font, corner_radius=BaseStyles.RAD_2,
+        btn = ctk.CTkButton(self, text=text, font=self.font3, corner_radius=BaseStyles.RAD_2,
                             text_color=AddStyles.OFF_TAB_TEXT_COLOR, fg_color=AddStyles.OFF_TAB_BUTTON_FG_COLOR,
                             hover_color=AddStyles.OFF_TAB_BUTTON_HOVER_COLOR,
                             height=AddStyles.TAB_H, width=AddStyles.TAB_W, command=command)

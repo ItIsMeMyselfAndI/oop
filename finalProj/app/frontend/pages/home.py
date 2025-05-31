@@ -83,7 +83,7 @@ class TableRow(ctk.CTkFrame):
                                             width=HomeStyles.DESCRIPTION_COL_W, height=HomeStyles.TABLE_ROW_H, anchor="w", justify="left")
         self.amount_col = ctk.CTkLabel(self, text=self.t.t_amount, font=self.font2,
                                        text_color=HomeStyles.AMOUNT_COL_TEXT_COLOR, fg_color=HomeStyles.AMOUNT_COL_FG_COLOR,
-                                       width=HomeStyles.AMOUNT_COL_W, height=HomeStyles.TABLE_ROW_H-BaseStyles.PAD_1, anchor="e", justify="right")
+                                       width=HomeStyles.AMOUNT_COL_W-BaseStyles.PAD_1, height=HomeStyles.TABLE_ROW_H, anchor="e", justify="right")
         
 
 class Table(ctk.CTkFrame):
@@ -229,7 +229,7 @@ class HomePage(ctk.CTkFrame):
         self.header_section.pack(pady=(BaseStyles.PAD_5*2,0))
         self.table_section.pack(pady=(BaseStyles.PAD_2,0))
         self.monthly_section.pack(pady=(BaseStyles.PAD_2,0))
-        self.quarterly_section.pack(pady=(BaseStyles.PAD_2,BaseStyles.PAD_5*2))
+        self.quarterly_section.pack(pady=(BaseStyles.PAD_2,BaseStyles.PAD_5*3))
 
     def loadIcons(self):
         # icon path

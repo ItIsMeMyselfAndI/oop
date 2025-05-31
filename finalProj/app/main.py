@@ -64,7 +64,7 @@ class App(ctk.CTk):
         self.closePopUp = PopUpWin(title="[Exit] Closing App", msg="App pages is closing...\nPlease wait...",
                                   enable_close=False, master=self, fg_color=BaseStyles.WHITE)
         # load all pages
-        print("App started...")
+        print("App started.")
         print("\nLoading pages...")
         self.loadPopUp.showWin()
         self.loadPopUp.after(100, self.loadPages) # load all pages

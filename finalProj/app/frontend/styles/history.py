@@ -1,22 +1,88 @@
-from frontend.styles.base import scale
+from frontend.styles.base import BaseStyles, scale
 
 
 # ---- exclusive for history page ----
 class HistoryStyles:
-    HEADER_LABEL_H = scale(180)
-    HEADER_LABEL_W = scale(1080)
+    # header
+    HEADER_TITLE_LABEL_H = scale(180)
+    HEADER_TITLE_LABEL_W = scale(1080)
 
-    TABLE_FILTER_MENU_H = scale(40)
-    TABLE_FILTER_MENU_W = scale(220)
+    HEADER_TITLE_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
+    HEADER_TITLE_TEXT_COLOR = BaseStyles.WHITE
 
-    TABLE_COL_W1 = scale(180)
-    TABLE_COL_W2 = scale(250)
-    TABLE_COL_W3 = scale(390)
 
+    # table filter
+    FILTER_MENU_H = scale(40)
+    FILTER_MENU_W = scale(220)
+    
+    FILTER_TYPE_MENU_TEXT_COLOR = BaseStyles.DARK_GREY
+    FILTER_TYPE_MENU_FG_COLOR = BaseStyles.WHITE
+    FILTER_TYPE_DROPDOWN_TEXT_COLOR = BaseStyles.DARK_GREY
+    FILTER_TYPE_DROPDOWN_FG_COLOR = BaseStyles.WHITE
+    FILTER_TYPE_DROPDOWN_HOVER_COLOR = BaseStyles.BLUE
+    FILTER_TYPE_BUTTON_FG_COLOR = BaseStyles.WHITE
+    FILTER_TYPE_BUTTON_HOVER_COLOR = BaseStyles.LIGHT_GREY
+
+    FILTER_CATEGORY_MENU_TEXT_COLOR = BaseStyles.DARK_GREY
+    FILTER_CATEGORY_MENU_FG_COLOR = BaseStyles.WHITE
+    FILTER_CATEGORY_DROPDOWN_TEXT_COLOR = BaseStyles.DARK_GREY
+    FILTER_CATEGORY_DROPDOWN_FG_COLOR = BaseStyles.WHITE
+    FILTER_CATEGORY_DROPDOWN_HOVER_COLOR = BaseStyles.BLUE
+    FILTER_CATEGORY_BUTTON_FG_COLOR = BaseStyles.WHITE
+    FILTER_CATEGORY_BUTTON_HOVER_COLOR = BaseStyles.LIGHT_GREY
+
+
+    # table header/row
     TABLE_ROW_H = scale(40) 
+    DATE_COL_W = scale(180)
+    TYPE_COL_W = scale(250)
+    CATEGORY_COL_W = scale(250)
+    DESCRIPTION_COL_W = scale(390)
+    AMOUNT_COL_W = scale(390)
 
+    DATE_COL_FG_COLOR = BaseStyles.TRANSPARENT
+    DATE_COL_TEXT_COLOR = BaseStyles.DARK_GREY
+    
+    TYPE_COL_FG_COLOR = BaseStyles.TRANSPARENT
+    TYPE_COL_TEXT_COLOR = BaseStyles.DARK_GREY
+
+    CATEGORY_COL_FG_COLOR = BaseStyles.TRANSPARENT
+    CATEGORY_COL_TEXT_COLOR = BaseStyles.DARK_GREY
+
+    DESCRIPTION_COL_FG_COLOR = BaseStyles.TRANSPARENT
+    DESCRIPTION_COL_TEXT_COLOR = BaseStyles.DARK_GREY
+
+    AMOUNT_COL_FG_COLOR = BaseStyles.TRANSPARENT
+    AMOUNT_COL_TEXT_COLOR = BaseStyles.DARK_GREY
+
+
+    # table nav
+    TABLE_NAV_BTN_W = scale(100)
+    TABLE_NAV_BTN_H = scale(40)
+
+    NAV_PREV_BUTTON_TEXT_COLOR = BaseStyles.WHITE
+    NAV_PREV_BUTTON_FG_COLOR = BaseStyles.BLUE
+    NAV_PREV_BUTTON_HOVER_COLOR = BaseStyles.DARK_BLUE
+
+    NAV_NEXT_BUTTON_TEXT_COLOR = BaseStyles.WHITE
+    NAV_NEXT_BUTTON_FG_COLOR = BaseStyles.BLUE
+    NAV_NEXT_BUTTON_HOVER_COLOR = BaseStyles.DARK_BLUE
+
+
+    # table
     TABLE_BODY_W = scale(1560) - 20 # minus unchangeable sidebar width
     TABLE_BODY_H = scale(500)
 
-    TABLE_NAV_BTN_W = scale(100)
-    TABLE_NAV_BTN_H = scale(40)
+    FILTERS_FRAME_FG_COLOR = BaseStyles.TRANSPARENT
+    TABLE_HEADER_FG_COLOR = BaseStyles.WHITE
+    TABLE_BODY_FG_COLOR = BaseStyles.WHITE
+    TABLE_NAV_FG_COLOR = BaseStyles.TRANSPARENT
+
+    TABLE_PAGE_FRAME_FG_COLOR = BaseStyles.TRANSPARENT
+    
+    TABLE_ROW_FG_COLOR = BaseStyles.TRANSPARENT
+
+
+    # main table
+    HEADER_SECTION_FG_COLOR = BaseStyles.BLUE
+    TABLE_SECTION_FG_COLOR = BaseStyles.TRANSPARENT

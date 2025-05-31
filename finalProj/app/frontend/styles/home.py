@@ -44,16 +44,17 @@ class HomeStyles:
 
 
     # main table
+    TABLE_TITLE_SECTION_FG_COLOR = BaseStyles.BLUE
+    TABLE_TITLE_TEXT_COLOR = BaseStyles.WHITE
+    
     TABLE_TITLE_SECTION_W = scale(1630)
     TABLE_TITLE_SECTION_H = scale(100)
 
-    TABLE_TITLE_SECTION_FG_COLOR = BaseStyles.BLUE
     TABLE_HEADER_FG_COLOR = BaseStyles.WHITE
     TABLE_BODY_FG_COLOR = BaseStyles.WHITE
 
-    TABLE_TITLE_TEXT_COLOR = BaseStyles.WHITE
 
-    TABLE_ROW_FG_COLOR = BaseStyles.WHITE
+    TABLE_ROW_FG_COLOR = BaseStyles.TRANSPARENT
 
     TABLE_BODY_W = scale(1560) - 20 # minus unchangeable sidebar width
     TABLE_BODY_H = scale(500)
