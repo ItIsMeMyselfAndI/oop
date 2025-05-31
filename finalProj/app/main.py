@@ -67,7 +67,7 @@ class App(ctk.CTk):
         print("App started...")
         print("\nLoading pages...")
         self.loadPopUp.showWin()
-        self.loadPopUp.after(100, self.loadPages)
+        self.loadPopUp.after(100, self.loadPages) # load all pages
         self.loadPopUp.hideWin()
         print("Pages loaded.")
         # close the app and db properly

@@ -10,8 +10,8 @@ from frontend.styles import BaseStyles, ProfileStyles # paddings, dimensions, co
 class ProfileHeader(ctk.CTkFrame):
     def __init__(self, img, uname, summary_type, amount, master, **kwargs):
         super().__init__(master, ** kwargs)
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, weight="normal", slant="italic" )
+        self.font4 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
+        self.font6 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, weight="normal", slant="italic" )
         self.img = img
         # create guide frames
         self.img_bg = ctk.CTkLabel(self, corner_radius=BaseStyles.RAD_2, fg_color=ProfileStyles.PROFILE_IMG_BG_COLOR, image=img,
@@ -19,12 +19,12 @@ class ProfileHeader(ctk.CTkFrame):
         self.uname_frame = ctk.CTkFrame(self, corner_radius=BaseStyles.RAD_2, fg_color=ProfileStyles.UNAME_FRAME_FG_COLOR)
         self.balance_frame = ctk.CTkFrame(self, corner_radius=BaseStyles.RAD_2, fg_color=ProfileStyles.BALANCE_FRAME_FG_COLOR)
         # create label
-        self.uname_label = ctk.CTkLabel(self.uname_frame, text=uname, font=self.font2, text_color=ProfileStyles.UNAME_TEXT_COLOR,
+        self.uname_label = ctk.CTkLabel(self.uname_frame, text=uname, font=self.font6, text_color=ProfileStyles.UNAME_TEXT_COLOR,
                                         width=ProfileStyles.UNAME_LABEL_W, wraplength=ProfileStyles.UNAME_LABEL_W,
                                         fg_color=ProfileStyles.UNAME_LABEL_FG_COLOR, anchor="w", justify="left") 
-        self.balance_title_label = ctk.CTkLabel(self.balance_frame, text=summary_type, font=self.font1, text_color=ProfileStyles.BALANCE_TITLE_TEXT_COLOR,
+        self.balance_title_label = ctk.CTkLabel(self.balance_frame, text=summary_type, font=self.font4, text_color=ProfileStyles.BALANCE_TITLE_TEXT_COLOR,
                                                fg_color=ProfileStyles.BALANCE_TITLE_LABEL_FG_COLOR, anchor="e")
-        self.amount_label = ctk.CTkLabel(self.balance_frame, text=f"₱ {amount:,}", font=self.font2, text_color=ProfileStyles.BALANCE_AMOUNT_TEXT_COLOR,
+        self.amount_label = ctk.CTkLabel(self.balance_frame, text=f"₱ {amount:,}", font=self.font6, text_color=ProfileStyles.BALANCE_AMOUNT_TEXT_COLOR,
                                          width=ProfileStyles.BALANCE_AMOUNT_LABEL_W, wraplength=ProfileStyles.BALANCE_AMOUNT_LABEL_W, 
                                          fg_color=ProfileStyles.BALANCE_AMOUNT_LABEL_FG_COLOR, anchor="e", justify="right")
         # display guide frames
@@ -40,8 +40,8 @@ class ProfileHeader(ctk.CTkFrame):
 class SummarySection(ctk.CTkFrame):
     def __init__(self, img, img_bg_color, summary_type, amount, master, **kwargs):
         super().__init__(master, ** kwargs)
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, weight="normal", slant="italic" )
+        self.font4 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
+        self.font6 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, weight="normal", slant="italic" )
         self.img = img
         # create guide frames
         self.img_bg = ctk.CTkLabel(self, height=ProfileStyles.SUMMARY_IMG_FRAME_H, width=ProfileStyles.SUMMARY_IMG_FRAME_W,
@@ -49,9 +49,9 @@ class SummarySection(ctk.CTkFrame):
         self.details_frame = ctk.CTkFrame(self, width=ProfileStyles.SUMMARY_IMG_FRAME_W, corner_radius=BaseStyles.RAD_2,
                                           fg_color=ProfileStyles.SUMMARY_DETAILS_FRAME_FG_COLOR)
         # create labels
-        self.summary_title_label = ctk.CTkLabel(self.details_frame, text=summary_type, font=self.font1, text_color=ProfileStyles.SUMMARY_TITLE_TEXT_COLOR, 
+        self.summary_title_label = ctk.CTkLabel(self.details_frame, text=summary_type, font=self.font4, text_color=ProfileStyles.SUMMARY_TITLE_TEXT_COLOR, 
                                                fg_color=ProfileStyles.SUMMARY_TITLE_LABEL_FG_COLOR, anchor="w")
-        self.amount_label = ctk.CTkLabel(self.details_frame, text=f"₱ {amount:,}", font=self.font2, text_color=ProfileStyles.SUMMARY_AMOUNT_TEXT_COLOR,
+        self.amount_label = ctk.CTkLabel(self.details_frame, text=f"₱ {amount:,}", font=self.font6, text_color=ProfileStyles.SUMMARY_AMOUNT_TEXT_COLOR,
                                          width=ProfileStyles.SUMMARY_AMOUNT_LABEL_W, wraplength=ProfileStyles.SUMMARY_AMOUNT_LABEL_W,
                                          fg_color=ProfileStyles.SUMMARY_AMOUNT_LABEL_FG_COLOR, anchor="w")
         # display guide frames

@@ -1,30 +1,75 @@
-from frontend.styles.base import scale
+from frontend.styles.base import BaseStyles, scale
 
 
 # ---- exclusive for home page ----
 class HomeStyles:
-    IMG_W = scale(200)
-    IMG_H = scale(200)
+    # header (ideal w: 1630)
+    HOME_IMG_W = scale(200)
+    HOME_IMG_H = scale(200)
 
-    IMG_BG_W = scale(240)
-    IMG_BG_H = scale(240)
+    HOME_IMG_BG_W = scale(240)
+    HOME_IMG_BG_H = scale(240)
 
-    LABEL_W = scale(1290)
+    BALANCE_FRAME_FG_COLOR = BaseStyles.TRANSPARENT
+    HOME_IMG_BG_COLOR = BaseStyles.TRANSPARENT
 
+    BALANCE_TITLE_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
+    BALANCE_AMOUNT_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
+
+    BALANCE_TITLE_TEXT_COLOR = BaseStyles.WHITE
+    BALANCE_AMOUNT_TEXT_COLOR = BaseStyles.WHITE
+    
+    BALANCE_AMOUNT_LABEL_W = scale(1290)
+
+    
+    # table header/row
+    TABLE_ROW_H = scale(40) 
+    DATE_COL_W = scale(180)
+    TYPE_COL_W = scale(250)
+    CATEGORY_COL_W = scale(250)
+    DESCRIPTION_COL_W = scale(390)
+    AMOUNT_COL_W = scale(390)
+
+    DATE_COL_FG_COLOR = BaseStyles.TRANSPARENT
+    TYPE_COL_FG_COLOR = BaseStyles.TRANSPARENT
+    CATEGORY_COL_FG_COLOR = BaseStyles.TRANSPARENT
+    DESCRIPTION_COL_FG_COLOR = BaseStyles.TRANSPARENT
+    AMOUNT_COL_FG_COLOR = BaseStyles.TRANSPARENT
+
+    DATE_COL_TEXT_COLOR = BaseStyles.DARK_GREY
+    TYPE_COL_TEXT_COLOR = BaseStyles.DARK_GREY
+    CATEGORY_COL_TEXT_COLOR = BaseStyles.DARK_GREY
+    DESCRIPTION_COL_TEXT_COLOR = BaseStyles.DARK_GREY
+    AMOUNT_COL_TEXT_COLOR = BaseStyles.DARK_GREY
+
+
+    # main table
     TABLE_TITLE_SECTION_W = scale(1630)
     TABLE_TITLE_SECTION_H = scale(100)
-    
-    TABLE_COL_W1 = scale(180)
-    TABLE_COL_W2 = scale(250)
-    TABLE_COL_W3 = scale(390)
 
-    TABLE_ROW_H = scale(40) 
+    TABLE_TITLE_SECTION_FG_COLOR = BaseStyles.BLUE
+    TABLE_HEADER_FG_COLOR = BaseStyles.WHITE
+    TABLE_BODY_FG_COLOR = BaseStyles.WHITE
+
+    TABLE_TITLE_TEXT_COLOR = BaseStyles.WHITE
+
+    TABLE_ROW_FG_COLOR = BaseStyles.WHITE
 
     TABLE_BODY_W = scale(1560) - 20 # minus unchangeable sidebar width
     TABLE_BODY_H = scale(500)
 
-    REPORT_TITLE_SECTION_W = scale(1630)
-    REPORT_TITLE_SECTION_H = scale(100)
+
+    # monthly report
+    MONTHLY_TITLE_SECTION_W = scale(1630)
+    MONTHLY_TITLE_SECTION_H = scale(100)
+    
+    MONTHLY_TITLE_SECTION_FG_COLOR = BaseStyles.BLUE
+    MONTHLY_TITLE_TEXT_COLOR = BaseStyles.WHITE
+
+    MONTHLY_GRAPHS_SECTION_FG_COLOR = BaseStyles.TRANSPARENT
+
+    MONTHLY_LEFT_GRAPH_FRAME_FG_COLOR = BaseStyles.WHITE
+    MONTHLY_RIGHT_GRAPH_FRAME_FG_COLOR = BaseStyles.WHITE
 
     MONTHLY_INCOME_GRAPH_W = scale(760)
     MONTHLY_INCOME_GRAPH_H = scale(700)
@@ -35,5 +80,24 @@ class HomeStyles:
     MONTHLY_GRAPH_TITLE_SIZE = scale(15)
     MONTHLY_GRAPH_LABEL_SIZE = scale(10)
 
+
+    # quarterly report
+    QUARTERLY_TITLE_SECTION_W = scale(1630)
+    QUARTERLY_TITLE_SECTION_H = scale(100)
+    
+    QUARTERLY_TITLE_SECTION_FG_COLOR = BaseStyles.BLUE
+    QUARTERLY_TITLE_TEXT_COLOR = BaseStyles.WHITE
+    
+    QUARTERLY_GRAPHS_SECTION_FG_COLOR = BaseStyles.WHITE
+    
     QUARTERLY_GRAPH_SECTION_W = scale(1580)
     QUARTERLY_GRAPH_SECTION_H = scale(700)
+
+
+    # main page
+    HEADER_SECTION_FG_COLOR = BaseStyles.BLUE
+    TABLE_SECTION_FG_COLOR = BaseStyles.TRANSPARENT
+    MONTHLY_SECTION_FG_COLOR = BaseStyles.TRANSPARENT
+    QUARTERLY_SECTION_FG_COLOR = BaseStyles.TRANSPARENT
+
+
