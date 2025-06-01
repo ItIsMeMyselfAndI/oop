@@ -2,7 +2,7 @@
 import customtkinter as ctk
 import os
 # our modules/libs
-from frontend.styles import BaseStyles # paddings, dimensions, colors, etc
+from frontend.styles import BaseStyles, AppStyles # paddings, dimensions, colors, etc
 from frontend.components import SidebarTabs # navigation page-tabs
 from frontend.pages import ProfilePage # profile page
 from frontend.pages import HomePage # home page
@@ -27,30 +27,30 @@ class App(ctk.CTk):
         self.title("Personal Finance Tracker")
         # initialize dimensions
         x_pos, y_pos = 0, 0
-        self.geometry(f"{BaseStyles.SCREEN_W}x{BaseStyles.SCREEN_H}+{x_pos}+{y_pos}")
-        self.maxsize(BaseStyles.SCREEN_W, BaseStyles.SCREEN_H)
-        self.minsize(BaseStyles.SCREEN_W, BaseStyles.SCREEN_H)
+        self.geometry(f"{AppStyles.WIN_W}x{AppStyles.WIN_H}+{x_pos}+{y_pos}")
+        self.maxsize(AppStyles.WIN_W, AppStyles.WIN_H)
+        self.minsize(AppStyles.WIN_W, AppStyles.WIN_H)
         self.resizable(width=True, height=True)
+        self.configure(fg_color=AppStyles.WIN_FG_COLOR)
         # create scrollable screen (vertical)
-        self.content = ctk.CTkScrollableFrame(self, orientation="vertical", corner_radius=0, fg_color=BaseStyles.SKY_BLUE, width=1830, height=BaseStyles.SCREEN_H)
+        # self.content = ctk.CTkScrollableFrame(self, orientation="vertical", corner_radius=0, fg_color=AppStyles.WIN_FG_COLOR, width=1830, height=AppStyles.WIN_H)
+        self.content = ctk.CTkFrame(self, corner_radius=0, fg_color=AppStyles.WIN_FG_COLOR)
         # create app pages
-        self.profilePage = ProfilePage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=BaseStyles.SKY_BLUE, corner_radius=0) 
-        self.homePage = HomePage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=BaseStyles.SKY_BLUE, corner_radius=0) 
-        self.editPage = EditPage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=BaseStyles.SKY_BLUE, corner_radius=0) 
-        self.historyPage = HistoryPage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=BaseStyles.SKY_BLUE, corner_radius=0) 
-        self.addPage = AddPage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=BaseStyles.SKY_BLUE, corner_radius=0) 
+        self.profilePage = ProfilePage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=AppStyles.WIN_FG_COLOR, corner_radius=0) 
+        self.homePage = HomePage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=AppStyles.WIN_FG_COLOR, corner_radius=0) 
+        self.editPage = EditPage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=AppStyles.WIN_FG_COLOR, corner_radius=0) 
+        self.historyPage = HistoryPage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=AppStyles.WIN_FG_COLOR, corner_radius=0) 
+        self.addPage = AddPage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=AppStyles.WIN_FG_COLOR, corner_radius=0) 
         self.pages = {
             "profile":self.profilePage, "home":self.homePage,
             "edit":self.editPage, "history":self.historyPage,
             "add":self.addPage
         }
         # create sidebar tabs
-        self.sidebar = SidebarTabs(pages=self.pages, master=self, fg_color=BaseStyles.WHITE, corner_radius=0)
+        self.sidebar = SidebarTabs(pages=self.pages, master=self, fg_color=AppStyles.SIDEBAR_FG_COLOR, corner_radius=0)
         # create save btn
-        self.editSaveBtn = SaveBTN(user_id=self.user_id, tm=self.tm, pages=self.pages, app=self,
-                                master=self.editPage, fg_color=BaseStyles.SKY_BLUE)
-        self.addSaveBtn = SaveBTN(user_id=self.user_id, tm=self.tm, pages=self.pages, app=self,
-                               master=self.addPage, fg_color=BaseStyles.SKY_BLUE)
+        self.editSaveBtn = SaveBTN(user_id=self.user_id, tm=self.tm, pages=self.pages, app=self, master=self.editPage, fg_color=AppStyles.WIN_FG_COLOR)
+        self.addSaveBtn = SaveBTN(user_id=self.user_id, tm=self.tm, pages=self.pages, app=self, master=self.addPage, fg_color=AppStyles.WIN_FG_COLOR)
         # display sidebar/page-tabs and content[profile, home, edit, history, add]
         self.sidebar.pack(side="left", fill="y")
         # self.content.pack(side="left", fill="both", expand=True)
@@ -61,9 +61,9 @@ class App(ctk.CTk):
 
         # create pop ups
         self.loadPopUp = PopUpWin(title="[Start] Loading App", msg="Loading...",
-                                  enable_close=False, master=self, fg_color=BaseStyles.WHITE)
+                                  enable_close=False, master=self, fg_color=AppStyles.LOAD_POP_UP_FG_COLOR)
         self.closeAppPopUp = PopUpWin(title="[Exit] Closing App", msg="Exiting...",
-                                  enable_close=False, master=self, fg_color=BaseStyles.WHITE)
+                                  enable_close=False, master=self, fg_color=AppStyles.CLOSE_APP_POP_UP_FG_COLOR)
         # load all pages
         print("App started.")
         print("\nLoading pages...")

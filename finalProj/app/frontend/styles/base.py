@@ -76,3 +76,7 @@ class BaseStyles:
     LIGHT_GREY = "#c4c4c4"
     GREY = "grey"
     DARK_GREY = "#545454"
+
+
+    # ---- sidebar ----
+    SIDEBAR_W = scale(90)

@@ -1,4 +1,5 @@
 from .base import BaseStyles
+from .app import AppStyles
 from .sidebar import SidebarStyles
 from .profile import ProfileStyles
 from .home import HomeStyles

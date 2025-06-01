@@ -219,15 +219,20 @@ class HomePage(ctk.CTkFrame):
         self.isCurrentPage = False
         # load imgs
         home_icon = self.loadIcons()
+        # scrollable frame
+        self.scroll_frame = ctk.CTkScrollableFrame(self, orientation="vertical", corner_radius=0, fg_color=HomeStyles.MAIN_FRAME_FG_COLOR,
+                                                   width=HomeStyles.MAIN_FRAME_W, height=HomeStyles.MAIN_FRAME_H)
         # calculate balance 
         finance = self.tm.calculateOverallFinance(self.user_id)
         balance = self.tm.calculateOverallBalance(finance)
         # create page sections
-        self.header_section = HomeHeader(img=home_icon, summary_type="Total Balance:", amount=balance, master=self,
+        self.header_section = HomeHeader(img=home_icon, summary_type="Total Balance:", amount=balance, master=self.scroll_frame,
                                          fg_color=HomeStyles.HEADER_SECTION_FG_COLOR, corner_radius=BaseStyles.RAD_2)
-        self.table_section = Table(user_id=self.user_id, tm=self.tm, master=self, corner_radius=0, fg_color=HomeStyles.TABLE_SECTION_FG_COLOR)
-        self.monthly_section = MonthlyReport(user_id=self.user_id, tm=self.tm, master=self, fg_color=HomeStyles.MONTHLY_SECTION_FG_COLOR)
-        self.quarterly_section = QuarterlyReport(user_id=self.user_id, tm=self, master=self, fg_color=HomeStyles.QUARTERLY_SECTION_FG_COLOR)
+        self.table_section = Table(user_id=self.user_id, tm=self.tm, master=self.scroll_frame, corner_radius=0, fg_color=HomeStyles.TABLE_SECTION_FG_COLOR)
+        self.monthly_section = MonthlyReport(user_id=self.user_id, tm=self.tm, master=self.scroll_frame, fg_color=HomeStyles.MONTHLY_SECTION_FG_COLOR)
+        self.quarterly_section = QuarterlyReport(user_id=self.user_id, tm=self, master=self.scroll_frame, fg_color=HomeStyles.QUARTERLY_SECTION_FG_COLOR)
+        # display main frame
+        self.scroll_frame.pack()
         # display sections
         self.header_section.pack(pady=(BaseStyles.PAD_5*2,0))
         self.table_section.pack(pady=(BaseStyles.PAD_2,0))

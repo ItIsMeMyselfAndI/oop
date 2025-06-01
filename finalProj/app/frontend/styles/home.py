@@ -96,6 +96,11 @@ class HomeStyles:
 
 
     # main page
+    MAIN_FRAME_W = BaseStyles.SCREEN_W - BaseStyles.SIDEBAR_W
+    MAIN_FRAME_H = BaseStyles.SCREEN_H
+
+    MAIN_FRAME_FG_COLOR = BaseStyles.TRANSPARENT
+
     HEADER_SECTION_FG_COLOR = BaseStyles.BLUE
     TABLE_SECTION_FG_COLOR = BaseStyles.TRANSPARENT
     MONTHLY_SECTION_FG_COLOR = BaseStyles.TRANSPARENT
