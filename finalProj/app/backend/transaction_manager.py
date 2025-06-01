@@ -13,13 +13,16 @@ from typing import List
 # data holder for a transaction
 class Transaction:
     def __init__(self, t_date:str, t_type:str, t_category:str,
-                 t_amount:float, t_description:str, t_id:int=None):
+                 t_amount:float, t_description:str, t_id:int=None,
+                 created_at:datetime=None, updated_at:datetime=None):
         self.t_id: int = t_id  #naka default as None (sa "get methods" lng toh mag kakalaman)
         self.t_date: str = t_date
         self.t_type: str = t_type
         self.t_category: str = t_category
         self.t_amount: float = t_amount
         self.t_description: str = t_description
+        self.created_at: datetime = created_at  #naka default as None (sa "get methods" lng toh mag kakalaman)
+        self.updated_at: datetime = updated_at  #naka default as None (sa "get methods" lng toh mag kakalaman)
 
 
 class Finance:
@@ -40,25 +43,25 @@ class TransactionRepository:
     def initializeDatabase(self, db_path):
         self.connection = sqlite3.connect(db_path)
         self.cursor = self.connection.cursor()
-        command_users = (
-            "CREATE TABLE IF NOT EXISTS users ( "
-            "    user_id INTEGER PRIMARY KEY AUTOINCREMENT, " 
-            "    username TEXT UNIQUE NOT NULL, " 
-            "    password CHAR(16) "
-            ")"
-        )
-        command_transactions = (
-            "CREATE TABLE IF NOT EXISTS transactions( "
-            "    transaction_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-            "    transaction_date TEXT, "
-            "    transaction_type TEXT, "
-            "    transaction_category TEXT, "
-            "    transaction_amount REAL, "
-            "    transaction_description TEXT, "
-            "    user_id INTEGER, "
-            "    FOREIGN KEY (user_id) REFERENCES users(user_id) "
-            ")"
-        )
+        command_users = """
+            CREATE TABLE IF NOT EXISTS users (
+                user_id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                username TEXT UNIQUE NOT NULL, 
+                password CHAR(16)
+            )
+        """
+        command_transactions = """
+            CREATE TABLE IF NOT EXISTS transactions(
+                transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                transaction_date TEXT,
+                transaction_type TEXT,
+                transaction_category TEXT,
+                transaction_amount REAL,
+                transaction_description TEXT,
+                user_id INTEGER,
+                FOREIGN KEY (user_id) REFERENCES users(user_id)
+            )
+        """
         self.cursor.execute(command_users)
         self.cursor.execute(command_transactions)
         self.cursor.execute("PRAGMA foreign_keys = ON") 
@@ -67,32 +70,32 @@ class TransactionRepository:
 
     def getAllTransactions(self, user_id: int) -> List[Transaction]:
         # retrieve transaction data
-        command = (
-            "SELECT * FROM transactions "
-            "WHERE user_id = ?"
-        )
+        command = """
+            SELECT * FROM transactions
+            WHERE user_id = ?
+        """
         values = (user_id,)
         rows: List[tuple] = self.cursor.execute(command, values).fetchall()
         # convert transaction tuple to obj
         all_transactions: List[Transaction] = []
         for row in rows:
-            t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2], t_category=row[3], t_amount=row[4], t_description=row[5])
+            t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2], t_category=row[3], t_amount=row[4], t_description=row[5], created_at=row[7], updated_at=row[8])
             all_transactions.append(t)
         # return list of transaction obj
         return all_transactions
     
     def getTransactionsByType(self, user_id: int, t_type: str) -> List[Transaction]:
         # retrieve transaction data
-        command = (
-            "SELECT * FROM transactions "
-            "WHERE user_id = ? AND transaction_type = ? "
-        )
+        command = """
+            SELECT * FROM transactions
+            WHERE user_id = ? AND transaction_type = ?
+        """
         values = (user_id, t_type)
         rows: List[tuple] = self.cursor.execute(command, values).fetchall()
         # convert transaction tuple to obj
         type_transactions: List[Transaction] = []
         for row in rows:
-            t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2], t_category=row[3], t_amount=row[4], t_description=row[5])
+            t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2], t_category=row[3], t_amount=row[4], t_description=row[5], created_at=row[7], updated_at=row[8])
             type_transactions.append(t)
         # return list of transaction obj
         return type_transactions
@@ -102,26 +105,19 @@ class TransactionRepository:
         pass
 
     def getRecentTransactions(self, user_id: int, t_count: int) -> List[Transaction]:
-        command = (
-            "SELECT * FROM transactions "
-            "WHERE user_id = ? "
-            "ORDER BY transaction_id DESC "
-            "LIMIT ?"
-        )
+        command = """
+            SELECT * FROM transactions 
+            WHERE user_id = ? 
+            ORDER BY created_at DESC, transaction_id DESC 
+            LIMIT ?
+        """
         values = (user_id, t_count)
         rows: List[tuple] = self.cursor.execute(command, values).fetchall()
             
         # Convert rows to Transaction objects
         recent_transactions: List[Transaction] = []
         for row in rows:
-            t = Transaction(
-                t_id=row[0],
-                t_date=row[1],
-                t_type=row[2],
-                t_category=row[3],
-                t_amount=row[4],
-                t_description=row[5]
-            )
+            t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2], t_category=row[3], t_amount=row[4], t_description=row[5], created_at=row[7], updated_at=row[8])
             recent_transactions.append(t)
 
         return recent_transactions
@@ -165,15 +161,17 @@ class TransactionRepository:
         return transaction_tuple
     
     def modifyTransaction(self, user_id: int, t_id: int, updated_transaction: Transaction) -> tuple:
-        command = (
-            "UPDATE transactions SET "
-            "transaction_date = ?, "
-            "transaction_type = ?, "
-            "transaction_category = ?, "
-            "transaction_amount = ?, "
-            "transaction_description = ? "
-            "WHERE user_id = ? AND transaction_id = ?"  # Use the column name
-        )
+        command = """
+            UPDATE transactions SET
+                transaction_date = ?, 
+                transaction_type = ?,
+                transaction_category = ?,
+                transaction_amount = ?,
+                transaction_description = ?,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE
+                user_id = ? AND transaction_id = ?
+        """
         values = (
             updated_transaction.t_date, 
             updated_transaction.t_type,
@@ -197,28 +195,28 @@ class TransactionRepository:
         # display results
         print("\n[All Transactions]\n")
         for t in all_transactions:
-            print(f" {t.t_id:<10} | {t.t_date:<12} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description}")
+            print(f" {t.t_id:<10} | {t.t_date:<12} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description} | {t.created_at} | {t.created_at}")
     
     def testMirasolGetTransactionByType(self):
         type_transactions = self.getTransactionsByType(user_id=self.user_id, t_type='expense')
         # display results
         print("\n\n[Type (expense) Transactions]\n")
         for t in type_transactions:
-            print(f" {t.t_id:<10} | {t.t_date:<12} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description}")
+            print(f" {t.t_id:<10} | {t.t_date:<12} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description} | {t.created_at} | {t.created_at}")
     
     def testNicolasGetTransactionsByCategory(self):
         category_transactions = self.getTransactionsByCategory(user_id=self.user_id, t_category='Salary')
         # display results
         print("\n[Category (Salary) Transactions]\n")
         for t in category_transactions:
-            print(f" {t.t_id:<10} | {t.t_date:<13} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description}")
+            print(f" {t.t_id:<10} | {t.t_date:<13} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description} | {t.created_at} | {t.created_at}")
     
     def testAzcarragaGetRecentTransactions(self):
         recent_transactions = self.getRecentTransactions(user_id=self.user_id, t_count=5)
         # display results
         print("\n[Five Recent Transactions]\n")
         for t in recent_transactions:
-            print(f" {t.t_id:<10} | {t.t_date:<13} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description}")
+            print(f" {t.t_id:<10} | {t.t_date:<13} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description} | {t.created_at} | {t.created_at}")
     
     def testNicolasAddTransaction(self):
         # new Transaction obj sample

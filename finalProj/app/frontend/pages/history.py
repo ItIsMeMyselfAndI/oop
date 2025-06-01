@@ -123,19 +123,24 @@ class TableRow(ctk.CTkFrame):
         
         self.date_col = ctk.CTkLabel(self, text=self.t.t_date, font=self.font2,
                                      text_color=HistoryStyles.DATE_COL_TEXT_COLOR, fg_color=HistoryStyles.DATE_COL_FG_COLOR,
-                                     width=HistoryStyles.DATE_COL_W, height=HistoryStyles.TABLE_ROW_H, anchor="w", justify="left")
+                                     width=HistoryStyles.DATE_COL_W, height=HistoryStyles.TABLE_ROW_H,
+                                     wraplength=HistoryStyles.DATE_COL_W, anchor="w", justify="left")
         self.type_col = ctk.CTkLabel(self, text=self.t.t_type, font=self.font2,
                                      text_color=HistoryStyles.TYPE_COL_TEXT_COLOR, fg_color=HistoryStyles.TYPE_COL_FG_COLOR,
-                                     width=HistoryStyles.TYPE_COL_W, height=HistoryStyles.TABLE_ROW_H, anchor="w", justify="left")
+                                     width=HistoryStyles.TYPE_COL_W, height=HistoryStyles.TABLE_ROW_H,
+                                     wraplength=HistoryStyles.TYPE_COL_W, anchor="w", justify="left")
         self.category_col = ctk.CTkLabel(self, text=self.t.t_category, font=self.font2,
                                          text_color=HistoryStyles.CATEGORY_COL_TEXT_COLOR, fg_color=HistoryStyles.CATEGORY_COL_FG_COLOR,
-                                         width=HistoryStyles.CATEGORY_COL_W, height=HistoryStyles.TABLE_ROW_H, anchor="w", justify="left")
+                                         width=HistoryStyles.CATEGORY_COL_W, height=HistoryStyles.TABLE_ROW_H,
+                                         wraplength=HistoryStyles.CATEGORY_COL_W, anchor="w", justify="left")
         self.description_col = ctk.CTkLabel(self, text=self.t.t_description, font=self.font2,
                                             text_color=HistoryStyles.DESCRIPTION_COL_TEXT_COLOR, fg_color=HistoryStyles.DESCRIPTION_COL_FG_COLOR,
-                                            width=HistoryStyles.DESCRIPTION_COL_W, height=HistoryStyles.TABLE_ROW_H, anchor="w", justify="left")
-        self.amount_col = ctk.CTkLabel(self, text=self.t.t_amount, font=self.font2,
+                                            width=HistoryStyles.DESCRIPTION_COL_W, height=HistoryStyles.TABLE_ROW_H,
+                                            wraplength=HistoryStyles.DESCRIPTION_COL_W, anchor="w", justify="left")
+        self.amount_col = ctk.CTkLabel(self, text=f"₱ {self.t.t_amount}", font=self.font2,
                                        text_color=HistoryStyles.AMOUNT_COL_TEXT_COLOR, fg_color=HistoryStyles.AMOUNT_COL_FG_COLOR,
-                                       width=HistoryStyles.AMOUNT_COL_W-BaseStyles.PAD_1, height=HistoryStyles.TABLE_ROW_H, anchor="e", justify="right")
+                                       width=HistoryStyles.AMOUNT_COL_W-BaseStyles.PAD_1, height=HistoryStyles.TABLE_ROW_H,
+                                       wraplength=HistoryStyles.AMOUNT_COL_W, anchor="e", justify="right")
         
         
 class TableNavigation(ctk.CTkFrame):

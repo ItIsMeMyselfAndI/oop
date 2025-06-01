@@ -18,11 +18,10 @@ class HomeHeader(ctk.CTkFrame):
         self.img_bg = ctk.CTkLabel(self, corner_radius=0, image=img, text="", fg_color=HomeStyles.HOME_IMG_BG_COLOR,
                                    width=HomeStyles.HOME_IMG_BG_W, height=HomeStyles.HOME_IMG_BG_H)
         # create balance labels
-        self.balance_title_label = ctk.CTkLabel(self.balance_frame, text=summary_type, font=self.font4,
-                                               text_color=HomeStyles.BALANCE_TITLE_TEXT_COLOR,
+        self.balance_title_label = ctk.CTkLabel(self.balance_frame, text=summary_type, font=self.font4, text_color=HomeStyles.BALANCE_TITLE_TEXT_COLOR,
                                                fg_color=HomeStyles.BALANCE_TITLE_LABEL_FG_COLOR, anchor="w")
-        self.amount_label = ctk.CTkLabel(self.balance_frame, text=f"₱ {amount:,}", font=self.font6,
-                                         text_color=HomeStyles.BALANCE_AMOUNT_TEXT_COLOR, width=HomeStyles.BALANCE_AMOUNT_LABEL_W,
+        self.amount_label = ctk.CTkLabel(self.balance_frame, text=f"₱ {amount:,}", font=self.font6, text_color=HomeStyles.BALANCE_AMOUNT_TEXT_COLOR,
+                                         width=HomeStyles.BALANCE_AMOUNT_LABEL_W, wraplength=HomeStyles.BALANCE_AMOUNT_LABEL_W,
                                          fg_color=HomeStyles.BALANCE_AMOUNT_LABEL_FG_COLOR, anchor="w", justify="left")
         # display guide frames
         self.balance_frame.grid(row=0, column=0, padx=(BaseStyles.PAD_4,0))
@@ -71,19 +70,24 @@ class TableRow(ctk.CTkFrame):
         
         self.date_col = ctk.CTkLabel(self, text=self.t.t_date, font=self.font2,
                                      text_color=HomeStyles.DATE_COL_TEXT_COLOR, fg_color=HomeStyles.DATE_COL_FG_COLOR,
-                                     width=HomeStyles.DATE_COL_W, height=HomeStyles.TABLE_ROW_H, anchor="w", justify="left")
+                                     width=HomeStyles.DATE_COL_W, height=HomeStyles.TABLE_ROW_H,
+                                     wraplength=HomeStyles.DATE_COL_W, anchor="w", justify="left")
         self.type_col = ctk.CTkLabel(self, text=self.t.t_type, font=self.font2,
                                      text_color=HomeStyles.TYPE_COL_TEXT_COLOR, fg_color=HomeStyles.TYPE_COL_FG_COLOR,
-                                     width=HomeStyles.TYPE_COL_W, height=HomeStyles.TABLE_ROW_H, anchor="w", justify="left")
+                                     width=HomeStyles.TYPE_COL_W, height=HomeStyles.TABLE_ROW_H,
+                                     wraplength=HomeStyles.TYPE_COL_W, anchor="w", justify="left")
         self.category_col = ctk.CTkLabel(self, text=self.t.t_category, font=self.font2,
                                          text_color=HomeStyles.CATEGORY_COL_TEXT_COLOR, fg_color=HomeStyles.CATEGORY_COL_FG_COLOR,
-                                         width=HomeStyles.CATEGORY_COL_W, height=HomeStyles.TABLE_ROW_H, anchor="w", justify="left")
+                                         width=HomeStyles.CATEGORY_COL_W, height=HomeStyles.TABLE_ROW_H,
+                                         wraplength=HomeStyles.CATEGORY_COL_W, anchor="w", justify="left")
         self.description_col = ctk.CTkLabel(self, text=self.t.t_description, font=self.font2,
                                             text_color=HomeStyles.DESCRIPTION_COL_TEXT_COLOR, fg_color=HomeStyles.DESCRIPTION_COL_FG_COLOR,
-                                            width=HomeStyles.DESCRIPTION_COL_W, height=HomeStyles.TABLE_ROW_H, anchor="w", justify="left")
-        self.amount_col = ctk.CTkLabel(self, text=self.t.t_amount, font=self.font2,
+                                            width=HomeStyles.DESCRIPTION_COL_W, height=HomeStyles.TABLE_ROW_H,
+                                            wraplength=HomeStyles.DESCRIPTION_COL_W, anchor="w", justify="left")
+        self.amount_col = ctk.CTkLabel(self, text=f"₱ {self.t.t_amount}", font=self.font2,
                                        text_color=HomeStyles.AMOUNT_COL_TEXT_COLOR, fg_color=HomeStyles.AMOUNT_COL_FG_COLOR,
-                                       width=HomeStyles.AMOUNT_COL_W-BaseStyles.PAD_1, height=HomeStyles.TABLE_ROW_H, anchor="e", justify="right")
+                                       width=HomeStyles.AMOUNT_COL_W-BaseStyles.PAD_1, height=HomeStyles.TABLE_ROW_H,
+                                       wraplength=HomeStyles.AMOUNT_COL_W, anchor="e", justify="right")
         
 
 class Table(ctk.CTkFrame):
@@ -120,8 +124,7 @@ class Table(ctk.CTkFrame):
     
     def loadRecentRows(self):
         # retrieve 5 recent transactions
-        # recent_transactions = self.tm.repo.getRecentTransactions(user_id=self.user_id, t_count=5)
-        recent_transactions = []
+        recent_transactions = self.tm.repo.getRecentTransactions(user_id=self.user_id, t_count=10)
         # convert transactions to rows
         recent_rows = self._convertTransactionsToRows(transactions=recent_transactions)
         return recent_rows

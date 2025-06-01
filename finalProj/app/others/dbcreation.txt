@@ -4,7 +4,8 @@ CREATE TABLE users (
     username TEXT UNIQUE NOT NULL, 
     password CHAR(16),
     activity TEXT,
-    created_at DATETIME
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -17,6 +18,8 @@ CREATE TABLE transactions(
     transaction_amount REAL,
     transaction_description TEXT,
     user_id INTEGER,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
