@@ -115,19 +115,19 @@ class Table(ctk.CTkFrame):
         # display table content
         self.showRows()
 
-    def _convertTransactionsToRows(self, transactions):
-        rows = []
-        for t in transactions:
-            row = TableRow(transaction=t, master=self.table_body, fg_color=HomeStyles.TABLE_ROW_FG_COLOR)
-            rows.append(row)
-        return rows
-    
     def loadRecentRows(self):
         # retrieve 5 recent transactions
         recent_transactions = self.tm.repo.getRecentTransactions(user_id=self.user_id, t_count=10)
         # convert transactions to rows
-        recent_rows = self._convertTransactionsToRows(transactions=recent_transactions)
+        recent_rows = []
+        for t in recent_transactions:
+            row = TableRow(transaction=t, master=self.table_body, fg_color=HomeStyles.TABLE_ROW_FG_COLOR)
+            recent_rows.append(row)
         return recent_rows
+
+    def deletePrevRowsVersion(self):
+        for row in self.recent_rows:
+            row.destroy()
 
     def showRows(self):
         # show rows
@@ -153,30 +153,35 @@ class MonthlyReport(ctk.CTkFrame):
                                           text_color=HomeStyles.MONTHLY_TITLE_TEXT_COLOR, fg_color=HomeStyles.MONTHLY_TITLE_SECTION_FG_COLOR,
                                           width=HomeStyles.MONTHLY_TITLE_SECTION_W, height=HomeStyles.MONTHLY_TITLE_SECTION_H)
         self.graphs_section = ctk.CTkFrame(self, fg_color=HomeStyles.MONTHLY_GRAPHS_SECTION_FG_COLOR)
-        # graph dimensions in inches
-        graph_w_in = HomeStyles.MONTHLY_INCOME_GRAPH_W / BaseStyles.DPI
-        graph_h_in = HomeStyles.MONTHLY_EXPENSE_GRAPH_H / BaseStyles.DPI
-        self.income_graph, self.expense_graph = self.tm.createMonthlyGraph(user_id=self.user_id, width_in=graph_w_in,
-                                                                           height_in=graph_h_in, dpi=BaseStyles.DPI,
-                                                                           title_size=HomeStyles.MONTHLY_GRAPH_TITLE_SIZE,
-                                                                           label_size=HomeStyles.MONTHLY_GRAPH_LABEL_SIZE)
         # create guide frames
         self.left_frame = ctk.CTkFrame(self.graphs_section, fg_color=HomeStyles.MONTHLY_LEFT_GRAPH_FRAME_FG_COLOR, corner_radius=BaseStyles.RAD_2)
         self.right_frame = ctk.CTkFrame(self.graphs_section, fg_color=HomeStyles.MONTHLY_RIGHT_GRAPH_FRAME_FG_COLOR, corner_radius=BaseStyles.RAD_2)
-        # layout income
-        self.income_canvas = FigureCanvasTkAgg(figure=self.income_graph, master=self.left_frame)
-        self.income_canvas.draw()
-        self.income_canvas.get_tk_widget().pack(padx=BaseStyles.PAD_1, pady=(BaseStyles.PAD_1,BaseStyles.PAD_3))
-        # layout expense
-        self.expense_canvas = FigureCanvasTkAgg(figure=self.expense_graph, master=self.right_frame)
-        self.expense_canvas.draw()
-        self.expense_canvas.get_tk_widget().pack(padx=BaseStyles.PAD_1, pady=(BaseStyles.PAD_1,BaseStyles.PAD_3))
+        # load and display graphs
+        self.income_canvas, self.expense_canvas = self.loadAndDisplayGraphsWidget()
         # display sections
         self.title_section.pack(pady=(0,BaseStyles.PAD_2))
         self.graphs_section.pack()
         # display guide frames
         self.left_frame.grid(row=0, column=0, padx=(0,BaseStyles.PAD_2))
         self.right_frame.grid(row=0, column=1)
+    
+    def loadAndDisplayGraphsWidget(self):
+        # graph dimensions in inches
+        graph_w_in = HomeStyles.MONTHLY_INCOME_GRAPH_W / BaseStyles.DPI
+        graph_h_in = HomeStyles.MONTHLY_EXPENSE_GRAPH_H / BaseStyles.DPI
+        income_graph, expense_graph = self.tm.createMonthlyGraph(user_id=self.user_id, width_in=graph_w_in,
+                                                                           height_in=graph_h_in, dpi=BaseStyles.DPI,
+                                                                           title_size=HomeStyles.MONTHLY_GRAPH_TITLE_SIZE,
+                                                                           label_size=HomeStyles.MONTHLY_GRAPH_LABEL_SIZE)
+        # layout income
+        income_canvas = FigureCanvasTkAgg(figure=income_graph, master=self.left_frame)
+        income_canvas.draw()
+        income_canvas.get_tk_widget().pack(padx=BaseStyles.PAD_1, pady=(BaseStyles.PAD_1,BaseStyles.PAD_3))
+        # layout expense
+        expense_canvas = FigureCanvasTkAgg(figure=expense_graph, master=self.right_frame)
+        expense_canvas.draw()
+        expense_canvas.get_tk_widget().pack(padx=BaseStyles.PAD_1, pady=(BaseStyles.PAD_1,BaseStyles.PAD_3))
+        return income_canvas, expense_canvas
 
 
 class QuarterlyReport(ctk.CTkFrame):
@@ -223,8 +228,7 @@ class HomePage(ctk.CTkFrame):
         self.scroll_frame = ctk.CTkScrollableFrame(self, orientation="vertical", corner_radius=0, fg_color=HomeStyles.MAIN_FRAME_FG_COLOR,
                                                    width=HomeStyles.MAIN_FRAME_W, height=HomeStyles.MAIN_FRAME_H)
         # calculate balance 
-        finance = self.tm.calculateOverallFinance(self.user_id)
-        balance = self.tm.calculateOverallBalance(finance)
+        balance = self.loadOverallBalance()
         # create page sections
         self.header_section = HomeHeader(img=home_icon, summary_type="Total Balance:", amount=balance, master=self.scroll_frame,
                                          fg_color=HomeStyles.HEADER_SECTION_FG_COLOR, corner_radius=BaseStyles.RAD_2)
@@ -239,9 +243,28 @@ class HomePage(ctk.CTkFrame):
         self.monthly_section.pack(pady=(BaseStyles.PAD_2,0))
         self.quarterly_section.pack(pady=(BaseStyles.PAD_2,BaseStyles.PAD_5*3))
 
+    def loadOverallBalance(self):
+        finance = self.tm.calculateOverallFinance(self.user_id)
+        balance = self.tm.calculateOverallBalance(finance)
+        return balance
+
     def loadIcons(self):
         # icon path
         ICONS_FOLDER = os.path.abspath("assets/icons")
         # load images
         home_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/home1.png"), size=(HomeStyles.HOME_IMG_H, HomeStyles.HOME_IMG_W))
         return home_icon
+
+    def updatePageDisplay(self):
+        # update balance
+        finance = self.tm.calculateOverallFinance(self.user_id)
+        balance = self.tm.calculateOverallBalance(finance)
+        self.header_section.amount_label.configure(text=f"₱ {balance:,}")
+        # update table
+        self.table_section.deletePrevRowsVersion()
+        self.table_section.recent_rows = self.table_section.loadRecentRows()
+        self.table_section.showRows()
+        # update monthly
+        self.monthly_section.income_canvas.get_tk_widget().destroy()
+        self.monthly_section.expense_canvas.get_tk_widget().destroy()
+        self.monthly_section.loadAndDisplayGraphsWidget()

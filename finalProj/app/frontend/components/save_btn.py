@@ -41,8 +41,9 @@ class SaveBTN(ctk.CTkFrame):
             elif page_name == "add" and page.isCurrentPage == True:
                 self.pages["add"].saveNewTransactionToDatabase()
         # update pages
-        self.pages["edit"].updatePageDisplay()
         self.pages["profile"].updatePageDisplay()
+        self.pages["home"].updatePageDisplay()
+        self.pages["edit"].updatePageDisplay()
         self.pages["history"].updatePageDisplay()
 
     def onClickSave(self):
