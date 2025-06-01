@@ -108,7 +108,7 @@ class TransactionRepository:
         command = """
             SELECT * FROM transactions 
             WHERE user_id = ? 
-            ORDER BY created_at DESC, transaction_id DESC 
+            ORDER BY transaction_date DESC, transaction_id DESC 
             LIMIT ?
         """
         values = (user_id, t_count)
