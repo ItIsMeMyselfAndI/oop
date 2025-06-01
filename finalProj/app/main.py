@@ -32,7 +32,7 @@ class App(ctk.CTk):
         self.minsize(BaseStyles.SCREEN_W, BaseStyles.SCREEN_H)
         self.resizable(width=True, height=True)
         # create scrollable screen (vertical)
-        self.content = ctk.CTkScrollableFrame(self, orientation="vertical", corner_radius=0, fg_color=BaseStyles.SKY_BLUE)
+        self.content = ctk.CTkScrollableFrame(self, orientation="vertical", corner_radius=0, fg_color=BaseStyles.SKY_BLUE, width=1830, height=BaseStyles.SCREEN_H)
         # create app pages
         self.profilePage = ProfilePage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=BaseStyles.SKY_BLUE, corner_radius=0) 
         self.homePage = HomePage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=BaseStyles.SKY_BLUE, corner_radius=0) 
@@ -53,15 +53,16 @@ class App(ctk.CTk):
                                master=self.addPage, fg_color=BaseStyles.SKY_BLUE)
         # display sidebar/page-tabs and content[profile, home, edit, history, add]
         self.sidebar.pack(side="left", fill="y")
-        self.content.pack(side="left", fill="both", expand=True)
+        # self.content.pack(side="left", fill="both", expand=True)
+        self.content.pack()
         # display save buttons
         self.editSaveBtn.pack(pady=BaseStyles.PAD_4)
         self.addSaveBtn.pack(pady=BaseStyles.PAD_4)
 
         # create pop ups
-        self.loadPopUp = PopUpWin(title="[Start] Loading App", msg="App pages are loading...\nPlease wait...",
+        self.loadPopUp = PopUpWin(title="[Start] Loading App", msg="Loading...",
                                   enable_close=False, master=self, fg_color=BaseStyles.WHITE)
-        self.closePopUp = PopUpWin(title="[Exit] Closing App", msg="App pages is closing...\nPlease wait...",
+        self.closeAppPopUp = PopUpWin(title="[Exit] Closing App", msg="Exiting...",
                                   enable_close=False, master=self, fg_color=BaseStyles.WHITE)
         # load all pages
         print("App started.")
@@ -89,9 +90,9 @@ class App(ctk.CTk):
         print("Closed app.")
 
     def onCloseApp(self):
-        self.closePopUp.showWin()
-        self.closePopUp.after(100, self._closeAll)
-        self.closePopUp.hideWin()
+        self.closeAppPopUp.showWin()
+        self.closeAppPopUp.after(100, self._closeAll)
+        self.closeAppPopUp.hideWin()
 
 
 if __name__ == "__main__":

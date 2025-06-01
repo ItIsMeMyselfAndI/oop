@@ -22,6 +22,8 @@ class PopUpWin(ctk.CTkToplevel):
         self.label.pack(anchor="center")
         # hide win
         self.withdraw()
+        # place at the current window
+        self.focus_force()
         # block app input w/ frame
         self.input_blocker_frame = ctk.CTkFrame(master=master, fg_color=BaseStyles.SKY_BLUE,
                                                 width=BaseStyles.SCREEN_W, height=BaseStyles.SCREEN_H)

@@ -65,7 +65,7 @@ class TableFilters(ctk.CTkFrame):
         # reset page num
         self.table.current_page_num = 0
         # display current table page
-        self.table.showRowsInCurrentPage()
+        self.table.displayCurrentTablePage()
 
     def _updateCategoryMenuByType(self, t_type):
         if t_type == "All Types":
@@ -165,13 +165,14 @@ class TableNavigation(ctk.CTkFrame):
         if self.table.current_page_num > 0:
             self.table.current_page_num -= 1
             # print("table prev")
-            self.table.showRowsInCurrentPage()
+            self.after_idle(self.table.displayCurrentTablePage)
+            self.table.displayCurrentTable()
         
     def onClickNext(self):
         if self.table.current_page_num < len(self.table.current_rows_per_page) - 1:
             self.table.current_page_num += 1
             # print("table next")
-            self.table.showRowsInCurrentPage()
+            self.after_idle(self.table.displayCurrentTablePage)
 
 
 class Table(ctk.CTkFrame):
@@ -198,7 +199,7 @@ class Table(ctk.CTkFrame):
         self.table_body.pack()
         self.table_nav.pack(pady=(BaseStyles.PAD_1,0))
         # display default table page
-        self.showRowsInCurrentPage()
+        self.displayCurrentTablePage()
 
     def _groupTransactionsPerTablePage(self, transactions):
         # get number of pages
@@ -272,13 +273,15 @@ class Table(ctk.CTkFrame):
         # return the rows
         return all_rows_by_filter_per_page
 
-    def showRowsInCurrentPage(self):
+    def _hideRowsOfOtherPages(self):
         # hide rows for all filters
         for rows_per_page in self.all_rows_by_filter_per_page.values():
             for page_frame, rows in rows_per_page.items():
                 page_frame.pack_forget()
                 for row in rows:
                     row.pack_forget()
+
+    def _showRowsOfCurrentPage(self):
         # show rows in current page
         page_frame = list(self.current_rows_per_page.keys())[self.current_page_num]
         page_frame.pack()
@@ -294,6 +297,11 @@ class Table(ctk.CTkFrame):
             # print(f"\t{row.date_label._text} | {row.type_label._text} | {row.category_label._text} | {row.description_label._text} | {row.amount_label._text}")
         #     i += 1
         # print(f"\t{i = }")
+
+    def displayCurrentTablePage(self):
+        self._hideRowsOfOtherPages()
+        self.after_idle(self._showRowsOfCurrentPage)
+
 
 class HistoryPage(ctk.CTkFrame):
     def __init__(self, user_id, tm, master, **kwargs):
@@ -318,4 +326,4 @@ class HistoryPage(ctk.CTkFrame):
         self.table_section.all_rows_by_filter_per_page = self.table_section.loadAllRowsByFilterPerTablePage()
         self.table_section.current_rows_per_page = self.table_section.all_rows_by_filter_per_page[self.table_section.filters.type_menu.get()]
         self.table_section.current_page_num = 0
-        self.table_section.showRowsInCurrentPage()
+        self.table_section.displayCurrentTablePage()
