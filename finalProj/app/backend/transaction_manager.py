@@ -101,10 +101,31 @@ class TransactionRepository:
         # kailangan toh para sa table filter ng history page
         pass
 
-    def getRecentTransactions(sef, user_id: int, t_count: int) -> List[Transaction]:
-        # kailangan toh para sa table ng home page
-        pass
-    
+    def getRecentTransactions(self, user_id: int, t_count: int) -> List[Transaction]:
+        command = (
+            "SELECT * FROM transactions "
+            "WHERE user_id = ? "
+            "ORDER BY transaction_date DESC, transaction_id ASC "
+            "LIMIT ?"
+        )
+        values = (user_id, t_count)
+        rows: List[tuple] = self.cursor.execute(command, values).fetchall()
+            
+        # Convert rows to Transaction objects
+        recent_transactions: List[Transaction] = []
+        for row in rows:
+            t = Transaction(
+                t_id=row[0],
+                t_date=row[1],
+                t_type=row[2],
+                t_category=row[3],
+                t_amount=row[4],
+                t_description=row[5]
+            )
+            recent_transactions.append(t)
+
+        return recent_transactions
+
     def addTransaction(self, user_id: int, new_transaction: Transaction) -> None:
         print(user_id)
         command = """
@@ -520,7 +541,7 @@ if __name__ == "__main__":
     # tm.repo.testMirasolGetAllTransactions()
     # tm.repo.testMirasolGetTransactionByType()
     # tm.repo.testNicolasGetTransactionsByCategory()
-    # tm.repo.testAzcarragaGetRecentTransactions()
+    tm.repo.testAzcarragaGetRecentTransactions()
     # tm.repo.testNicolasAddTransaction()
     # tm.repo.testAzcarragaModifyTransaction()
     # tm.repo.testAzcarragaDeleteTransaction()
@@ -530,7 +551,7 @@ if __name__ == "__main__":
     # tm.testCalculateOverallBalance()
     # tm.testCalculateMonthlyFinances()
     # tm.testCalculateQuarterlyFinances()
-    tm.testCreateMonthlyGraph()
+    # tm.testCreateMonthlyGraph()
     # tm.testCreateQuarterlyGraph()
 
     tm.repo.connection.close()
