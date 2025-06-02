@@ -17,9 +17,10 @@ from backend import TransactionManager # db manager
 
 # main app class
 class App(ctk.CTk):
-    def __init__(self, app_title, user_id, tm):
+    def __init__(self, app_title, user_id, username, tm):
         super().__init__()
         self.user_id = user_id
+        self.username = username
         self.tm = tm
         # initialize app 
         x_pos, y_pos = 0, 0
@@ -109,6 +110,7 @@ if __name__ == "__main__":
     print("\n[App] Starting...")
     app_title = "Personal Finance Tracker"
     user_id = None
+    username = None
     # user_id = 2
     try:
         # db
@@ -122,6 +124,7 @@ if __name__ == "__main__":
         login = LoginWin(app_title=app_title, tm=tm, fg_color=AppStyles.WIN_FG_COLOR, width=AppStyles.WIN_W, height=AppStyles.WIN_H)
         login.mainloop()
         user_id = login.user_id
+        username = login.username
     except KeyboardInterrupt:
         print("\n[DB] Closing connection...")
         tm.repo.connection.close()
@@ -134,7 +137,7 @@ if __name__ == "__main__":
     print(f"{user_id = }")
     # app win
     try:
-        app = App(app_title=app_title, user_id=user_id, tm=tm)
+        app = App(app_title=app_title, user_id=user_id, username=username, tm=tm)
     except KeyboardInterrupt:
         print("\n[App] Closed successfully")
         exit(0)

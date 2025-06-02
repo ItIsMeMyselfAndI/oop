@@ -11,6 +11,7 @@ class LoginWin(ctk.CTk):
     def __init__(self, app_title, tm, fg_color, width, height):
         super().__init__()
         self.user_id = None
+        self.username = None
         self.tm = tm
         # initialize login
         x_pos, y_pos = 0, 0
@@ -96,6 +97,7 @@ class LoginWin(ctk.CTk):
             print("[Input] Empty field is not allowed")
         elif user_id:
             self.user_id = user_id
+            self.username = username
             print("\tUsername:", username)
             print("\tPassword:", password)
             self.destroy()
@@ -113,9 +115,10 @@ class LoginWin(ctk.CTk):
             self.empty_field_popup.showWin()
             print("[Input] Empty field is not allowed")
         elif was_added:
+            self.user_id = self.tm.repo.getAccountID(account)
+            self.username = username
             print("\tUsername:", username)
             print("\tPassword:", password)
-            self.user_id = self.tm.repo.getAccountID(account)
             self.destroy()
         else:
             self.already_taken_popup.showWin()

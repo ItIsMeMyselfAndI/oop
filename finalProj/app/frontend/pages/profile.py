@@ -75,7 +75,7 @@ class ProfilePage(ctk.CTkFrame):
         finance = self.tm.calculateOverallFinance(self.app.user_id)
         balance = self.tm.calculateOverallBalance(finance)
         # create page sections
-        self.header_section = ProfileHeader(img=self.profile_icon, uname=f"User {self.app.user_id}", 
+        self.header_section = ProfileHeader(img=self.profile_icon, uname=f"Hi there\n{self.app.username.title()}!", 
                                             summary_type="Total Balance:", amount=balance,
                                             master=self, fg_color=BaseStyles.BLUE, corner_radius=BaseStyles.RAD_2)
         self.summary_section = ctk.CTkFrame(self, fg_color=BaseStyles.WHITE, corner_radius=BaseStyles.RAD_2)
