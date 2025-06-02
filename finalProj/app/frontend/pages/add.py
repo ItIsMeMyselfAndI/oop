@@ -56,14 +56,16 @@ class AddTransactionForm(ctk.CTkFrame):
                                              text_color=AddStyles.DESCRIPTION_LABEL_TEXT_COLOR, fg_color=AddStyles.DESCRIPTION_LABEL_FG_COLOR)
         self.descriptionEntry = ctk.CTkEntry(self.second_section, font=self.font2, border_width=0, corner_radius=BaseStyles.RAD_2,
                                              text_color=AddStyles.DESCRIPTION_ENTRY_TEXT_COLOR, fg_color=AddStyles.DESCRIPTION_ENTRY_FG_COLOR,
-                                             placeholder_text="Description", placeholder_text_color=AddStyles.DESCRIPTION_PLACEHOLDER_TEXT_COLOR,
+                                             bg_color=AddStyles.DESCRIPTION_ENTRY_BG_COLOR, placeholder_text="Description",
+                                             placeholder_text_color=AddStyles.DESCRIPTION_PLACEHOLDER_TEXT_COLOR,
                                              width=AddStyles.DESCRIPTION_ENTRY_W, height=AddStyles.DESCRIPTION_ENTRY_H,)
         # create third section components
-        self.amountLabel = ctk.CTkLabel(self.third_section, text="Enter Amount", font=self.font4,
+        self.amountLabel = ctk.CTkLabel(self.third_section, text="Enter New Amount", font=self.font4,
                                         text_color=AddStyles.AMOUNT_LABEL_TEXT_COLOR, fg_color=AddStyles.AMOUNT_LABEL_FG_COLOR)
         self.amountEntry = ctk.CTkEntry(self.third_section, font=self.font2, border_width=0, corner_radius=BaseStyles.RAD_2,
                                         text_color=AddStyles.AMOUNT_ENTRY_TEXT_COLOR, fg_color=AddStyles.AMOUNT_ENTRY_FG_COLOR,
-                                        placeholder_text="Philippine Peso", placeholder_text_color=AddStyles.AMOUNT_PLACEHOLDER_TEXT_COLOR,
+                                        bg_color=AddStyles.AMOUNT_ENTRY_BG_COLOR, placeholder_text="Philippine Peso",
+                                        placeholder_text_color=AddStyles.AMOUNT_PLACEHOLDER_TEXT_COLOR,
                                         width=AddStyles.AMOUNT_ENTRY_W, height=AddStyles.AMOUNT_ENTRY_H,)
         # display sections
         self.first_section.pack(fill="both", pady=(BaseStyles.PAD_4,0))
@@ -140,7 +142,7 @@ class AddPage(ctk.CTkFrame):
         self.user_id = user_id
         self.tm = tm
         # initialize state
-        self.isCurrentPage = False
+        self.is_current_page = False
         # create page sections 
         self.header_section = AddHeader(self, fg_color=AddStyles.HEADER_SECTION_FG_COLOR, corner_radius=0)
         self.forms_section = ctk.CTkFrame(self, fg_color=AddStyles.FORMS_SECTION_FG_COLOR, corner_radius=BaseStyles.RAD_2)

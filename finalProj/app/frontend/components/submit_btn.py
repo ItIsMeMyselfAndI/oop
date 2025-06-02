@@ -33,11 +33,11 @@ class SubmitBTN(ctk.CTkButton):
     def _updateBackendAndFrontend(self):
         # save to database
         for page_name, page in self.pages.items():
-            if page_name == "login" and page.isCurrentPage == True:
+            if page_name == "login" and page.is_current_page == True:
                 pass
-            elif page_name == "edit" and page.isCurrentPage == True:
+            elif page_name == "edit" and page.is_current_page == True:
                 self.pages["edit"].saveEditedTransactionToDatabase()
-            elif page_name == "add" and page.isCurrentPage == True:
+            elif page_name == "add" and page.is_current_page == True:
                 self.pages["add"].saveNewTransactionToDatabase()
         # update pages
         self.pages["profile"].updatePageDisplay()

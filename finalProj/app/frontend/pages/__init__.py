@@ -1,3 +1,4 @@
+from .login import LoginPage
 from .add import AddPage
 from .edit import EditPage
 from .history import HistoryPage

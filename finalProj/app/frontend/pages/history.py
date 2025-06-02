@@ -309,7 +309,7 @@ class HistoryPage(ctk.CTkFrame):
         self.user_id = user_id
         self.tm = tm
         # initialize state
-        self.isCurrentPage = False
+        self.is_current_page = False
         # create page sections
         self.header_section = HistoryHeader(master=self, fg_color=HistoryStyles.HEADER_SECTION_FG_COLOR, corner_radius=BaseStyles.RAD_2)
         self.table_section = Table(user_id=self.user_id, tm=self.tm, header_section=self.header_section,

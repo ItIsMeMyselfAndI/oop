@@ -221,7 +221,7 @@ class HomePage(ctk.CTkFrame):
         self.user_id = user_id
         self.tm = tm
         # initialize state
-        self.isCurrentPage = False
+        self.is_current_page = False
         # load imgs
         home_icon = self.loadIcons()
         # scrollable frame

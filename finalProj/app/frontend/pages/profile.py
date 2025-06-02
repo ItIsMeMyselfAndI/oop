@@ -68,7 +68,7 @@ class ProfilePage(ctk.CTkFrame):
         self.user_id = user_id
         self.tm = tm
         # initialize state
-        self.isCurrentPage = False
+        self.is_current_page = False
         # load imgs
         profile_icon, income_icon, savings_icon, expense_icon, investment_icon = self.loadIcons()
         # calculate summaries

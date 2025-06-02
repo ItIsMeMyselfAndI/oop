@@ -59,12 +59,12 @@ class SidebarTabs(ctk.CTkFrame):
     def _switchTabTo(self, page_name):
         for name, page in self.pages.items():
             # set all page to not current page
-            page.isCurrentPage = False 
+            page.is_current_page = False 
             # close all pages
             page.pack_forget()
             # reset all buttons
             self.tabBTNs[name].configure(fg_color=SidebarStyles.OFF_BTN_FG_COLOR, hover_color=SidebarStyles.OFF_BTN_HOVER_COLOR)
         # open selected page and change fg, hover & text color
-        self.pages[page_name].isCurrentPage = True
+        self.pages[page_name].is_current_page = True
         self.pages[page_name].pack()
         self.tabBTNs[page_name].configure(fg_color=SidebarStyles.ON_BTN_FG_COLOR, hover_color=SidebarStyles.ON_BTN_HOVER_COLOR)

@@ -4,6 +4,7 @@ import os
 # our modules/libs
 from frontend.styles import BaseStyles, AppStyles # paddings, dimensions, colors, etc
 from frontend.components import SidebarTabs # navigation page-tabs
+from frontend.pages import LoginPage
 from frontend.pages import ProfilePage # profile page
 from frontend.pages import HomePage # home page
 from frontend.pages import EditPage # edit page
@@ -36,7 +37,7 @@ class App(ctk.CTk):
         self.resizable(width=True, height=True)
         self.configure(fg_color=AppStyles.WIN_FG_COLOR)
         # create scrollable screen (vertical)
-        # self.content = ctk.CTkScrollableFrame(self, orientation="vertical", corner_radius=0, fg_color=AppStyles.WIN_FG_COLOR, width=1830, height=AppStyles.WIN_H)
+        self.login = LoginPage(self, fg_color=AppStyles.WIN_FG_COLOR, width=AppStyles.WIN_W, height=AppStyles.WIN_H)
         self.content = ctk.CTkFrame(self, corner_radius=0, fg_color=AppStyles.WIN_FG_COLOR)
         # create app pages
         self.profilePage = ProfilePage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=AppStyles.WIN_FG_COLOR, corner_radius=0) 
@@ -56,7 +57,6 @@ class App(ctk.CTk):
         self.addSaveBtn = self.createSubmitBTN(master=self.addPage, text="Add Transaction", font=self.font3, popup_font=self.font2)
         # display sidebar/page-tabs and content[profile, home, edit, history, add]
         self.sidebar.pack(side="left", fill="y")
-        # self.content.pack(side="left", fill="both", expand=True)
         self.content.pack()
         # display save buttons
         self.editSaveBtn.pack(pady=BaseStyles.PAD_4)
@@ -67,12 +67,12 @@ class App(ctk.CTk):
         self.closeAppPopUp = PopUpWin(title="[App] Exit", msg="Exiting...", font=self.font2,
                                       enable_close=False, master=self, fg_color=AppStyles.CLOSE_APP_POP_UP_FG_COLOR)
         # load all pages
-        print("App started.")
-        print("\nLoading pages...")
+        print("[App] Started successfully")
+        print("\n[Pages] Loading...")
         self.loadPopUp.showWin()
         self.loadPopUp.after(100, self.loadPages) # load all pages
         self.loadPopUp.hideWin()
-        print("Pages loaded.")
+        print("[Pages] Loaded successfully")
         # close the app and db properly
         self.protocol("WM_DELETE_WINDOW", self.onCloseApp)
 
@@ -92,12 +92,12 @@ class App(ctk.CTk):
         self.sidebar.onClickProfilePage()
 
     def _closeAll(self):
-        print("\nClosing DB connection...")
+        print("\n[DB] Closing connection...")
         self.tm.repo.connection.close()
-        print("DB connection closed.")
-        print("\nClosing app...")
+        print("[DB] Connection closed successfully")
+        print("\n[App] Closing...")
         self.destroy()
-        print("Closed app.")
+        print("[App] Closed successfully.")
 
     def onCloseApp(self):
         self.closeAppPopUp.showWin()
@@ -106,20 +106,20 @@ class App(ctk.CTk):
 
 
 if __name__ == "__main__":
-    print("\nStarting app...")
+    print("\n[App] Starting...")
     try:
         app = App()
     except KeyboardInterrupt:
-        print("\nApp closed.")
+        print("\n[App] Closed successfully.")
         exit(0)
     
     # exit properly during keyboard interrupt
     try:
         app.mainloop()
     except KeyboardInterrupt:
-        print("\nClosing DB connection...")
+        print("\n[DB] Closing connection...")
         app.tm.repo.connection.close()
-        print("DB connection closed.")
-        print("\nClosing app...")
+        print("[DB] Connection closed successfully")
+        print("\n[App] Closing...")
         app.destroy()
         print("App closed.")
