@@ -9,7 +9,7 @@ from frontend.pages import HomePage # home page
 from frontend.pages import EditPage # edit page
 from frontend.pages import HistoryPage # history page
 from frontend.pages import AddPage # edit page
-from frontend.components import SaveBTN # save btn
+from frontend.components import SubmitBTN # save btn
 from frontend.components import PopUpWin # pop up win
 from backend import TransactionManager # db manager
 
@@ -23,6 +23,9 @@ class App(ctk.CTk):
         self.user_id = 1
         # create transaction manager
         self.tm = TransactionManager(db_path)
+        # initialize fonts
+        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, weight="normal", slant="italic" )
+        self.font3 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, weight="normal", slant="italic" )
         # set app title
         self.title("Personal Finance Tracker")
         # initialize dimensions
@@ -49,8 +52,8 @@ class App(ctk.CTk):
         # create sidebar tabs
         self.sidebar = SidebarTabs(pages=self.pages, master=self, fg_color=AppStyles.SIDEBAR_FG_COLOR, corner_radius=0)
         # create save btn
-        self.editSaveBtn = SaveBTN(user_id=self.user_id, tm=self.tm, pages=self.pages, app=self, master=self.editPage, fg_color=AppStyles.WIN_FG_COLOR)
-        self.addSaveBtn = SaveBTN(user_id=self.user_id, tm=self.tm, pages=self.pages, app=self, master=self.addPage, fg_color=AppStyles.WIN_FG_COLOR)
+        self.editSaveBtn = self.createSubmitBTN(master=self.editPage, text="Update Transaction", font=self.font3, popup_font=self.font2)
+        self.addSaveBtn = self.createSubmitBTN(master=self.addPage, text="Add Transaction", font=self.font3, popup_font=self.font2)
         # display sidebar/page-tabs and content[profile, home, edit, history, add]
         self.sidebar.pack(side="left", fill="y")
         # self.content.pack(side="left", fill="both", expand=True)
@@ -58,12 +61,11 @@ class App(ctk.CTk):
         # display save buttons
         self.editSaveBtn.pack(pady=BaseStyles.PAD_4)
         self.addSaveBtn.pack(pady=BaseStyles.PAD_4)
-
         # create pop ups
-        self.loadPopUp = PopUpWin(title="[Start] Loading App", msg="Loading...",
+        self.loadPopUp = PopUpWin(title="[App] Load", msg="Loading...", font=self.font2,
                                   enable_close=False, master=self, fg_color=AppStyles.LOAD_POP_UP_FG_COLOR)
-        self.closeAppPopUp = PopUpWin(title="[Exit] Closing App", msg="Exiting...",
-                                  enable_close=False, master=self, fg_color=AppStyles.CLOSE_APP_POP_UP_FG_COLOR)
+        self.closeAppPopUp = PopUpWin(title="[App] Exit", msg="Exiting...", font=self.font2,
+                                      enable_close=False, master=self, fg_color=AppStyles.CLOSE_APP_POP_UP_FG_COLOR)
         # load all pages
         print("App started.")
         print("\nLoading pages...")
@@ -73,6 +75,14 @@ class App(ctk.CTk):
         print("Pages loaded.")
         # close the app and db properly
         self.protocol("WM_DELETE_WINDOW", self.onCloseApp)
+
+    def createSubmitBTN(self, master, text, font, popup_font):
+        submitBTN = SubmitBTN(user_id=self.user_id, tm=self.tm, pages=self.pages, master=master,
+                              text=text, font=font, text_color=BaseStyles.WHITE, corner_radius=BaseStyles.RAD_2,
+                              width=AppStyles.SAVE_BTN_W, height=AppStyles.SAVE_BTN_H, 
+                              fg_color=BaseStyles.BLUE, hover_color=BaseStyles.DARK_BLUE,
+                              app=self, popup_title="[DB] Update", popup_text="Updating...", popup_font=popup_font)
+        return submitBTN
 
     def loadPages(self):
         for page in reversed(self.pages.values()):
@@ -102,6 +112,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\nApp closed.")
         exit(0)
+    
     # exit properly during keyboard interrupt
     try:
         app.mainloop()

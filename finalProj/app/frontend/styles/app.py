@@ -10,3 +10,6 @@ class AppStyles:
 
     LOAD_POP_UP_FG_COLOR = BaseStyles.WHITE
     CLOSE_APP_POP_UP_FG_COLOR = BaseStyles.WHITE
+    
+    SAVE_BTN_W = scale(350)
+    SAVE_BTN_H = scale(60)

@@ -5,9 +5,8 @@ from frontend.styles import BaseStyles, PopUpWinStyles # paddings, dimensions, c
 
 
 class PopUpWin(ctk.CTkToplevel):
-    def __init__(self, title, msg, enable_close, master, **kwargs):
+    def __init__(self, title, msg, enable_close, font, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, weight="normal", slant="italic" )
         # initialize win dimensions
         self.x_pos = int((BaseStyles.SCREEN_W / 2) - (PopUpWinStyles.POPUP_WIN_W / 2))
         self.y_pos = int((BaseStyles.SCREEN_H / 2) - (PopUpWinStyles.POPUP_WIN_H / 2))
@@ -16,7 +15,7 @@ class PopUpWin(ctk.CTkToplevel):
         self.geometry(f"{PopUpWinStyles.POPUP_WIN_W}x{PopUpWinStyles.POPUP_WIN_H}+{self.x_pos}+{self.y_pos}")
         self.resizable(width=False, height=False)
         # create content
-        self.label = ctk.CTkLabel(self, font=self.font1, text=msg, text_color=BaseStyles.DARK_GREY,
+        self.label = ctk.CTkLabel(self, font=font, text=msg, text_color=BaseStyles.DARK_GREY,
                                   width=PopUpWinStyles.POPUP_WIN_W, height=PopUpWinStyles.POPUP_WIN_H,
                                   wraplength=PopUpWinStyles.POPUP_WIN_W)
         self.label.pack(anchor="center")
