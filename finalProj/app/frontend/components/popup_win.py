@@ -5,8 +5,10 @@ from frontend.styles import BaseStyles, PopUpWinStyles # paddings, dimensions, c
 
 
 class PopUpWin(ctk.CTkToplevel):
-    def __init__(self, title, msg, enable_close, font, master, **kwargs):
+    def __init__(self, title, msg, enable_close, enable_frame_blocker, font, master, **kwargs):
         super().__init__(master, **kwargs)
+        self.enable_close = enable_close
+        self.enable_frame_blocker = enable_frame_blocker
         # initialize win dimensions
         self.x_pos = int((BaseStyles.SCREEN_W / 2) - (PopUpWinStyles.POPUP_WIN_W / 2))
         self.y_pos = int((BaseStyles.SCREEN_H / 2) - (PopUpWinStyles.POPUP_WIN_H / 2))
@@ -21,22 +23,28 @@ class PopUpWin(ctk.CTkToplevel):
         self.label.pack(anchor="center")
         # hide win
         self.withdraw()
-        # place at the current window
-        self.focus_force()
+        # place on top of other wins
+        self.attributes("-topmost", True)
+        # # place at the current window
+        # self.focus_force()
         # block app input w/ frame
         self.input_blocker_frame = ctk.CTkFrame(master=master, fg_color=BaseStyles.SKY_BLUE,
                                                 width=BaseStyles.SCREEN_W, height=BaseStyles.SCREEN_H)
         # disable manual close -> closes automatically
-        if not enable_close:
-            self.protocol("WM_DELETE_WINDOW", self.disabledCloseWin)
+        self.protocol("WM_DELETE_WINDOW", self.closeWin)
 
-    def disabledCloseWin(self):
-        pass
+    def closeWin(self):
+        if self.enable_close:
+            self.hideWin()
 
     def showWin(self):
-        self.input_blocker_frame.place(relx=0.0, rely=0.0) # cover screen w/ transparent frame
+        if self.enable_frame_blocker:
+            self.input_blocker_frame.place(relx=0.0, rely=0.0) # cover screen w/ transparent frame
         self.deiconify() # show win
 
     def hideWin(self):
-        self.after(100, self.input_blocker_frame.place_forget) # uncover screen w/ transparent frame
-        self.after(100, self.withdraw) # hide win
+        print("\n[POPUP] Closing...")
+        if self.enable_frame_blocker:
+            self.after(100, self.input_blocker_frame.place_forget) # uncover screen w/ transparent frame
+        self.after(200, self.withdraw) # hide win
+        print("[POPUP] Closed successfully")

@@ -7,7 +7,7 @@ from frontend.styles import BaseStyles, HistoryStyles # paddings, dimensions, co
 class HistoryHeader(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font6 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, weight="normal", slant="italic" )
+        self.font6 = ("Bodoni MT", BaseStyles.FONT_SIZE_6, "italic")
 
         self.title_label = ctk.CTkLabel(self, text="Transaction History", font=self.font6, text_color=HistoryStyles.HEADER_TITLE_TEXT_COLOR,
                                        width=HistoryStyles.HEADER_TITLE_LABEL_W, height=HistoryStyles.HEADER_TITLE_LABEL_H, 
@@ -21,7 +21,7 @@ class TableFilters(ctk.CTkFrame):
         super().__init__(master, **kwargs)
         self.table = table
         # initialize fonts
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_1, weight="normal", slant="italic" )
+        self.font1 = ("Bodoni MT", BaseStyles.FONT_SIZE_1, "italic")
         # create options
         self.t_type = ["All Types", "Income", "Expenses", "Savings", "Investment"]
         self.categories_by_type = {
@@ -87,8 +87,8 @@ class TableFilters(ctk.CTkFrame):
 class TableHeader(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font3 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, weight="normal", slant="italic" )
-        self.font4 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
+        self.font3 = ("Bodoni MT", BaseStyles.FONT_SIZE_3, "italic")
+        self.font4 = ("Bodoni MT", BaseStyles.FONT_SIZE_4, "italic")
         # table headers
         self.date_header = ctk.CTkLabel(self, text="Date", font=self.font3,
                                         text_color=HistoryStyles.DATE_COL_TEXT_COLOR, fg_color=HistoryStyles.DATE_COL_FG_COLOR,
@@ -118,8 +118,8 @@ class TableRow(ctk.CTkFrame):
         super().__init__(master, **kwargs)
         self.t = transaction
         # initialize font
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, weight="normal", slant="italic" )
-        self.font4 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
+        self.font2 = ("Bodoni MT", BaseStyles.FONT_SIZE_2, "italic")
+        self.font4 = ("Bodoni MT", BaseStyles.FONT_SIZE_4, "italic")
         
         self.date_col = ctk.CTkLabel(self, text=self.t.t_date, font=self.font2,
                                      text_color=HistoryStyles.DATE_COL_TEXT_COLOR, fg_color=HistoryStyles.DATE_COL_FG_COLOR,
@@ -147,7 +147,7 @@ class TableNavigation(ctk.CTkFrame):
     def __init__(self, table, master, **kwargs):
         super().__init__(master, **kwargs)
         self.table = table
-        self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_1, weight="normal", slant="italic" )
+        self.font1 = ("Bodoni MT", BaseStyles.FONT_SIZE_1, "italic")
         # create nav btns
         self.prevBTN = ctk.CTkButton(self, text="Prev", text_color=HistoryStyles.NAV_PREV_BUTTON_TEXT_COLOR,
                                      fg_color=HistoryStyles.NAV_PREV_BUTTON_FG_COLOR, hover_color=HistoryStyles.NAV_PREV_BUTTON_HOVER_COLOR,
@@ -176,9 +176,9 @@ class TableNavigation(ctk.CTkFrame):
 
 
 class Table(ctk.CTkFrame):
-    def __init__(self, user_id, tm, header_section, master, **kwargs):
+    def __init__(self, app, tm, header_section, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.user_id = user_id
+        self.app = app
         self.tm = tm
         # initialize font
         self.font1 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, weight="normal", slant="italic" )
@@ -230,37 +230,37 @@ class Table(ctk.CTkFrame):
     def loadAllRowsByFilterPerTablePage(self):
         # retrieve all transactions from db base on filter
         all_transactions_by_filter = {
-            "All Types": self.tm.repo.getAllTransactions(self.user_id),
-            "Income": self.tm.repo.getTransactionsByType(self.user_id, "income"),
-            "Savings": self.tm.repo.getTransactionsByType(self.user_id, "savings"),
-            "Expenses": self.tm.repo.getTransactionsByType(self.user_id, "expense"),
-            "Investment": self.tm.repo.getTransactionsByType(self.user_id, "investment"),
+            "All Types": self.tm.repo.getAllTransactions(self.app.user_id),
+            "Income": self.tm.repo.getTransactionsByType(self.app.user_id, "income"),
+            "Savings": self.tm.repo.getTransactionsByType(self.app.user_id, "savings"),
+            "Expenses": self.tm.repo.getTransactionsByType(self.app.user_id, "expense"),
+            "Investment": self.tm.repo.getTransactionsByType(self.app.user_id, "investment"),
             # # income
-            # "Salary":self.tm.repo.getTransactionsByCategory(self.user_id, "Salary"),
-            # "Bonus":self.tm.repo.getTransactionsByCategory(self.user_id, "Bonus"),
-            # "Side-hustles":self.tm.repo.getTransactionsByCategory(self.user_id, "Side-hustles"),
-            # "Tips":self.tm.repo.getTransactionsByCategory(self.user_id, "Tips"),
+            # "Salary":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Salary"),
+            # "Bonus":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Bonus"),
+            # "Side-hustles":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Side-hustles"),
+            # "Tips":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Tips"),
             # # expenses
-            # "Bills":self.tm.repo.getTransactionsByCategory(self.user_id, "Bills"),
-            # "Education":self.tm.repo.getTransactionsByCategory(self.user_id, "Education"),
-            # "Entertainment":self.tm.repo.getTransactionsByCategory(self.user_id, "Entertainment"),
-            # "Food & Drinks":self.tm.repo.getTransactionsByCategory(self.user_id, "Food & Drinks"),
-            # "Grocery":self.tm.repo.getTransactionsByCategory(self.user_id, "Grocery"),
-            # "Healthcare":self.tm.repo.getTransactionsByCategory(self.user_id, "Healthcare"),
-            # "House":self.tm.repo.getTransactionsByCategory(self.user_id, "House"),
-            # "Shopping":self.tm.repo.getTransactionsByCategory(self.user_id, "Shopping"),
-            # "Transportation":self.tm.repo.getTransactionsByCategory(self.user_id, "Transportation"),
-            # "Wellness":self.tm.repo.getTransactionsByCategory(self.user_id, "Wellness"),
-            # "Other":self.tm.repo.getTransactionsByCategory(self.user_id, "Other"),
+            # "Bills":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Bills"),
+            # "Education":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Education"),
+            # "Entertainment":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Entertainment"),
+            # "Food & Drinks":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Food & Drinks"),
+            # "Grocery":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Grocery"),
+            # "Healthcare":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Healthcare"),
+            # "House":self.tm.repo.getTransactionsByCategory(self.app.user_id, "House"),
+            # "Shopping":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Shopping"),
+            # "Transportation":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Transportation"),
+            # "Wellness":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Wellness"),
+            # "Other":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Other"),
             # # savings
-            # "Monthly Allowance":self.tm.repo.getTransactionsByCategory(self.user_id, "Monthly Allowance"),
-            # "Change":self.tm.repo.getTransactionsByCategory(self.user_id, "Change"),
-            # "Miscellaneous":self.tm.repo.getTransactionsByCategory(self.user_id, "Miscellaneous"),
+            # "Monthly Allowance":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Monthly Allowance"),
+            # "Change":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Change"),
+            # "Miscellaneous":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Miscellaneous"),
             # # investment
-            # "Stocks":self.tm.repo.getTransactionsByCategory(self.user_id, "Stocks"),
-            # "Crypto":self.tm.repo.getTransactionsByCategory(self.user_id, "Crypto"),
-            # "Bonds":self.tm.repo.getTransactionsByCategory(self.user_id, "Bonds"),
-            # "Real Estate":self.tm.repo.getTransactionsByCategory(self.user_id, "Real Estate")
+            # "Stocks":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Stocks"),
+            # "Crypto":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Crypto"),
+            # "Bonds":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Bonds"),
+            # "Real Estate":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Real Estate")
         }
         # for each filtered transactions, group the transactions base on table page
         all_transactions_by_filter_per_page = {}
@@ -304,15 +304,15 @@ class Table(ctk.CTkFrame):
 
 
 class HistoryPage(ctk.CTkFrame):
-    def __init__(self, user_id, tm, master, **kwargs):
+    def __init__(self, app, tm, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.user_id = user_id
+        self.app = app
         self.tm = tm
         # initialize state
         self.is_current_page = False
         # create page sections
         self.header_section = HistoryHeader(master=self, fg_color=HistoryStyles.HEADER_SECTION_FG_COLOR, corner_radius=BaseStyles.RAD_2)
-        self.table_section = Table(user_id=self.user_id, tm=self.tm, header_section=self.header_section,
+        self.table_section = Table(app=self.app, tm=self.tm, header_section=self.header_section,
                                    master=self, fg_color=HistoryStyles.TABLE_SECTION_FG_COLOR, corner_radius=0)
         # display page sections
         self.header_section.pack(pady=(BaseStyles.PAD_5+BaseStyles.PAD_5,0))

@@ -4,12 +4,19 @@ from PIL import Image
 import os
 # our modules/libs
 from frontend.styles import BaseStyles # paddings, dimensions, colors, etc
+from backend import Account
+from frontend.components import PopUpWin
 
-
-
-class LoginPage(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
+class LoginWin(ctk.CTk):
+    def __init__(self, app_title, tm, fg_color, width, height):
+        super().__init__()
+        self.user_id = None
+        self.tm = tm
+        # initialize login
+        x_pos, y_pos = 0, 0
+        self.geometry(f"{width}x{height}+{x_pos}+{y_pos}")
+        self.configure(fg_color=fg_color)
+        self.title(app_title)
         # initialize page state
         self.mask_id = None
         self.actual_password = ""
@@ -17,10 +24,10 @@ class LoginPage(ctk.CTkFrame):
         # load logo
         self.logo = self.loadImages()
         # create login frame
-        self.frame = ctk.CTkFrame(master=self, fg_color="#ffffff", width=550, height=785, corner_radius=50)
+        self.frame = ctk.CTkFrame(master=self, fg_color=BaseStyles.WHITE, width=550, height=800, corner_radius=50)
         # create header
         self.logo_icon = ctk.CTkLabel(self.frame, text="", image=self.logo)
-        self.title = ctk.CTkLabel(master=self.frame, text="Login", font=("Arial", 35, "bold"),
+        self.title_label = ctk.CTkLabel(master=self.frame, text="Welcome!", font=("Arial", 35, "bold"),
                                             text_color="#333333", bg_color="#ffffff")
         # create entries
         self.outside_entry = ctk.CTkEntry(self)
@@ -49,7 +56,7 @@ class LoginPage(ctk.CTkFrame):
         self.frame.place(relx=0.5, rely=0.5, anchor="center")
         # display header
         self.logo_icon.pack(pady=(50,10))
-        self.title.pack(padx=50, pady=(0,50))
+        self.title_label.pack(padx=50, pady=(0,50))
         # display entries
         self.outside_entry.place(x=-1000, y=-1000) # for redirecting entry focus when clicked outside
         self.user_entry.pack(padx=50, pady=(0,10))
@@ -61,23 +68,65 @@ class LoginPage(ctk.CTkFrame):
         self.pass_entry.bind("<KeyRelease>", self.on_password_key_release)
         # unfocus entries if clicked outside
         self.bind("<Button-1>", self.unfocusEntries)
-        # display on top of the app
-        self.pack(fill="both", expand=True)
-        self.lift()
+        # create invalid input pop up
+        self.font2 = ("Bodoni MT", BaseStyles.FONT_SIZE_2, "italic")
+        self.no_match_popup = PopUpWin(title="[DB] No Match", msg="Username/Password is incorrect",
+                                      enable_close=True, font=self.font2, master=self,
+                                      fg_color=BaseStyles.WHITE, enable_frame_blocker=False)
+        self.already_taken_popup = PopUpWin(title="[Input] Invalid", msg="Username is already taken",
+                                      enable_close=True, font=self.font2, master=self,
+                                      fg_color=BaseStyles.WHITE, enable_frame_blocker=False)
+        self.empty_field_popup = PopUpWin(title="[Input] Invalid", msg="Empty field is not allowed",
+                                      enable_close=True, font=self.font2, master=self,
+                                      fg_color=BaseStyles.WHITE, enable_frame_blocker=False)
 
     def loadImages(self):
         ICONS_FOLDER = os.path.abspath("assets/icons")
-        logo = ctk.CTkImage(dark_image=Image.open(f"{ICONS_FOLDER}/logo.png"),
-                            light_image=Image.open(f"{ICONS_FOLDER}/logo.png"), size=(119, 120))
+        logo = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/logo.png"), size=(119, 120))
         return logo
+
+    def onClickLogin(self):
+        print("\n[User] Login")
+        username = self.user_entry.get()
+        password = self.actual_password
+        account = Account(username=username, password=password)
+        user_id = self.tm.repo.getAccountID(account)
+        if not (account.username and account.password):
+            self.empty_field_popup.showWin()
+            print("[Input] Empty field is not allowed")
+        elif user_id:
+            self.user_id = user_id
+            print("\tUsername:", username)
+            print("\tPassword:", password)
+            self.destroy()
+        else:
+            self.no_match_popup.showWin()
+            print("[DB] No Match Found")
+
+    def onClickSignUp(self):
+        print("\n[User] Sign Up")
+        username = self.user_entry.get()
+        password = self.actual_password
+        account = Account(username=username, password=password)
+        was_added = self.tm.repo.addAccount(account)
+        if not (account.username and account.password):
+            self.empty_field_popup.showWin()
+            print("[Input] Empty field is not allowed")
+        elif was_added:
+            print("\tUsername:", username)
+            print("\tPassword:", password)
+            self.user_id = self.tm.repo.getAccountID(account)
+            self.destroy()
+        else:
+            self.already_taken_popup.showWin()
+            print("[Input] Username is already taken")
 
     def on_password_key_release(self, event):
         # cancel masking
         if self.mask_id:
             self.after_cancel(self.mask_id)
             self.mask_id = None
-              
-        # current_text = self.pass_entry.get()
+        # update pass
         self.actual_password = self.pass_entry.get()
         # temporarily show the actual password
         self.pass_entry.delete(0, ctk.END)
@@ -91,24 +140,6 @@ class LoginPage(ctk.CTkFrame):
         self.pass_entry.delete(0, ctk.END)
         self.pass_entry.insert(0, self.actual_password)
         self.pass_entry.configure(show="*")
-
-    def onClickLogin(self):
-        print("\n[User] Login")
-        username = self.user_entry.get()
-        password = self.actual_password
-        if True: # to be added
-            self.pack_forget()
-            print("\tUsername:", username)
-            print("\tPassword:", password)
-
-    def onClickSignUp(self):
-        print("\n[User] Sign Up")
-        username = self.user_entry.get()
-        password = self.actual_password
-        if True: # to be added
-            self.pack_forget()
-            print("\tUsername:", username)
-            print("\tPassword:", password)
 
     def unfocusEntries(self, event):
         print()

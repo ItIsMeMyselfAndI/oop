@@ -20,7 +20,8 @@ class SubmitBTN(ctk.CTkButton):
         # create update popup
         self.configure(command=self.onClickSubmit)
         self.updatePopUp = PopUpWin(title=popup_title, msg=popup_text, font=popup_font,
-                                    enable_close=False, master=self.app, fg_color=BaseStyles.WHITE)
+                                    enable_close=False, master=self.app, fg_color=BaseStyles.WHITE,
+                                    enable_frame_blocker=False)
         # # create invalid input popups
         # self.emptyDescriptionPopUp = PopUpWin(title="[Err] Invalid Input", msg="Only submit non-empty description.\nTry again.", enable_close=True,
         #                                       master=self.app, fg_color=BaseStyles.WHITE)

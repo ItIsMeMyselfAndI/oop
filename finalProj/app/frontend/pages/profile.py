@@ -10,8 +10,8 @@ from frontend.styles import BaseStyles, ProfileStyles # paddings, dimensions, co
 class ProfileHeader(ctk.CTkFrame):
     def __init__(self, img, uname, summary_type, amount, master, **kwargs):
         super().__init__(master, ** kwargs)
-        self.font4 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
-        self.font6 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, weight="normal", slant="italic" )
+        self.font4 = ("Bodoni MT", BaseStyles.FONT_SIZE_4, "italic")
+        self.font6 = ("Bodoni MT", BaseStyles.FONT_SIZE_6, "italic")
         self.img = img
         # create guide frames
         self.img_bg = ctk.CTkLabel(self, corner_radius=BaseStyles.RAD_2, fg_color=ProfileStyles.PROFILE_IMG_BG_COLOR, image=img,
@@ -40,8 +40,8 @@ class ProfileHeader(ctk.CTkFrame):
 class SummarySection(ctk.CTkFrame):
     def __init__(self, img, img_bg_color, summary_type, amount, master, **kwargs):
         super().__init__(master, ** kwargs)
-        self.font4 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
-        self.font6 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, weight="normal", slant="italic" )
+        self.font4 = ("Bodoni MT", BaseStyles.FONT_SIZE_4, "italic")
+        self.font6 = ("Bodoni MT", BaseStyles.FONT_SIZE_6, "italic")
         self.img = img
         # create guide frames
         self.img_bg = ctk.CTkLabel(self, height=ProfileStyles.SUMMARY_IMG_FRAME_H, width=ProfileStyles.SUMMARY_IMG_FRAME_W,
@@ -63,36 +63,36 @@ class SummarySection(ctk.CTkFrame):
 
 
 class ProfilePage(ctk.CTkFrame):
-    def __init__(self, user_id, tm, master, **kwargs):
+    def __init__(self, app, tm, master, **kwargs):
         super().__init__(master, ** kwargs)
-        self.user_id = user_id
+        self.app = app
         self.tm = tm
         # initialize state
         self.is_current_page = False
         # load imgs
-        profile_icon, income_icon, savings_icon, expense_icon, investment_icon = self.loadIcons()
+        self.profile_icon, self.income_icon, self.savings_icon, self.expense_icon, self.investment_icon = self.loadIcons()
         # calculate summaries
-        finance = self.tm.calculateOverallFinance(self.user_id)
+        finance = self.tm.calculateOverallFinance(self.app.user_id)
         balance = self.tm.calculateOverallBalance(finance)
         # create page sections
-        self.header_section = ProfileHeader(img=profile_icon, uname=f"User {self.user_id}", 
+        self.header_section = ProfileHeader(img=self.profile_icon, uname=f"User {self.app.user_id}", 
                                             summary_type="Total Balance:", amount=balance,
                                             master=self, fg_color=BaseStyles.BLUE, corner_radius=BaseStyles.RAD_2)
         self.summary_section = ctk.CTkFrame(self, fg_color=BaseStyles.WHITE, corner_radius=BaseStyles.RAD_2)
         # create summary frames
-        self.income_frame = SummarySection(img=income_icon, img_bg_color=ProfileStyles.INCOME_IMG_BG_COLOR,
+        self.income_frame = SummarySection(img=self.income_icon, img_bg_color=ProfileStyles.INCOME_IMG_BG_COLOR,
                                            summary_type="Total Income:", amount=finance.total_income,
                                            master=self.summary_section, fg_color=ProfileStyles.INCOME_FRAME_FG_COLOR,
                                            corner_radius=BaseStyles.RAD_2)
-        self.expense_frame = SummarySection(img=expense_icon, img_bg_color=ProfileStyles.EXPENSE_IMG_BG_COLOR,
+        self.expense_frame = SummarySection(img=self.expense_icon, img_bg_color=ProfileStyles.EXPENSE_IMG_BG_COLOR,
                                             summary_type="Total Expenses:", amount=finance.total_expenses,
                                             master=self.summary_section, fg_color=ProfileStyles.EXPENSE_FRAME_FG_COLOR,
                                             corner_radius=BaseStyles.RAD_2)
-        self.savings_frame = SummarySection(img=savings_icon, img_bg_color=ProfileStyles.SAVINGS_IMG_BG_COLOR,
+        self.savings_frame = SummarySection(img=self.savings_icon, img_bg_color=ProfileStyles.SAVINGS_IMG_BG_COLOR,
                                             summary_type="Total Savings:", amount=finance.total_savings,
                                             master=self.summary_section, fg_color=ProfileStyles.SAVINGS_FRAME_FG_COLOR,
                                             corner_radius=BaseStyles.RAD_2)
-        self.investment_frame = SummarySection(img=investment_icon, img_bg_color=ProfileStyles.INVESTMENT_IMG_BG_COLOR, 
+        self.investment_frame = SummarySection(img=self.investment_icon, img_bg_color=ProfileStyles.INVESTMENT_IMG_BG_COLOR, 
                                                summary_type="Total Investment:", amount=finance.total_investment,
                                                master=self.summary_section, fg_color=ProfileStyles.INVESTMENT_FRAME_FG_COLOR,
                                                corner_radius=BaseStyles.RAD_2)
@@ -117,7 +117,7 @@ class ProfilePage(ctk.CTkFrame):
         return profile_icon, income_icon, savings_icon, expense_icon, investment_icon
     
     def updatePageDisplay(self):
-        finance = self.tm.calculateOverallFinance(self.user_id)
+        finance = self.tm.calculateOverallFinance(self.app.user_id)
         balance = self.tm.calculateOverallBalance(finance)
         self.header_section.amount_label.configure(text=f"₱ {balance:,}")
         self.income_frame.amount_label.configure(text=f"₱ {finance.total_income:,}")

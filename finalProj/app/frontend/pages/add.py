@@ -10,7 +10,7 @@ from backend.transaction_manager import Transaction
 class AddHeader(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font6 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, weight="normal", slant="italic" )
+        self.font6 = ("Bodoni MT", BaseStyles.FONT_SIZE_6, "italic")
         self.title_label = ctk.CTkLabel(self, text="Add Transaction", font=self.font6, text_color=AddStyles.HEADER_TITLE_TEXT_COLOR,
                                   width=AddStyles.HEADER_TITLE_LABEL_W, fg_color=AddStyles.HEADER_TITLE_LABEL_FG_COLOR, anchor="w")
         self.title_label.pack(anchor="w")
@@ -18,18 +18,18 @@ class AddHeader(ctk.CTkFrame):
 
 # same with class selection sa edit
 class AddTransactionForm(ctk.CTkFrame):
-    def __init__(self, tm, user_id, t_type, categories, master, **kwargs):
+    def __init__(self, tm, app, t_type, categories, master, **kwargs):
         super().__init__(master, **kwargs)
         # initialize transaction options
         self.tm = tm
-        self.user_id = user_id
+        self.app = app
         self.t_type = t_type
         self.categories = categories
         # initialize state
         self.isCurrentEditTransactionForm = False
         # initialize fonts
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, weight="normal", slant="italic" )
-        self.font4 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
+        self.font2 = ("Bodoni MT", BaseStyles.FONT_SIZE_2, "italic")
+        self.font4 = ("Bodoni MT", BaseStyles.FONT_SIZE_4, "italic")
         # create sections
         self.first_section = ctk.CTkFrame(self, fg_color=BaseStyles.WHITE, corner_radius=0)
         self.second_section = ctk.CTkFrame(self, fg_color=BaseStyles.WHITE, corner_radius=0)
@@ -89,7 +89,7 @@ class AddPageTabs(ctk.CTkFrame):
         super().__init__(master, **kwargs)
         self.transactionForms = transactionForms
         # initialize ctk font
-        self.font3 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, weight="normal", slant="italic" )
+        self.font3 = ("Bodoni MT", BaseStyles.FONT_SIZE_3, "italic")
         # create buttons/tabs
         self.expenseBTN = self.createTabButton(text="Expense", command=self.onClickExpenseTab)
         self.savingsBTN = self.createTabButton(text="Savings", command=self.onClickSavingsTab)
@@ -137,9 +137,9 @@ class AddPageTabs(ctk.CTkFrame):
 
 # main add page class
 class AddPage(ctk.CTkFrame):
-    def __init__(self, user_id, tm, master, **kwargs):
+    def __init__(self, app, tm, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.user_id = user_id
+        self.app = app
         self.tm = tm
         # initialize state
         self.is_current_page = False
@@ -174,7 +174,7 @@ class AddPage(ctk.CTkFrame):
             "income": ["Salary", "Bonus", "Side-hustles", "Tips"]
         }
         # create form
-        form = AddTransactionForm(tm=self.tm, user_id=self.user_id, t_type=transaction_type,
+        form = AddTransactionForm(tm=self.tm, app=self.app, t_type=transaction_type,
                                    categories=categories_by_type[transaction_type], master=self.forms_section,
                                    fg_color=AddStyles.FORM_FRAME_FG_COLOR, corner_radius=BaseStyles.RAD_2)
         return form
@@ -198,7 +198,7 @@ class AddPage(ctk.CTkFrame):
                                               t_category=new_category, t_amount=float(new_amount),
                                               t_description=new_description)
                 # update db with new_transaction
-                result = self.tm.repo.addTransaction(user_id=self.user_id, new_transaction=new_transaction)
+                result = self.tm.repo.addTransaction(user_id=self.app.user_id, new_transaction=new_transaction)
                 # display result for debugging
                 print("\n", result)
                 print()

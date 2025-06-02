@@ -10,7 +10,7 @@ from backend.transaction_manager import Transaction
 class EditHeader(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font6 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_6, weight="normal", slant="italic" )
+        self.font6 = ("Bodoni MT", BaseStyles.FONT_SIZE_6, "italic")
         self.title_label = ctk.CTkLabel(self, text="Edit Transaction", font=self.font6, text_color=EditStyles.HEADER_TITLE_TEXT_COLOR,
                                   width=EditStyles.HEADER_TITLE_LABEL_W, fg_color=EditStyles.HEADER_TITLE_LABEL_FG_COLOR, anchor="w")
         self.title_label.pack(anchor="w")
@@ -18,11 +18,11 @@ class EditHeader(ctk.CTkFrame):
 
 # transaction form section
 class EditTransactionForm(ctk.CTkFrame):
-    def __init__(self, tm, user_id, t_type, categories, master, **kwargs):
+    def __init__(self, tm, app, t_type, categories, master, **kwargs):
         super().__init__(master, **kwargs)
         # initialize transaction options
         self.tm = tm
-        self.user_id = user_id
+        self.app = app
         self.t_type = t_type
         self.transaction_options = []
         self.updateTransactionMenuOptionsByType()
@@ -30,8 +30,8 @@ class EditTransactionForm(ctk.CTkFrame):
         # initialize state
         self.isCurrentEditTransactionForm = False
         # initialize fonts
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, weight="normal", slant="italic" )
-        self.font4 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_4, weight="normal", slant="italic" )
+        self.font2 = ("Bodoni MT", BaseStyles.FONT_SIZE_2, "italic")
+        self.font4 = ("Bodoni MT", BaseStyles.FONT_SIZE_4, "italic")
         # create sections
         self.first_section = ctk.CTkFrame(self, fg_color=EditStyles.FORM_FIRST_SECTION_FG_COLOR, corner_radius=0)
         self.second_section = ctk.CTkFrame(self, fg_color=EditStyles.FORM_SECOND_SECTION_FG_COLOR, corner_radius=0)
@@ -96,13 +96,15 @@ class EditTransactionForm(ctk.CTkFrame):
         self.amountEntry.pack(anchor="w", padx=BaseStyles.PAD_3, pady=0)
     
     def updateTransactionMenuOptionsByType(self) -> list[str]:
-        transactions = self.tm.repo.getTransactionsByType(self.user_id, self.t_type)
+        transactions = self.tm.repo.getTransactionsByType(self.app.user_id, self.t_type)
         transaction_options = []
         for t in transactions:
             formatted_t = f" {t.t_id} | {t.t_date} | {t.t_category} | {t.t_amount} | {t.t_description} "
             formatted_t = f"{formatted_t[:60]}..." if len(formatted_t) > 60 else formatted_t
             transaction_options.append(formatted_t)
         self.transaction_options = transaction_options
+        if not transaction_options:
+            self.transaction_options = ["No Available Transaction"]
 
 
 # tabs section of the page
@@ -111,7 +113,7 @@ class EditPageTabs(ctk.CTkFrame):
         super().__init__(master, **kwargs)
         self.transactionForms = transactionForms
         # initialize ctk font
-        self.font3 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, weight="normal", slant="italic" )
+        self.font3 = ("Bodoni MT", BaseStyles.FONT_SIZE_3, "italic")
         # create buttons/tabs
         self.expenseBTN = self.createTabButton(text="Expense", command=self.onClickExpenseTab)
         self.savingsBTN = self.createTabButton(text="Savings", command=self.onClickSavingsTab)
@@ -159,9 +161,9 @@ class EditPageTabs(ctk.CTkFrame):
 
 # main edit page
 class EditPage(ctk.CTkFrame):
-    def __init__(self, user_id, tm, master, **kwargs):
+    def __init__(self, app, tm, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.user_id = user_id
+        self.app = app
         self.tm = tm
         # initialize state
         self.is_current_page = False
@@ -196,7 +198,7 @@ class EditPage(ctk.CTkFrame):
             "income": ["Salary", "Bonus", "Side-hustles", "Tips"]
         }
         # create form
-        form = EditTransactionForm(tm=self.tm, user_id=self.user_id, t_type=transaction_type,
+        form = EditTransactionForm(tm=self.tm, app=self.app, t_type=transaction_type,
                                    categories=categories_by_type[transaction_type], master=self.forms_section,
                                    fg_color=EditStyles.FORM_FRAME_FG_COLOR, corner_radius=BaseStyles.RAD_2)
         return form
@@ -206,28 +208,32 @@ class EditPage(ctk.CTkFrame):
                            "May":"05", "June":"06", "July":"07", "August":"08",
                            "September":"09", "October":"10", "November":"11", "December":"12"}
         for transaction_type, form in self.transactionForms.items():
-            # retrieve user inputs from the UI
-            original_transaction = form.transactionMenu.get().strip()
-            transaction_id = int(original_transaction.split()[0])
-            year = form.dateMenu.year_menu.get()
-            month = month_2_numeric[form.dateMenu.month_menu.get()]
-            day = form.dateMenu.day_menu.get()
-            new_date = f"{year}-{month}-{day}"
-            new_category = form.categoryMenu.get()
-            new_description = form.descriptionEntry.get()
-            new_amount = form.amountEntry.get()
             if form.isCurrentEditTransactionForm == True:
+                print(f"{len(form.transaction_options) = }")
+                print(f"{form.transaction_options = }")
+                # retrieve user inputs from the UI
+                original_transaction = form.transactionMenu.get().strip()
+                if original_transaction == "No Available Transaction":
+                    return
+                transaction_id = int(original_transaction.split()[0])
+                year = form.dateMenu.year_menu.get()
+                month = month_2_numeric[form.dateMenu.month_menu.get()]
+                day = form.dateMenu.day_menu.get()
+                new_date = f"{year}-{month}-{day}"
+                new_category = form.categoryMenu.get()
+                new_description = form.descriptionEntry.get()
+                new_amount = form.amountEntry.get()
+
                 # create updated_transaction obj
                 updated_transaction = Transaction(t_date=new_date, t_type=transaction_type,
                                                   t_category=new_category, t_amount=float(new_amount),
                                                   t_description=new_description)
                 # update db with updated_transaction
-                result = self.tm.repo.modifyTransaction(user_id=self.user_id, t_id=transaction_id,
+                result = self.tm.repo.modifyTransaction(user_id=self.app.user_id, t_id=transaction_id,
                                                         updated_transaction=updated_transaction)
                 # display result for debugging
-                print("\n", result)
-                print()
-                print(len(original_transaction)+3)
+                print("\n", f"{result = }")
+                print(f"{len(original_transaction)+3} = ")
                 print(f"{original_transaction = }")
                 print(f"{transaction_type = }")
                 print(f"{transaction_id = }")
@@ -249,7 +255,4 @@ class EditPage(ctk.CTkFrame):
         for form in self.transactionForms.values():
             form.updateTransactionMenuOptionsByType()
             form.transactionMenu.configure(values=form.transaction_options)
-            if form.transaction_options:
-                form.transactionMenu.set(form.transaction_options[0])
-            else:
-                form.transactionMenu.set("No Available Transaction")
+            form.transactionMenu.set(form.transaction_options[0])

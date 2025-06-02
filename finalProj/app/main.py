@@ -4,7 +4,7 @@ import os
 # our modules/libs
 from frontend.styles import BaseStyles, AppStyles # paddings, dimensions, colors, etc
 from frontend.components import SidebarTabs # navigation page-tabs
-from frontend.pages import LoginPage
+from frontend.pages import LoginWin
 from frontend.pages import ProfilePage # profile page
 from frontend.pages import HomePage # home page
 from frontend.pages import EditPage # edit page
@@ -17,34 +17,34 @@ from backend import TransactionManager # db manager
 
 # main app class
 class App(ctk.CTk):
-    def __init__(self):
+    def __init__(self, app_title, user_id, tm):
         super().__init__()
-        db_path = os.path.abspath("db/transactions.db")
-        # user
-        self.user_id = 1
-        # create transaction manager
-        self.tm = TransactionManager(db_path)
-        # initialize fonts
-        self.font2 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_2, weight="normal", slant="italic" )
-        self.font3 = ctk.CTkFont(family="Bodoni MT", size=BaseStyles.FONT_SIZE_3, weight="normal", slant="italic" )
-        # set app title
-        self.title("Personal Finance Tracker")
-        # initialize dimensions
+        self.user_id = user_id
+        self.tm = tm
+        # initialize app 
         x_pos, y_pos = 0, 0
         self.geometry(f"{AppStyles.WIN_W}x{AppStyles.WIN_H}+{x_pos}+{y_pos}")
         self.maxsize(AppStyles.WIN_W, AppStyles.WIN_H)
         self.minsize(AppStyles.WIN_W, AppStyles.WIN_H)
         self.resizable(width=True, height=True)
         self.configure(fg_color=AppStyles.WIN_FG_COLOR)
+        # self.configure()
+        # initialize fonts
+        self.font2 = ("Bodoni MT", BaseStyles.FONT_SIZE_2, "italic")
+        self.font3 = ("Bodoni MT", BaseStyles.FONT_SIZE_3, "italic")
+        # set app title
+        self.title(app_title)
         # create scrollable screen (vertical)
-        self.login = LoginPage(self, fg_color=AppStyles.WIN_FG_COLOR, width=AppStyles.WIN_W, height=AppStyles.WIN_H)
         self.content = ctk.CTkFrame(self, corner_radius=0, fg_color=AppStyles.WIN_FG_COLOR)
+        # proceed once user_id is not empty
+        # print(f"{self.user_id = }")
+        # if self.user_id:
         # create app pages
-        self.profilePage = ProfilePage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=AppStyles.WIN_FG_COLOR, corner_radius=0) 
-        self.homePage = HomePage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=AppStyles.WIN_FG_COLOR, corner_radius=0) 
-        self.editPage = EditPage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=AppStyles.WIN_FG_COLOR, corner_radius=0) 
-        self.historyPage = HistoryPage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=AppStyles.WIN_FG_COLOR, corner_radius=0) 
-        self.addPage = AddPage(user_id=self.user_id, tm=self.tm, master=self.content, fg_color=AppStyles.WIN_FG_COLOR, corner_radius=0) 
+        self.profilePage = ProfilePage(app=self, tm=self.tm, master=self.content, fg_color=AppStyles.WIN_FG_COLOR, corner_radius=0) 
+        self.homePage = HomePage(app=self, tm=self.tm, master=self.content, fg_color=AppStyles.WIN_FG_COLOR, corner_radius=0) 
+        self.editPage = EditPage(app=self, tm=self.tm, master=self.content, fg_color=AppStyles.WIN_FG_COLOR, corner_radius=0) 
+        self.historyPage = HistoryPage(app=self, tm=self.tm, master=self.content, fg_color=AppStyles.WIN_FG_COLOR, corner_radius=0) 
+        self.addPage = AddPage(app=self, tm=self.tm, master=self.content, fg_color=AppStyles.WIN_FG_COLOR, corner_radius=0) 
         self.pages = {
             "profile":self.profilePage, "home":self.homePage,
             "edit":self.editPage, "history":self.historyPage,
@@ -62,17 +62,17 @@ class App(ctk.CTk):
         self.editSaveBtn.pack(pady=BaseStyles.PAD_4)
         self.addSaveBtn.pack(pady=BaseStyles.PAD_4)
         # create pop ups
-        self.loadPopUp = PopUpWin(title="[App] Load", msg="Loading...", font=self.font2,
-                                  enable_close=False, master=self, fg_color=AppStyles.LOAD_POP_UP_FG_COLOR)
-        self.closeAppPopUp = PopUpWin(title="[App] Exit", msg="Exiting...", font=self.font2,
-                                      enable_close=False, master=self, fg_color=AppStyles.CLOSE_APP_POP_UP_FG_COLOR)
+        self.loadPopUp = PopUpWin(title="[App] Load", msg="Loading...", font=self.font2, enable_close=False, master=self,
+                                  fg_color=AppStyles.LOAD_POP_UP_FG_COLOR, enable_frame_blocker=False)
+        self.closeAppPopUp = PopUpWin(title="[App] Exit", msg="Exiting...", font=self.font2, enable_close=False,master=self,
+                                      fg_color=AppStyles.CLOSE_APP_POP_UP_FG_COLOR, enable_frame_blocker=False)
         # load all pages
         print("[App] Started successfully")
         print("\n[Pages] Loading...")
         self.loadPopUp.showWin()
         self.loadPopUp.after(100, self.loadPages) # load all pages
         self.loadPopUp.hideWin()
-        print("[Pages] Loaded successfully")
+        print("\n[Pages] Loaded successfully")
         # close the app and db properly
         self.protocol("WM_DELETE_WINDOW", self.onCloseApp)
 
@@ -86,15 +86,15 @@ class App(ctk.CTk):
 
     def loadPages(self):
         for page in reversed(self.pages.values()):
-            page.pack()
-            page.pack_forget()
+            self.after_idle(page.pack)
+            self.after_idle(page.pack_forget)
         # display default page
-        self.sidebar.onClickProfilePage()
+        self.after_idle(self.sidebar.onClickProfilePage)
 
     def _closeAll(self):
-        print("\n[DB] Closing connection...")
+        print("\n[DB] Closing...")
         self.tm.repo.connection.close()
-        print("[DB] Connection closed successfully")
+        print("[DB] Closed successfully")
         print("\n[App] Closing...")
         self.destroy()
         print("[App] Closed successfully.")
@@ -107,19 +107,45 @@ class App(ctk.CTk):
 
 if __name__ == "__main__":
     print("\n[App] Starting...")
+    app_title = "Personal Finance Tracker"
+    user_id = None
+    # user_id = 2
     try:
-        app = App()
+        # db
+        db_path = os.path.abspath("db/transactions.db")
+        tm = TransactionManager(db_path)
+    except Exception as e:
+        print(f"{e = }")
+
+    try:
+        # login win
+        login = LoginWin(app_title=app_title, tm=tm, fg_color=AppStyles.WIN_FG_COLOR, width=AppStyles.WIN_W, height=AppStyles.WIN_H)
+        login.mainloop()
+        user_id = login.user_id
     except KeyboardInterrupt:
-        print("\n[App] Closed successfully.")
+        print("\n[DB] Closing connection...")
+        tm.repo.connection.close()
+        print("[DB] Connection closed successfully")
+        print("\n[Login] Closing...")
+        login.destroy()
+        print("[Login] Closed successfully")
         exit(0)
-    
+
+    print(f"{user_id = }")
+    # app win
+    try:
+        app = App(app_title=app_title, user_id=user_id, tm=tm)
+    except KeyboardInterrupt:
+        print("\n[App] Closed successfully")
+        exit(0)
+
     # exit properly during keyboard interrupt
     try:
         app.mainloop()
     except KeyboardInterrupt:
         print("\n[DB] Closing connection...")
-        app.tm.repo.connection.close()
+        tm.repo.connection.close()
         print("[DB] Connection closed successfully")
         print("\n[App] Closing...")
         app.destroy()
-        print("App closed.")
+        print("[App] Closed successfully")

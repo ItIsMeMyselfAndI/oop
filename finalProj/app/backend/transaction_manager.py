@@ -10,6 +10,13 @@ from collections import defaultdict
 from typing import List
 
 
+# data holder for a user
+class Account:
+    def __init__(self, username, password):
+        self.username: str = username
+        self.password: str = password
+
+
 # data holder for a transaction
 class Transaction:
     def __init__(self, t_date:str, t_type:str, t_category:str,
@@ -25,6 +32,7 @@ class Transaction:
         self.updated_at: datetime = updated_at  #naka default as None (sa "get methods" lng toh mag kakalaman)
 
 
+# data holder for a finance
 class Finance:
     def __init__(self, total_income:float, total_expenses:float,
                  total_savings:float, total_investment:float):
@@ -67,6 +75,41 @@ class TransactionRepository:
         self.cursor.execute("PRAGMA foreign_keys = ON") 
         self.connection.commit()
 
+    def addAccount(self, account: Account) -> bool:
+        was_added = False
+        command = """
+            SELECT 1 FROM users
+            WHERE username = ? LIMIT 1
+        """
+        values = (account.username,)
+        username_exists = self.cursor.execute(command, values).fetchone()
+        # check if username doesn't exist and if not empty fields
+        if not username_exists and account.username and account.password:
+            command = """
+                INSERT INTO users(
+                    username, password, created_at, updated_at
+                )
+                VALUES (?, ?, ?, ?)
+            """
+            local_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            values = (account.username, account.password, local_time, local_time)
+            # add account
+            self.cursor.execute(command, values)
+            self.connection.commit()
+            was_added = True
+        return was_added
+
+
+    def getAccountID(self, account: Account) -> int:
+        command = """
+            SELECT user_id FROM users
+            WHERE username = ? AND password = ? LIMIT 1
+        """
+        values = (account.username, account.password)
+        user_id = self.cursor.execute(command, values).fetchone()
+        if user_id:
+            user_id = user_id[0]
+        return user_id
 
     def getAllTransactions(self, user_id: int) -> List[Transaction]:
         # retrieve transaction data
@@ -79,7 +122,8 @@ class TransactionRepository:
         # convert transaction tuple to obj
         all_transactions: List[Transaction] = []
         for row in rows:
-            t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2], t_category=row[3], t_amount=row[4], t_description=row[5], created_at=row[7], updated_at=row[8])
+            t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2], t_category=row[3], t_amount=row[4],
+                            t_description=row[5], created_at=row[7], updated_at=row[8])
             all_transactions.append(t)
         # return list of transaction obj
         return all_transactions
@@ -95,7 +139,8 @@ class TransactionRepository:
         # convert transaction tuple to obj
         type_transactions: List[Transaction] = []
         for row in rows:
-            t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2], t_category=row[3], t_amount=row[4], t_description=row[5], created_at=row[7], updated_at=row[8])
+            t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2], t_category=row[3], t_amount=row[4],
+                            t_description=row[5], created_at=row[7], updated_at=row[8])
             type_transactions.append(t)
         # return list of transaction obj
         return type_transactions
@@ -117,7 +162,8 @@ class TransactionRepository:
         # Convert rows to Transaction objects
         recent_transactions: List[Transaction] = []
         for row in rows:
-            t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2], t_category=row[3], t_amount=row[4], t_description=row[5], created_at=row[7], updated_at=row[8])
+            t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2], t_category=row[3], t_amount=row[4],
+                            t_description=row[5], created_at=row[7], updated_at=row[8])
             recent_transactions.append(t)
 
         return recent_transactions
@@ -131,17 +177,18 @@ class TransactionRepository:
                 transaction_category,
                 transaction_amount,
                 transaction_description,
-                user_id
+                user_id, created_at, updated_at
             )
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """
+        local_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         values = (
             new_transaction.t_date,
             new_transaction.t_type,
             new_transaction.t_category,
             round(new_transaction.t_amount, 2),
             new_transaction.t_description,
-            user_id
+            user_id, local_time, local_time
         )
         self.cursor.execute(command, values)
         self.connection.commit()
@@ -168,18 +215,19 @@ class TransactionRepository:
                 transaction_category = ?,
                 transaction_amount = ?,
                 transaction_description = ?,
-                updated_at = CURRENT_TIMESTAMP
+                updated_at = ?
             WHERE
                 user_id = ? AND transaction_id = ?
         """
+        local_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         values = (
             updated_transaction.t_date, 
             updated_transaction.t_type,
             updated_transaction.t_category,
             round(updated_transaction.t_amount, 2),
             updated_transaction.t_description,
-            user_id,
-            t_id
+            local_time,
+            user_id, t_id
         )
         self.cursor.execute(command, values)
         self.connection.commit()
@@ -190,58 +238,96 @@ class TransactionRepository:
 
 # ------------------------------- Tests ------------------------------------------
 
-    def testMirasolGetAllTransactions(self):
+    def testAddAccount(self):
+        account = Account(username="jone doe", password="jonedoe123")
+        was_added = self.addAccount(account)
+        print("\n\n[Recently Added user Row]\n")
+        if not was_added:
+            print(f"\tUsername already exist")
+            return
+        command = """
+            SELECT * FROM users
+            ORDER BY created_at DESC
+            LIMIT ?
+        """
+        values = (1,)
+        # check if reflected in db
+        result = self.cursor.execute(command, values).fetchone()
+        print(f"\t{result = }")
+
+    def testGetAccountID(self):
+        account = Account(username="jone", password="jonedoe123")
+        user_id = self.getAccountID(account)
+        print(f"\n\n[{account.username} Account ID]\n")
+        if user_id:
+            print(f"\t{user_id = }")
+        else:
+            print("\tNo Match Found")
+
+    def testGetAllTransactions(self):
         all_transactions = self.getAllTransactions(user_id=self.user_id)
         # display results
         print("\n[All Transactions]\n")
         for t in all_transactions:
             print(f" {t.t_id:<10} | {t.t_date:<12} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description} | {t.created_at} | {t.created_at}")
     
-    def testMirasolGetTransactionByType(self):
+    def testGetTransactionByType(self):
         type_transactions = self.getTransactionsByType(user_id=self.user_id, t_type='expense')
         # display results
         print("\n\n[Type (expense) Transactions]\n")
         for t in type_transactions:
             print(f" {t.t_id:<10} | {t.t_date:<12} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description} | {t.created_at} | {t.created_at}")
     
-    def testNicolasGetTransactionsByCategory(self):
+    def testGetTransactionsByCategory(self):
         category_transactions = self.getTransactionsByCategory(user_id=self.user_id, t_category='Salary')
+        print(f'\n{category_transactions = }')
         # display results
         print("\n[Category (Salary) Transactions]\n")
         for t in category_transactions:
             print(f" {t.t_id:<10} | {t.t_date:<13} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description} | {t.created_at} | {t.created_at}")
     
-    def testAzcarragaGetRecentTransactions(self):
+    def testGetRecentTransactions(self):
         recent_transactions = self.getRecentTransactions(user_id=self.user_id, t_count=5)
         # display results
         print("\n[Five Recent Transactions]\n")
         for t in recent_transactions:
-            print(f" {t.t_id:<10} | {t.t_date:<13} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description} | {t.created_at} | {t.created_at}")
+            print(f" {t.t_id:<10} | {t.t_date:<13} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} |{t.t_description} | {t.created_at} | {t.created_at}")
     
-    def testNicolasAddTransaction(self):
+    def testAddTransaction(self):
         # new Transaction obj sample
-        new_transaction = Transaction(t_date='2025-05-19', t_type='Expense', t_category='luho',
+        new_transaction = Transaction(t_date='2025-05-19', t_type='Expense', t_category='gasta',
                                       t_amount=5500.0, t_description='sample description')
-        # add new row to transaction table
         transaction_tuple = self.addTransaction(user_id=self.user_id, new_transaction=new_transaction)
-        print("\n\n[Tuple version of Transaction obj]\n")
-        print(f"\t{transaction_tuple}")
-        # pang check kung na update sa db; dat pareho toh sa tuple moh
-        print("\t" + self.cursor.execute("SELECT * FROM transactions WHERE transaction_id = 1455").fetchone())
+        # check if reflected in db
+        print("\n\n[Recently Added Transaction Row]\n")
+        command = """
+            SELECT * FROM transactions
+            WHERE user_id = ?
+            ORDER BY created_at DESC
+            LIMIT ?
+        """
+        values = (self.user_id, 1)
+        result = self.cursor.execute(command, values).fetchone()
+        print(f"\t{result = }")
         
-    def testAzcarragaModifyTransaction(self):
+    def testModifyTransaction(self):
         # updated Transaction obj sample
         updated_transaction = Transaction(t_date='2025-05-15', t_type='expense', t_category='Education',
                                           t_amount=3000.0, t_description='sample description')
-        # modify last row
-        transaction_tuple = self.modifyTransaction(user_id=self.user_id, t_id=1440, updated_transaction=updated_transaction)
-        # display results
-        print("\n[Tuple version of Transaction obj]")
-        print(f"\n{transaction_tuple}")
-        # pang check kung na update sa db; dat pareho toh sa tuple moh
-        print(self.cursor.execute("SELECT * FROM transactions WHERE transaction_id = 1455").fetchone())    
+        transaction_tuple = self.modifyTransaction(user_id=self.user_id, t_id=149, updated_transaction=updated_transaction)
+        # check if reflected in db
+        print("\n\n[Recently Modified Transaction Row]\n")
+        command = """
+            SELECT * FROM transactions
+            WHERE user_id = ?
+            ORDER BY updated_at DESC
+            LIMIT ?
+        """
+        values = (self.user_id, 1)
+        result = self.cursor.execute(command, values).fetchone()
+        print(f"\t{result = }")
 
-    # def testAzcarragaDeleteTransaction(self):
+    # def testDeleteTransaction(self):
     #     # delete last row
     #     self.deleteTransaction(user_id=self.user_id, t_id=1445)
 
@@ -506,11 +592,10 @@ class TransactionManager:
         canvas_expenses.draw()
         canvas_expenses.get_tk_widget().pack()
         
-        income_frame.pack()
+        income_frame.pack(side="left")
         expense_frame.pack()
        
         root.mainloop()
-
 
 
     def testCreateQuarterlyGraph(self):
@@ -536,20 +621,22 @@ if __name__ == "__main__":
     # uncomment nyo inyo if magsasample run kayo
 
     # --- REPOSITORY tests ---
-    # tm.repo.testMirasolGetAllTransactions()
-    # tm.repo.testMirasolGetTransactionByType()
-    # tm.repo.testNicolasGetTransactionsByCategory()
-    tm.repo.testAzcarragaGetRecentTransactions()
-    # tm.repo.testNicolasAddTransaction()
-    # tm.repo.testAzcarragaModifyTransaction()
-    # tm.repo.testAzcarragaDeleteTransaction()
+    # tm.repo.testAddAccount()
+    # tm.repo.testGetAccountID()
+    # tm.repo.testGetAllTransactions()
+    # tm.repo.testGetTransactionByType()
+    # tm.repo.testGetTransactionsByCategory()
+    # tm.repo.testGetRecentTransactions()
+    # tm.repo.testAddTransaction()
+    # tm.repo.testModifyTransaction()
+    # tm.repo.testDeleteTransaction()
 
     # --- MANAGER tests ---
     # tm.testCalculateOverallFinance()
     # tm.testCalculateOverallBalance()
     # tm.testCalculateMonthlyFinances()
     # tm.testCalculateQuarterlyFinances()
-    # tm.testCreateMonthlyGraph()
+    tm.testCreateMonthlyGraph()
     # tm.testCreateQuarterlyGraph()
 
     tm.repo.connection.close()
