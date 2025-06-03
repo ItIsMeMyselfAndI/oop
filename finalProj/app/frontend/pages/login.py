@@ -1,11 +1,13 @@
 # external/built-in modules/libs
 import customtkinter as ctk
+from tkinter import messagebox
 from PIL import Image
 import os
 # our modules/libs
-from frontend.styles import BaseStyles # paddings, dimensions, colors, etc
+from frontend.styles import BaseStyles, LoginStyles # paddings, dimensions, colors, etc
 from backend import Account
 from frontend.components import PopUpWin
+
 
 class LoginWin(ctk.CTk):
     def __init__(self, app_title, userRepo, fg_color, width, height):
@@ -16,84 +18,86 @@ class LoginWin(ctk.CTk):
         # initialize login
         x_pos, y_pos = 0, 0
         self.geometry(f"{width}x{height}+{x_pos}+{y_pos}")
+        self.maxsize(width, height)
+        self.minsize(width, height)
+        self.resizable(width=True, height=True)
         self.configure(fg_color=fg_color)
         self.title(app_title)
         # initialize page state
         self.mask_id = None
         self.actual_password = ""
         self.isCurrentPage = False
-        # load logo
-        self.logo = self.loadImages()
+        # load logo icon
+        self.logo_icon = self.loadImages()
         # create login frame
-        self.frame = ctk.CTkFrame(master=self, fg_color=BaseStyles.WHITE, width=550, height=800, corner_radius=50)
+        self.frame = ctk.CTkFrame(master=self, fg_color=LoginStyles.LOGIN_FRAME_FG_COLOR, corner_radius=BaseStyles.RAD_5)
         # create header
-        self.logo_icon = ctk.CTkLabel(self.frame, text="", image=self.logo)
-        self.title_label = ctk.CTkLabel(master=self.frame, text="Welcome!", font=("Arial", 35, "bold"),
-                                            text_color="#333333", bg_color="#ffffff")
+        self.logo_img_bg = ctk.CTkLabel(self.frame, text="", image=self.logo_icon, fg_color=LoginStyles.LOGO_IMG_BG_COLOR, width=LoginStyles.LOGO_IMG_BG_W, height=LoginStyles.LOGO_IMG_BG_H)
+        self.title_label = ctk.CTkLabel(master=self.frame, text="Welcome!", font=LoginStyles.TITLE_LABEL_FONT,
+                                        text_color=LoginStyles.TITLE_TEXT_COLOR, fg_color=LoginStyles.TITLE_LABEL_FG_COLOR)
         # create entries
         self.outside_entry = ctk.CTkEntry(self)
-        self.user_entry = ctk.CTkEntry(master=self.frame, font=("Arial", 17, "bold"), text_color="#292929",
-                                   corner_radius=50, border_width=0, placeholder_text="Username",
-                                   placeholder_text_color="#545454",
-                                   fg_color="#d9d9d9", bg_color="#ffffff",
-                                   width=350, height=60)
-        self.pass_entry = ctk.CTkEntry(master=self.frame, font=("Arial", 17, "bold"), text_color="#292929",
-                                   corner_radius=50, border_width=0, placeholder_text="Password",
-                                   placeholder_text_color="#545454",
-                                   width=350, height=60,
-                                   fg_color="#d9d9d9", bg_color="#ffffff")
+        self.user_entry = ctk.CTkEntry(master=self.frame, font=LoginStyles.USER_ENTRY_FONT, text_color=LoginStyles.USER_ENTRY_TEXT_COLOR,
+                                       corner_radius=BaseStyles.RAD_5, border_width=0, placeholder_text="Username",
+                                       placeholder_text_color=LoginStyles.USER_PLACEHOLDER_TEXT_COLOR, fg_color=LoginStyles.USER_ENTRY_FG_COLOR,
+                                       width=LoginStyles.USER_ENTRY_W, height=LoginStyles.USER_ENTRY_H)
+        self.pass_entry = ctk.CTkEntry(master=self.frame, font=LoginStyles.PASS_ENTRY_FONT, text_color=LoginStyles.PASS_ENTRY_TEXT_COLOR,
+                                       corner_radius=BaseStyles.RAD_5, border_width=0, placeholder_text="Password",
+                                       placeholder_text_color=LoginStyles.PASS_PLACEHOLDER_TEXT_COLOR,
+                                       width=LoginStyles.PASS_ENTRY_W, height=LoginStyles.PASS_ENTRY_H,
+                                       fg_color=LoginStyles.PASS_ENTRY_FG_COLOR)
         # create buttons
-        self.login_button = ctk.CTkButton(master=self.frame, text="LOGIN", font=("Arial", 20, "bold"), corner_radius=50,
-                                          text_color="#ffffff", hover_color=BaseStyles.DARK_BLUE,
-                                          fg_color=BaseStyles.BLUE, bg_color="#ffffff",
-                                          width=350, height=60,
+        self.login_button = ctk.CTkButton(master=self.frame, text="LOGIN", font=LoginStyles.LOGIN_BUTTON_FONT, corner_radius=BaseStyles.RAD_5,
+                                          text_color=LoginStyles.LOGIN_BUTTON_TEXT_COLOR, hover_color=LoginStyles.LOGIN_BUTTON_HOVER_COLOR,
+                                          fg_color=LoginStyles.LOGIN_BUTTON_FG_COLOR, width=LoginStyles.LOGIN_BUTTON_W, height=LoginStyles.LOGIN_BUTTON_H,
                                           command=self.onClickLogin)
-        self.signup_button = ctk.CTkButton(master=self.frame, text="SIGN UP", font=("Arial", 20, "bold"), corner_radius=50,
-                                           text_color="#ffffff", hover_color=BaseStyles.GREEN,
-                                           fg_color="#7ed957", bg_color="#ffffff",
-                                           width=350, height=60,
+        self.signup_button = ctk.CTkButton(master=self.frame, text="SIGN UP", font=LoginStyles.SIGNUP_BUTTON_FONT, corner_radius=BaseStyles.RAD_5,
+                                           text_color=LoginStyles.SIGNUP_BUTTON_TEXT_COLOR, hover_color=LoginStyles.SIGNUP_BUTTON_HOVER_COLOR,
+                                           fg_color=LoginStyles.SIGNUP_BUTTON_FG_COLOR, width=LoginStyles.SIGNUP_BUTTON_W, height=LoginStyles.SIGNUP_BUTTON_H,
                                            command=self.onClickSignUp)
         # display main frame
         self.frame.place(relx=0.5, rely=0.5, anchor="center")
         # display header
-        self.logo_icon.pack(pady=(80,10))
-        self.title_label.pack(padx=80, pady=(0,50))
+        self.logo_img_bg.pack(pady=(BaseStyles.PAD_4*2,BaseStyles.PAD_1))
+        self.title_label.pack(padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_5))
         # display entries
-        self.outside_entry.place(x=-1000, y=-1000) # for redirecting entry focus when clicked outside
-        self.user_entry.pack(padx=80, pady=(0,10))
-        self.pass_entry.pack(padx=80, pady=(0,30))
+        self.outside_entry.place(x=-1*BaseStyles.SCREEN_W, y=-1*BaseStyles.SCREEN_W) # for redirecting entry focus when clicked outside
+        self.user_entry.pack(padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_1))
+        self.pass_entry.pack(padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_3))
         # display buttons
-        self.login_button.pack(padx=80, pady=(0,10))
-        self.signup_button.pack(padx=80, pady=(0,80))
+        self.login_button.pack(padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_1))
+        self.signup_button.pack(padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_4*2))
         # bind keyboard and mouse events
         self.pass_entry.bind("<KeyRelease>", self.on_password_key_release)
         # unfocus entries if clicked outside
         self.bind("<Button-1>", self.unfocusEntries)
         # create invalid input pop up
         self.font2 = ("Bodoni MT", BaseStyles.FONT_SIZE_2, "italic")
-        self.no_match_popup = PopUpWin(title="[DB] No Match", msg="Incorrect Username or Password",
-                                      enable_close=True, font=self.font2, master=self,
-                                      fg_color=BaseStyles.WHITE, enable_frame_blocker=False)
-        self.already_taken_popup = PopUpWin(title="[Input] Invalid", msg="Username is already taken",
-                                      enable_close=True, font=self.font2, master=self,
-                                      fg_color=BaseStyles.WHITE, enable_frame_blocker=False)
-        self.empty_field_popup = PopUpWin(title="[Input] Invalid", msg="Empty field is not allowed",
-                                      enable_close=True, font=self.font2, master=self,
-                                      fg_color=BaseStyles.WHITE, enable_frame_blocker=False)
+        # self.no_match_popup = PopUpWin(title="[DB] No Match", msg="Incorrect Username or Password",
+        #                               enable_close=True, font=self.font2, master=self,
+        #                               fg_color=BaseStyles.WHITE, enable_frame_blocker=False)
+        # self.already_taken_popup = PopUpWin(title="[Input] Invalid", msg="Username is already taken",
+        #                               enable_close=True, font=self.font2, master=self,
+        #                               fg_color=BaseStyles.WHITE, enable_frame_blocker=False)
+        # self.empty_field_popup = PopUpWin(title="[Input] Invalid", msg="Empty field is not allowed",
+        #                               enable_close=True, font=self.font2, master=self,
+        #                               fg_color=BaseStyles.WHITE, enable_frame_blocker=False)
+
 
     def loadImages(self):
         ICONS_FOLDER = os.path.abspath("assets/icons")
-        logo = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/logo.png"), size=(119, 120))
-        return logo
+        logo_icon = ctk.CTkImage(Image.open(f"{ICONS_FOLDER}/logo.png"), size=(LoginStyles.LOGO_IMG_W, LoginStyles.LOGO_IMG_H))
+        return logo_icon
 
     def onClickLogin(self):
-        print("\n[User] Login")
+        print("\n[User] LoginStyles")
         username = self.user_entry.get()
         password = self.actual_password
         account = Account(username=username, password=password)
         user_id = self.userRepo.getAccountID(account)
         if not (account.username and account.password):
-            self.empty_field_popup.showWin()
+            # self.empty_field_popup.showWin()
+            messagebox.showwarning(title="[Input] Invalid", message="Empty field is not allowed")
             print("[Input] Empty field is not allowed")
         elif user_id:
             self.user_id = user_id
@@ -102,7 +106,8 @@ class LoginWin(ctk.CTk):
             print("\tPassword:", password)
             self.destroy()
         else:
-            self.no_match_popup.showWin()
+            messagebox.showwarning(title="[DB] No Match Found", message="Incorrect Username or Password")
+            # self.no_match_popup.showWin()
             print("[DB] No Match Found")
 
     def onClickSignUp(self):
@@ -110,9 +115,15 @@ class LoginWin(ctk.CTk):
         username = self.user_entry.get()
         password = self.actual_password
         account = Account(username=username, password=password)
+        # verify action
+        is_continue = messagebox.askyesno(title="[Sign Up] New Account",message="Are you sure you want to create a new account?") 
+        if not is_continue:
+            return
+        # create new account
         was_added = self.userRepo.addAccount(account)
         if not (account.username and account.password):
-            self.empty_field_popup.showWin()
+            # self.empty_field_popup.showWin()
+            messagebox.showwarning(title="[Input] Invalid", message="Empty field is not allowed")
             print("[Input] Empty field is not allowed")
         elif was_added:
             self.user_id = self.userRepo.getAccountID(account)
@@ -121,7 +132,8 @@ class LoginWin(ctk.CTk):
             print("\tPassword:", password)
             self.destroy()
         else:
-            self.already_taken_popup.showWin()
+            # self.already_taken_popup.showWin()
+            messagebox.showwarning(title="[Input] Invalid", message="Username is already taken")
             print("[Input] Username is already taken")
 
     def on_password_key_release(self, event):

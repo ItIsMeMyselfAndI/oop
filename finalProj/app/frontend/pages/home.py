@@ -167,20 +167,23 @@ class MonthlyReport(ctk.CTkFrame):
     
     def loadAndDisplayGraphsWidget(self):
         # graph dimensions in inches
-        graph_w_in = HomeStyles.MONTHLY_INCOME_GRAPH_W / BaseStyles.DPI
-        graph_h_in = HomeStyles.MONTHLY_EXPENSE_GRAPH_H / BaseStyles.DPI
-        income_graph, expense_graph = self.tm.createMonthlyGraph(user_id=self.app.user_id, width_in=graph_w_in,
-                                                                           height_in=graph_h_in, dpi=BaseStyles.DPI,
-                                                                           title_size=HomeStyles.MONTHLY_GRAPH_TITLE_SIZE,
-                                                                           label_size=HomeStyles.MONTHLY_GRAPH_LABEL_SIZE)
+        print(f"\n{BaseStyles.DPI = }")
+        print(f"\n{HomeStyles.MONTHLY_GRAPH_W_IN = }")
+        print(f"\n{HomeStyles.MONTHLY_GRAPH_H_IN = }")
+        income_graph, expense_graph = self.tm.createMonthlyGraph(user_id=self.app.user_id, title_size=HomeStyles.MONTHLY_GRAPH_TITLE_SIZE,
+                                                                 label_size=HomeStyles.MONTHLY_GRAPH_LABEL_SIZE, dpi=BaseStyles.DPI,
+                                                                 width_in=HomeStyles.MONTHLY_GRAPH_W_IN,
+                                                                 height_in=HomeStyles.MONTHLY_GRAPH_H_IN)
         # layout income
         income_canvas = FigureCanvasTkAgg(figure=income_graph, master=self.left_frame)
         income_canvas.draw()
         income_canvas.get_tk_widget().pack(padx=BaseStyles.PAD_1, pady=(BaseStyles.PAD_1,BaseStyles.PAD_3))
+        # income_canvas.get_tk_widget().configure(width=HomeStyles.MONTHLY_GRAPH_W_IN, height=HomeStyles.MONTHLY_GRAPH_H_IN)
         # layout expense
         expense_canvas = FigureCanvasTkAgg(figure=expense_graph, master=self.right_frame)
         expense_canvas.draw()
         expense_canvas.get_tk_widget().pack(padx=BaseStyles.PAD_1, pady=(BaseStyles.PAD_1,BaseStyles.PAD_3))
+        # income_canvas.get_tk_widget().configure(width=HomeStyles.MONTHLY_GRAPH_W_IN, height=HomeStyles.MONTHLY_GRAPH_H_IN)
         return income_canvas, expense_canvas
     
     def updateDisplayGraphsWidget(self):

@@ -1,8 +1,9 @@
 # external/built-in modules/libs
 import customtkinter as ctk
+from tkinter import messagebox
 # our modules/libs
 from backend.transaction_manager import Transaction
-from frontend.styles import BaseStyles, SaveStyles # paddings, dimensions, colors, etc
+from frontend.styles import BaseStyles # paddings, dimensions, colors, etc
 from frontend.components.popup_win import PopUpWin
 
 

@@ -30,7 +30,6 @@ class App(ctk.CTk):
         self.minsize(AppStyles.WIN_W, AppStyles.WIN_H)
         self.resizable(width=True, height=True)
         self.configure(fg_color=AppStyles.WIN_FG_COLOR)
-        # self.configure()
         # initialize fonts
         self.font2 = ("Bodoni MT", BaseStyles.FONT_SIZE_2, "italic")
         self.font3 = ("Bodoni MT", BaseStyles.FONT_SIZE_3, "italic")
@@ -38,9 +37,6 @@ class App(ctk.CTk):
         self.title(app_title)
         # create scrollable screen (vertical)
         self.content = ctk.CTkFrame(self, corner_radius=0, fg_color=AppStyles.WIN_FG_COLOR)
-        # proceed once user_id is not empty
-        # print(f"{self.user_id = }")
-        # if self.user_id:
         # create app pages
         self.profilePage = ProfilePage(app=self, tm=self.tm, master=self.content, fg_color=AppStyles.WIN_FG_COLOR, corner_radius=0) 
         self.homePage = HomePage(app=self, tm=self.tm, master=self.content, fg_color=AppStyles.WIN_FG_COLOR, corner_radius=0) 
@@ -64,16 +60,16 @@ class App(ctk.CTk):
         self.editSaveBtn.pack(pady=BaseStyles.PAD_4)
         self.addSaveBtn.pack(pady=BaseStyles.PAD_4)
         # create pop ups
-        self.loadPopUp = PopUpWin(title="[App] Load", msg="Loading...", font=self.font2, enable_close=False, master=self,
+        self.loading_popup = PopUpWin(title="[App] Load", msg="Loading...", font=self.font2, enable_close=False, master=self,
                                   fg_color=AppStyles.LOAD_POP_UP_FG_COLOR, enable_frame_blocker=False)
-        self.closeAppPopUp = PopUpWin(title="[App] Exit", msg="Exiting...", font=self.font2, enable_close=False,master=self,
+        self.closing_popup = PopUpWin(title="[App] Exit", msg="Exiting...", font=self.font2, enable_close=False,master=self,
                                       fg_color=AppStyles.CLOSE_APP_POP_UP_FG_COLOR, enable_frame_blocker=False)
         # load all pages
         print("[App] Started successfully")
         print("\n[Pages] Loading...")
-        self.loadPopUp.showWin()
-        self.loadPopUp.after(100, self.loadPages) # load all pages
-        self.loadPopUp.hideWin()
+        self.loading_popup.showWin()
+        self.loading_popup.after(100, self.loadPages) # load all pages
+        self.loading_popup.hideWin()
         print("\n[Pages] Loaded successfully")
         # close the app and db properly
         self.protocol("WM_DELETE_WINDOW", self.onCloseApp)
@@ -102,9 +98,9 @@ class App(ctk.CTk):
         print("[App] Closed successfully.")
 
     def onCloseApp(self):
-        self.closeAppPopUp.showWin()
-        self.closeAppPopUp.after(100, self._closeAll)
-        self.closeAppPopUp.hideWin()
+        self.closing_popup.showWin()
+        self.closing_popup.after(100, self._closeAll)
+        self.closing_popup.hideWin()
 
 
 if __name__ == "__main__":
@@ -132,9 +128,9 @@ if __name__ == "__main__":
         print("\n[DB] Closing connection...")
         tm.repo.connection.close()
         print("[DB] Connection closed successfully")
-        print("\n[Login] Closing...")
+        print("\n[LoginStyles] Closing...")
         login.destroy()
-        print("[Login] Closed successfully")
+        print("[LoginStyles] Closed successfully")
         exit(0)
 
 

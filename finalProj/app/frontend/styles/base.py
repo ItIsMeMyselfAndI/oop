@@ -1,7 +1,7 @@
 import customtkinter as ctk
 
 # convert ideal pixel count (when screen h is 1080) to actual screen pixel count (base on actual screen h)
-def scale(ideal_pixels):
+def scale(ideal_pixels: float) -> int:
     return int(ideal_pixels / IDEAL_SCREEN_H * SCREEN_H)
 
 def screenDimensions():
@@ -27,7 +27,7 @@ class BaseStyles:
     # ---- actual screen dimensions ----
     SCREEN_W = SCREEN_W
     SCREEN_H = SCREEN_H
-    DPI = DPI
+    DPI = scale(DPI)
 
     # ---- paddings ----
     PAD_1 = scale(10)
@@ -49,6 +49,9 @@ class BaseStyles:
     # ---- radii ----
     RAD_1 = scale(10)
     RAD_2 = scale(20)
+    RAD_3 = scale(30)
+    RAD_4 = scale(40)
+    RAD_5 = scale(50)
 
 
     # ---- colors ----
