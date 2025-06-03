@@ -8,11 +8,11 @@ from backend import Account
 from frontend.components import PopUpWin
 
 class LoginWin(ctk.CTk):
-    def __init__(self, app_title, tm, fg_color, width, height):
+    def __init__(self, app_title, userRepo, fg_color, width, height):
         super().__init__()
         self.user_id = None
         self.username = None
-        self.tm = tm
+        self.userRepo = userRepo
         # initialize login
         x_pos, y_pos = 0, 0
         self.geometry(f"{width}x{height}+{x_pos}+{y_pos}")
@@ -56,22 +56,22 @@ class LoginWin(ctk.CTk):
         # display main frame
         self.frame.place(relx=0.5, rely=0.5, anchor="center")
         # display header
-        self.logo_icon.pack(pady=(50,10))
-        self.title_label.pack(padx=50, pady=(0,50))
+        self.logo_icon.pack(pady=(80,10))
+        self.title_label.pack(padx=80, pady=(0,50))
         # display entries
         self.outside_entry.place(x=-1000, y=-1000) # for redirecting entry focus when clicked outside
-        self.user_entry.pack(padx=50, pady=(0,10))
-        self.pass_entry.pack(padx=50, pady=(0,30))
+        self.user_entry.pack(padx=80, pady=(0,10))
+        self.pass_entry.pack(padx=80, pady=(0,30))
         # display buttons
-        self.login_button.pack(padx=50, pady=(0,10))
-        self.signup_button.pack(padx=50, pady=(0,50))
+        self.login_button.pack(padx=80, pady=(0,10))
+        self.signup_button.pack(padx=80, pady=(0,80))
         # bind keyboard and mouse events
         self.pass_entry.bind("<KeyRelease>", self.on_password_key_release)
         # unfocus entries if clicked outside
         self.bind("<Button-1>", self.unfocusEntries)
         # create invalid input pop up
         self.font2 = ("Bodoni MT", BaseStyles.FONT_SIZE_2, "italic")
-        self.no_match_popup = PopUpWin(title="[DB] No Match", msg="Incorrect Username of Password",
+        self.no_match_popup = PopUpWin(title="[DB] No Match", msg="Incorrect Username or Password",
                                       enable_close=True, font=self.font2, master=self,
                                       fg_color=BaseStyles.WHITE, enable_frame_blocker=False)
         self.already_taken_popup = PopUpWin(title="[Input] Invalid", msg="Username is already taken",
@@ -91,7 +91,7 @@ class LoginWin(ctk.CTk):
         username = self.user_entry.get()
         password = self.actual_password
         account = Account(username=username, password=password)
-        user_id = self.tm.repo.getAccountID(account)
+        user_id = self.userRepo.getAccountID(account)
         if not (account.username and account.password):
             self.empty_field_popup.showWin()
             print("[Input] Empty field is not allowed")
@@ -110,12 +110,12 @@ class LoginWin(ctk.CTk):
         username = self.user_entry.get()
         password = self.actual_password
         account = Account(username=username, password=password)
-        was_added = self.tm.repo.addAccount(account)
+        was_added = self.userRepo.addAccount(account)
         if not (account.username and account.password):
             self.empty_field_popup.showWin()
             print("[Input] Empty field is not allowed")
         elif was_added:
-            self.user_id = self.tm.repo.getAccountID(account)
+            self.user_id = self.userRepo.getAccountID(account)
             self.username = username
             print("\tUsername:", username)
             print("\tPassword:", password)

@@ -283,7 +283,7 @@ class Table(ctk.CTkFrame):
 
     def _showRowsOfCurrentPage(self):
         # show rows in current page
-        if self.current_page_num:
+        if self.current_rows_per_page:
             page_frame = list(self.current_rows_per_page.keys())[self.current_page_num]
             page_frame.pack()
             # print("\n[Table Page]")

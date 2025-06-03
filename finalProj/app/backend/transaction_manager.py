@@ -10,12 +10,6 @@ from collections import defaultdict
 from typing import List
 
 
-# data holder for a user
-class Account:
-    def __init__(self, username, password):
-        self.username: str = username
-        self.password: str = password
-
 
 # data holder for a transaction
 class Transaction:
@@ -45,72 +39,10 @@ class Finance:
 class TransactionRepository:
     def __init__(self, db_path):
         print(db_path)
-        self.user_id: int = 1
-        self.initializeDatabase(db_path)
-
-    def initializeDatabase(self, db_path):
         self.connection = sqlite3.connect(db_path)
         self.cursor = self.connection.cursor()
-        command_users = """
-            CREATE TABLE IF NOT EXISTS users (
-                user_id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                username TEXT UNIQUE NOT NULL, 
-                password CHAR(16)
-            )
-        """
-        command_transactions = """
-            CREATE TABLE IF NOT EXISTS transactions(
-                transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                transaction_date TEXT,
-                transaction_type TEXT,
-                transaction_category TEXT,
-                transaction_amount REAL,
-                transaction_description TEXT,
-                user_id INTEGER,
-                FOREIGN KEY (user_id) REFERENCES users(user_id)
-            )
-        """
-        self.cursor.execute(command_users)
-        self.cursor.execute(command_transactions)
-        self.cursor.execute("PRAGMA foreign_keys = ON") 
-        self.connection.commit()
-
-    def addAccount(self, account: Account) -> bool:
-        was_added = False
-        command = """
-            SELECT 1 FROM users
-            WHERE username = ? LIMIT 1
-        """
-        values = (account.username,)
-        username_exists = self.cursor.execute(command, values).fetchone()
-        # check if username doesn't exist and if not empty fields
-        if not username_exists and account.username and account.password:
-            command = """
-                INSERT INTO users(
-                    username, password, created_at, updated_at
-                )
-                VALUES (?, ?, ?, ?)
-            """
-            local_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            values = (account.username, account.password, local_time, local_time)
-            # add account
-            self.cursor.execute(command, values)
-            self.connection.commit()
-            was_added = True
-        return was_added
-
-
-    def getAccountID(self, account: Account) -> int:
-        command = """
-            SELECT user_id FROM users
-            WHERE username = ? AND password = ? LIMIT 1
-        """
-        values = (account.username, account.password)
-        user_id = self.cursor.execute(command, values).fetchone()
-        if user_id:
-            user_id = user_id[0]
-        return user_id
-
+        self.user_id = 1 # dummy
+    
     def getAllTransactions(self, user_id: int) -> List[Transaction]:
         # retrieve transaction data
         command = """
@@ -238,32 +170,6 @@ class TransactionRepository:
 
 # ------------------------------- Tests ------------------------------------------
 
-    def testAddAccount(self):
-        account = Account(username="jone doe", password="jonedoe123")
-        was_added = self.addAccount(account)
-        print("\n\n[Recently Added user Row]\n")
-        if not was_added:
-            print(f"\tUsername already exist")
-            return
-        command = """
-            SELECT * FROM users
-            ORDER BY created_at DESC
-            LIMIT ?
-        """
-        values = (1,)
-        # check if reflected in db
-        result = self.cursor.execute(command, values).fetchone()
-        print(f"\t{result = }")
-
-    def testGetAccountID(self):
-        account = Account(username="jone", password="jonedoe123")
-        user_id = self.getAccountID(account)
-        print(f"\n\n[{account.username} Account ID]\n")
-        if user_id:
-            print(f"\t{user_id = }")
-        else:
-            print("\tNo Match Found")
-
     def testGetAllTransactions(self):
         all_transactions = self.getAllTransactions(user_id=self.user_id)
         # display results
@@ -334,7 +240,7 @@ class TransactionRepository:
 
 class TransactionManager:
     def __init__(self, db_path):
-        self.user_id: int = 1
+        self.user_id = 1 # dummy
         self.repo = TransactionRepository(db_path)
 
 
@@ -617,12 +523,11 @@ if __name__ == "__main__":
     # db_path = os.path.abspath("../db/transactions.db")
     db_path = Path(__file__).parent.parent / "db/transactions.db"
     print(db_path)
-    tm = TransactionManager(db_path)
-    # uncomment nyo inyo if magsasample run kayo
 
-    # --- REPOSITORY tests ---
-    # tm.repo.testAddAccount()
-    # tm.repo.testGetAccountID()
+
+    tm = TransactionManager(db_path)
+    
+    # --- TRANSACTION REPOSITORY tests ---
     # tm.repo.testGetAllTransactions()
     # tm.repo.testGetTransactionByType()
     # tm.repo.testGetTransactionsByCategory()
@@ -631,12 +536,12 @@ if __name__ == "__main__":
     # tm.repo.testModifyTransaction()
     # tm.repo.testDeleteTransaction()
 
-    # --- MANAGER tests ---
+    # --- TRANSACTION MANAGER tests ---
     # tm.testCalculateOverallFinance()
     # tm.testCalculateOverallBalance()
     # tm.testCalculateMonthlyFinances()
     # tm.testCalculateQuarterlyFinances()
-    tm.testCreateMonthlyGraph()
+    # tm.testCreateMonthlyGraph()
     # tm.testCreateQuarterlyGraph()
 
     tm.repo.connection.close()

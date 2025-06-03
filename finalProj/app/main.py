@@ -12,6 +12,7 @@ from frontend.pages import HistoryPage # history page
 from frontend.pages import AddPage # edit page
 from frontend.components import SubmitBTN # save btn
 from frontend.components import PopUpWin # pop up win
+from backend import UserRepository # db manager
 from backend import TransactionManager # db manager
 
 
@@ -112,16 +113,18 @@ if __name__ == "__main__":
     user_id = None
     username = None
     # user_id = 2
+
     try:
-        # db
+        # initialize db
         db_path = os.path.abspath("db/transactions.db")
+        userRepo = UserRepository(db_path)
         tm = TransactionManager(db_path)
     except Exception as e:
         print(f"{e = }")
 
     try:
         # login win
-        login = LoginWin(app_title=app_title, tm=tm, fg_color=AppStyles.WIN_FG_COLOR, width=AppStyles.WIN_W, height=AppStyles.WIN_H)
+        login = LoginWin(app_title=app_title, userRepo=userRepo, fg_color=AppStyles.WIN_FG_COLOR, width=AppStyles.WIN_W, height=AppStyles.WIN_H)
         login.mainloop()
         user_id = login.user_id
         username = login.username
@@ -134,21 +137,25 @@ if __name__ == "__main__":
         print("[Login] Closed successfully")
         exit(0)
 
-    print(f"{user_id = }")
-    # app win
-    try:
-        app = App(app_title=app_title, user_id=user_id, username=username, tm=tm)
-    except KeyboardInterrupt:
-        print("\n[App] Closed successfully")
-        exit(0)
 
-    # exit properly during keyboard interrupt
-    try:
-        app.mainloop()
-    except KeyboardInterrupt:
-        print("\n[DB] Closing connection...")
-        tm.repo.connection.close()
-        print("[DB] Connection closed successfully")
-        print("\n[App] Closing...")
-        app.destroy()
+    # app win
+    if user_id and username:
+        try:
+            app = App(app_title=app_title, user_id=user_id, username=username, tm=tm)
+        except KeyboardInterrupt:
+            print("\n[App] Closed successfully")
+            exit(0)
+
+        # exit properly during keyboard interrupt
+        try:
+            app.mainloop()
+        except KeyboardInterrupt:
+            print("\n[DB] Closing connection...")
+            tm.repo.connection.close()
+            print("[DB] Connection closed successfully")
+            print("\n[App] Closing...")
+            app.destroy()
+            print("[App] Closed successfully")
+
+    else:
         print("[App] Closed successfully")
