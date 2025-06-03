@@ -283,20 +283,21 @@ class Table(ctk.CTkFrame):
 
     def _showRowsOfCurrentPage(self):
         # show rows in current page
-        page_frame = list(self.current_rows_per_page.keys())[self.current_page_num]
-        page_frame.pack()
-        # print("\n[Table Page]")
-        # i = 0
-        for row in self.current_rows_per_page[page_frame]:
-            row.pack(pady=(0,BaseStyles.PAD_1))
-            row.date_col.grid(row=0, column=0, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
-            row.type_col.grid(row=0, column=1, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
-            row.category_col.grid(row=0, column=2, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
-            row.description_col.grid(row=0, column=3, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
-            row.amount_col.grid(row=0, column=4, padx=(0,BaseStyles.PAD_2), pady=0, sticky="nw")
-            # print(f"\t{row.date_label._text} | {row.type_label._text} | {row.category_label._text} | {row.description_label._text} | {row.amount_label._text}")
-        #     i += 1
-        # print(f"\t{i = }")
+        if self.current_page_num:
+            page_frame = list(self.current_rows_per_page.keys())[self.current_page_num]
+            page_frame.pack()
+            # print("\n[Table Page]")
+            # i = 0
+            for row in self.current_rows_per_page[page_frame]:
+                row.pack(pady=(0,BaseStyles.PAD_1))
+                row.date_col.grid(row=0, column=0, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
+                row.type_col.grid(row=0, column=1, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
+                row.category_col.grid(row=0, column=2, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
+                row.description_col.grid(row=0, column=3, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
+                row.amount_col.grid(row=0, column=4, padx=(0,BaseStyles.PAD_2), pady=0, sticky="nw")
+                # print(f"\t{row.date_label._text} | {row.type_label._text} | {row.category_label._text} | {row.description_label._text} | {row.amount_label._text}")
+            #     i += 1
+            # print(f"\t{i = }")
 
     def displayCurrentTablePage(self):
         self._hideRowsOfOtherPages()

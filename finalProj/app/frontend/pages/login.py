@@ -71,7 +71,7 @@ class LoginWin(ctk.CTk):
         self.bind("<Button-1>", self.unfocusEntries)
         # create invalid input pop up
         self.font2 = ("Bodoni MT", BaseStyles.FONT_SIZE_2, "italic")
-        self.no_match_popup = PopUpWin(title="[DB] No Match", msg="Username/Password is incorrect",
+        self.no_match_popup = PopUpWin(title="[DB] No Match", msg="Incorrect Username of Password",
                                       enable_close=True, font=self.font2, master=self,
                                       fg_color=BaseStyles.WHITE, enable_frame_blocker=False)
         self.already_taken_popup = PopUpWin(title="[Input] Invalid", msg="Username is already taken",
