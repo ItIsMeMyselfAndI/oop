@@ -111,10 +111,11 @@ if __name__ == "__main__":
     # user_id = 2
 
     try:
-        # initialize db
-        db_path = os.path.abspath("db/transactions.db")
-        userRepo = UserRepository(db_path)
-        tm = TransactionManager(db_path)
+    # initialize db
+        db_folder = os.path.abspath("db")
+        db_name = "transactions.db"
+        userRepo = UserRepository(db_folder, db_name)
+        tm = TransactionManager(db_folder + "/" + "transactions.db")
     except Exception as e:
         print(f"{e = }")
 

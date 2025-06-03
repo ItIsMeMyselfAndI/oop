@@ -12,31 +12,35 @@ class Account:
 
 
 class UserRepository:
-    def __init__(self, db_path):
-        # print(db_path)
-        self.connection = sqlite3.connect(db_path)
+    def __init__(self, db_folder, db_name):
+        os.makedirs(db_folder, exist_ok=True)
+        self.connection = sqlite3.connect(db_folder + "/" + db_name)
         self.cursor = self.connection.cursor()
         self.initializeDatabase()
 
     def initializeDatabase(self):
         command_users = """
-            CREATE TABLE IF NOT EXISTS users (
-                user_id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                username TEXT UNIQUE NOT NULL, 
-                password CHAR(16)
-            )
+        CREATE TABLE IF NOT EXISTS "users"(
+            user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password CHAR(16),
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
         """
         command_transactions = """
-            CREATE TABLE IF NOT EXISTS transactions(
-                transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                transaction_date TEXT,
-                transaction_type TEXT,
-                transaction_category TEXT,
-                transaction_amount REAL,
-                transaction_description TEXT,
-                user_id INTEGER,
-                FOREIGN KEY (user_id) REFERENCES users(user_id)
-            )
+        CREATE TABLE IF NOT EXISTS "transactions"(
+            transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            transaction_date TEXT,
+            transaction_type TEXT,
+            transaction_category TEXT,
+            transaction_amount REAL,
+            transaction_description TEXT,
+            user_id INTEGER,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(user_id)
+        )        
         """
         self.cursor.execute(command_users)
         self.cursor.execute(command_transactions)
