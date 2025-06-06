@@ -9,6 +9,10 @@ class AddStyles:
     HEADER_TITLE_TEXT_COLOR = BaseStyles.DARK_GREY
 
     # transaction form
+    FORM_TOP_SECTION_FG_COLOR = BaseStyles.WHITE
+    FORM_MID_SECTION_FG_COLOR = BaseStyles.WHITE
+    FORM_BOT_SECTION_FG_COLOR = BaseStyles.WHITE
+    
     DATE_MENU_H = scale(60)
     YEAR_MENU_W = scale(450)
     MONTH_MENU_W = scale(500) 

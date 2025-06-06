@@ -7,6 +7,7 @@ class AppStyles:
     WIN_FG_COLOR = BaseStyles.SKY_BLUE
 
     SIDEBAR_FG_COLOR = BaseStyles.WHITE
+    SIDEBAR_H = BaseStyles.SCREEN_H
 
     LOAD_POP_UP_FG_COLOR = BaseStyles.WHITE
     CLOSE_APP_POP_UP_FG_COLOR = BaseStyles.WHITE

@@ -11,9 +11,9 @@ class EditStyles:
 
 
     # transaction form
-    FORM_FIRST_SECTION_FG_COLOR = BaseStyles.WHITE
-    FORM_SECOND_SECTION_FG_COLOR = BaseStyles.WHITE
-    FORM_THIRD_SECTION_FG_COLOR = BaseStyles.WHITE
+    FORM_TOP_SECTION_FG_COLOR = BaseStyles.WHITE
+    FORM_MID_SECTION_FG_COLOR = BaseStyles.WHITE
+    FORM_BOT_SECTION_FG_COLOR = BaseStyles.WHITE
 
     TRANSACTION_MENU_W = scale(800)
     TRANSACTION_MENU_H = scale(60)

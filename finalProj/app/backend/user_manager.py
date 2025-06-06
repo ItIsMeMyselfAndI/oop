@@ -122,8 +122,9 @@ if __name__ == "__main__":
     print(db_path)
    
     userRepo = UserRepository(db_path)
-    # uncomment nyo inyo if magsasample run kayo
 
     # --- USER REPOSITORY TESTS ---
     # userRepo.testAddAccount()
     # userRepo.testGetAccountID()
+    
+    userRepo.connection.close()
