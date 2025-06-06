@@ -1,3 +1,10 @@
 __pycache__
-lab7/Lab7_Abstraction.docx
-lab7/tests.py
+PersonalFinaceTrackerUML.pdf
+PersonalFinaceTrackerUML.png
+sample.py
+sample.db
+try.py
+dist
+*build
+released
+compiled
