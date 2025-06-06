@@ -101,7 +101,7 @@ class PayPalPayment(PaymentMethod):
         
         if ("@" not in self.user_email) or ("." not in self.user_email.split("@")[1]):
             print("\tInvalid email address")
-            print("\tUnrecognized ID format")
+            print("\tUnrecognized email format")
             return False
         
         if self.user_email not in self.registered_emails:
