@@ -114,7 +114,7 @@ class TableFilters(ctk.CTkFrame):
 
 
     def onPickCategories(self, t_categories):
-        # self._filterRows(filter_type=t_categories)
+        self._filterRows(filter_type=t_categories)
         pass
 
 
@@ -430,32 +430,32 @@ class Table(ctk.CTkFrame):
             "Savings": self.tm.repo.getTransactionsByType(self.app.user_id, "savings"),
             "Expenses": self.tm.repo.getTransactionsByType(self.app.user_id, "expense"),
             "Investment": self.tm.repo.getTransactionsByType(self.app.user_id, "investment"),
-            # # income
-            # "Salary":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Salary"),
-            # "Bonus":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Bonus"),
-            # "Side-hustles":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Side-hustles"),
-            # "Tips":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Tips"),
-            # # expenses
-            # "Bills":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Bills"),
-            # "Education":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Education"),
-            # "Entertainment":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Entertainment"),
-            # "Food & Drinks":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Food & Drinks"),
-            # "Grocery":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Grocery"),
-            # "Healthcare":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Healthcare"),
-            # "House":self.tm.repo.getTransactionsByCategory(self.app.user_id, "House"),
-            # "Shopping":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Shopping"),
-            # "Transportation":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Transportation"),
-            # "Wellness":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Wellness"),
-            # "Other":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Other"),
-            # # savings
-            # "Monthly Allowance":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Monthly Allowance"),
-            # "Change":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Change"),
-            # "Miscellaneous":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Miscellaneous"),
-            # # investment
-            # "Stocks":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Stocks"),
-            # "Crypto":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Crypto"),
-            # "Bonds":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Bonds"),
-            # "Real Estate":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Real Estate")
+            # income
+            "Salary":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Salary"),
+            "Bonus":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Bonus"),
+            "Side-hustles":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Side-hustles"),
+            "Tips":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Tips"),
+            # expenses
+            "Bills":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Bills"),
+            "Education":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Education"),
+            "Entertainment":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Entertainment"),
+            "Food & Drinks":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Food & Drinks"),
+            "Grocery":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Grocery"),
+            "Healthcare":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Healthcare"),
+            "House":self.tm.repo.getTransactionsByCategory(self.app.user_id, "House"),
+            "Shopping":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Shopping"),
+            "Transportation":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Transportation"),
+            "Wellness":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Wellness"),
+            "Other":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Other"),
+            # savings
+            "Monthly Allowance":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Monthly Allowance"),
+            "Change":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Change"),
+            "Miscellaneous":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Miscellaneous"),
+            # investment
+            "Stocks":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Stocks"),
+            "Crypto":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Crypto"),
+            "Bonds":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Bonds"),
+            "Real Estate":self.tm.repo.getTransactionsByCategory(self.app.user_id, "Real Estate")
         }
         # for each filtered transactions, group the transactions base on table page
         all_transactions_by_filter_per_page = {}

@@ -10,6 +10,8 @@ from collections import defaultdict
 from typing import List
 
 
+#--------------------------------------------------------------------------------------------------------
+
 
 # data holder for a transaction
 class Transaction:
@@ -26,6 +28,9 @@ class Transaction:
         self.updated_at: datetime = updated_at  #naka default as None (sa "get methods" lng toh mag kakalaman)
 
 
+#--------------------------------------------------------------------------------------------------------
+
+
 # data holder for a finance
 class Finance:
     def __init__(self, total_income:float, total_expenses:float,
@@ -36,12 +41,16 @@ class Finance:
         self.total_investment = total_investment
 
 
+#--------------------------------------------------------------------------------------------------------
+
+
 class TransactionRepository:
     def __init__(self, db_path):
         print(db_path)
         self.connection = sqlite3.connect(db_path)
         self.cursor = self.connection.cursor()
         self.user_id = 1 # dummy
+    
     
     def getAllTransactions(self, user_id: int) -> List[Transaction]:
         # retrieve transaction data
@@ -54,11 +63,20 @@ class TransactionRepository:
         # convert transaction tuple to obj
         all_transactions: List[Transaction] = []
         for row in rows:
-            t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2], t_category=row[3], t_amount=row[4],
-                            t_description=row[5], created_at=row[7], updated_at=row[8])
+            t = Transaction(
+                t_id=row[0],
+                t_date=row[1],
+                t_type=row[2],
+                t_category=row[3],
+                t_amount=row[4],
+                t_description=row[5],
+                created_at=row[7],
+                updated_at=row[8]
+            )
             all_transactions.append(t)
         # return list of transaction obj
         return all_transactions
+    
     
     def getTransactionsByType(self, user_id: int, t_type: str) -> List[Transaction]:
         # retrieve transaction data
@@ -71,16 +89,47 @@ class TransactionRepository:
         # convert transaction tuple to obj
         type_transactions: List[Transaction] = []
         for row in rows:
-            t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2], t_category=row[3], t_amount=row[4],
-                            t_description=row[5], created_at=row[7], updated_at=row[8])
+            t = Transaction(
+                t_id=row[0],
+                t_date=row[1],
+                t_type=row[2],
+                t_category=row[3],
+                t_amount=row[4],
+                t_description=row[5],
+                created_at=row[7],
+                updated_at=row[8]
+            )
             type_transactions.append(t)
         # return list of transaction obj
         return type_transactions
     
+    
     def getTransactionsByCategory(self, user_id: int, t_category: str) -> List[Transaction]:
-        # kailangan toh para sa table filter ng history page
-        pass
+        # retrieve transaction data
+        command = """
+            SELECT * FROM transactions
+            WHERE user_id = ? AND transaction_category = ?
+        """
+        values = (user_id, t_category)
+        rows = self.cursor.execute(command, values).fetchall()
+        # convert transaction tuple to obj
+        category_transactions: List[Transaction] = []
+        for row in rows:
+            t = Transaction(
+                t_id=row[0],
+                t_date=row[1],
+                t_type=row[2],
+                t_category=row[3],
+                t_amount=row[4],
+                t_description=row[5],
+                created_at=row[7],
+                updated_at=row[8]
+            )
+            category_transactions.append(t)
+        # return list of transaction obj
+        return category_transactions
 
+    
     def getRecentTransactions(self, user_id: int, t_count: int) -> List[Transaction]:
         command = """
             SELECT * FROM transactions 
@@ -94,12 +143,21 @@ class TransactionRepository:
         # Convert rows to Transaction objects
         recent_transactions: List[Transaction] = []
         for row in rows:
-            t = Transaction(t_id=row[0], t_date=row[1], t_type=row[2], t_category=row[3], t_amount=row[4],
-                            t_description=row[5], created_at=row[7], updated_at=row[8])
+            t = Transaction(
+                t_id=row[0],
+                t_date=row[1],
+                t_type=row[2],
+                t_category=row[3],
+                t_amount=row[4],
+                t_description=row[5],
+                created_at=row[7],
+                updated_at=row[8]
+            )
             recent_transactions.append(t)
 
         return recent_transactions
 
+    
     def addTransaction(self, user_id: int, new_transaction: Transaction) -> None:
         print(user_id)
         command = """
@@ -139,6 +197,7 @@ class TransactionRepository:
         )
         return transaction_tuple
     
+    
     def modifyTransaction(self, user_id: int, t_id: int, updated_transaction: Transaction) -> tuple:
         command = """
             UPDATE transactions SET
@@ -168,8 +227,10 @@ class TransactionRepository:
     # def deleteTransaction(self, user_id: int, t_id: int) -> None:
     #     pass
 
-# ------------------------------- Tests ------------------------------------------
 
+    # ------------------------------- Tests ------------------------------------------
+
+    
     def testGetAllTransactions(self):
         all_transactions = self.getAllTransactions(user_id=self.user_id)
         # display results
@@ -177,12 +238,14 @@ class TransactionRepository:
         for t in all_transactions:
             print(f" {t.t_id:<10} | {t.t_date:<12} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description} | {t.created_at} | {t.created_at}")
     
+    
     def testGetTransactionByType(self):
         type_transactions = self.getTransactionsByType(user_id=self.user_id, t_type='expense')
         # display results
         print("\n\n[Type (expense) Transactions]\n")
         for t in type_transactions:
             print(f" {t.t_id:<10} | {t.t_date:<12} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description} | {t.created_at} | {t.created_at}")
+    
     
     def testGetTransactionsByCategory(self):
         category_transactions = self.getTransactionsByCategory(user_id=self.user_id, t_category='Salary')
@@ -192,12 +255,14 @@ class TransactionRepository:
         for t in category_transactions:
             print(f" {t.t_id:<10} | {t.t_date:<13} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description} | {t.created_at} | {t.created_at}")
     
+    
     def testGetRecentTransactions(self):
         recent_transactions = self.getRecentTransactions(user_id=self.user_id, t_count=5)
         # display results
         print("\n[Five Recent Transactions]\n")
         for t in recent_transactions:
             print(f" {t.t_id:<10} | {t.t_date:<13} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} |{t.t_description} | {t.created_at} | {t.created_at}")
+    
     
     def testAddTransaction(self):
         # new Transaction obj sample
@@ -216,10 +281,16 @@ class TransactionRepository:
         result = self.cursor.execute(command, values).fetchone()
         print(f"\t{result = }")
         
+        
     def testModifyTransaction(self):
         # updated Transaction obj sample
-        updated_transaction = Transaction(t_date='2025-05-15', t_type='expense', t_category='Education',
-                                          t_amount=3000.0, t_description='sample description')
+        updated_transaction = Transaction(
+            t_date='2025-05-15',
+            t_type='expense',
+            t_category='Education',
+            t_amount=3000.0,
+            t_description='sample description'
+        )
         transaction_tuple = self.modifyTransaction(user_id=self.user_id, t_id=149, updated_transaction=updated_transaction)
         # check if reflected in db
         print("\n\n[Recently Modified Transaction Row]\n")
@@ -236,6 +307,9 @@ class TransactionRepository:
     # def testDeleteTransaction(self):
     #     # delete last row
     #     self.deleteTransaction(user_id=self.user_id, t_id=1445)
+
+
+#--------------------------------------------------------------------------------------------------------
 
 
 class TransactionManager:
@@ -435,7 +509,9 @@ class TransactionManager:
     def createQuarterlyGraph(self, quarterly_finances: List[Finance]) -> matplotlib.figure.Figure:
         pass
 
-# ------------------------------- Tests ------------------------------------------
+
+    # ------------------------------- Tests ------------------------------------------
+
 
     def testCalculateOverallFinance(self):
         overall_finance = self.calculateOverallFinance(user_id=self.user_id)
@@ -446,12 +522,14 @@ class TransactionManager:
         print(f"\ttotal_savings: {overall_finance.total_savings}")
         print(f"\ttotal_investment: {overall_finance.total_investment}\n")
 
+
     def testCalculateOverallBalance(self):
         overall_finance = self.calculateOverallFinance(user_id=self.user_id)
         overall_balance = self.calculateOverallBalance(overall_finance=overall_finance)
         # display result
         print("\n\n[Overall Balance]\n")
         print(overall_balance)
+
 
     def testCalculateMonthlyFinances(self):
         monthly_finances = self.calculateMonthlyFinances(user_id=self.user_id)
@@ -464,6 +542,7 @@ class TransactionManager:
             print(f"\t\ttotal_savings: {finance.total_savings}")
             print(f"\t\ttotal_investment: {finance.total_investment}\n")
 
+
     def testCalculateQuarterlyFinances(self):
         quarterly_finances = self.calculateQuarterlyFinances(user_id=self.user_id)
         # display result
@@ -474,6 +553,7 @@ class TransactionManager:
             print(f"\t\ttotal_expenses: {finance.total_expenses}")
             print(f"\t\ttotal_savings: {finance.total_savings}")
             print(f"\t\ttotal_investment: {finance.total_investment}\n")
+
 
     def testCreateMonthlyGraph(self):
         # display result
@@ -518,6 +598,9 @@ class TransactionManager:
         root.mainloop()
 
         
+#--------------------------------------------------------------------------------------------------------
+
+
 if __name__ == "__main__":
 
     # db_path = os.path.abspath("../db/transactions.db")
@@ -530,7 +613,7 @@ if __name__ == "__main__":
     # --- TRANSACTION REPOSITORY tests ---
     # tm.repo.testGetAllTransactions()
     # tm.repo.testGetTransactionByType()
-    # tm.repo.testGetTransactionsByCategory()
+    tm.repo.testGetTransactionsByCategory()
     # tm.repo.testGetRecentTransactions()
     # tm.repo.testAddTransaction()
     # tm.repo.testModifyTransaction()
