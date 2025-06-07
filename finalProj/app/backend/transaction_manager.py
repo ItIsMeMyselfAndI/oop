@@ -506,7 +506,9 @@ class TransactionManager:
         return fig_income, fig_expenses
 
 
-    def createQuarterlyGraph(self, quarterly_finances: List[Finance]) -> matplotlib.figure.Figure:
+    def createQuarterlyGraph(self, user_id:int, width_in:float, height_in:float,
+                             dpi:float, title_size:int, label_size:int) -> plt.Figure:
+        # _in = inch
         pass
 
 
@@ -564,9 +566,14 @@ class TransactionManager:
         print(dpi)
         width_in = 780 / dpi
         height_in = 500 / dpi
-        graph_income, graph_expenses = self.createMonthlyGraph(user_id=self.user_id,
-                                                               width_in=width_in, height_in=height_in, dpi=dpi,
-                                                               title_size=20, label_size=15)
+        graph_income, graph_expenses = self.createMonthlyGraph(
+            user_id=self.user_id,
+            width_in=width_in,
+            height_in=height_in,
+            dpi=dpi,
+            title_size=20,
+            label_size=15
+        )
 
         income_frame = ctk.CTkFrame(root) 
         canvas_income = FigureCanvasTkAgg(graph_income, master=income_frame)
@@ -585,12 +592,22 @@ class TransactionManager:
 
 
     def testCreateQuarterlyGraph(self):
+        # display result
         root = ctk.CTk()
-        root.title("Quarterly Graph")
-        root.geometry("700x500")
+        root.title("Monthly Graph")
+        root.geometry("1630x1000")
         dpi = root.winfo_fpixels("1i") # px per in
-        quarterly_finances = self.calculateQuarterlyFinances(user_id=self.user_id)
-        graph = self.createQuarterlyGraph(quarterly_finances=quarterly_finances)
+        print(dpi)
+        width_in = 1630 / dpi
+        height_in = 500 / dpi
+        graph = self.createQuarterlyGraph(
+            user_id=self.user_id,
+            width_in=width_in,
+            height_in=height_in,
+            dpi=dpi,
+            title_size=20,
+            label_size=15
+        )
         # display result
         canvas = FigureCanvasTkAgg(graph, master=root)
         canvas.draw()
@@ -613,7 +630,7 @@ if __name__ == "__main__":
     # --- TRANSACTION REPOSITORY tests ---
     # tm.repo.testGetAllTransactions()
     # tm.repo.testGetTransactionByType()
-    tm.repo.testGetTransactionsByCategory()
+    # tm.repo.testGetTransactionsByCategory()
     # tm.repo.testGetRecentTransactions()
     # tm.repo.testAddTransaction()
     # tm.repo.testModifyTransaction()
