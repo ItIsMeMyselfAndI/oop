@@ -1,6 +1,5 @@
 import sqlite3
 import customtkinter as ctk
-import matplotlib
 import matplotlib.pyplot as plt
 from pathlib import Path
 import os
@@ -509,6 +508,7 @@ class TransactionManager:
     def createQuarterlyGraph(self, user_id:int, width_in:float, height_in:float,
                              dpi:float, title_size:int, label_size:int) -> plt.Figure:
         # _in = inch
+        # use 
         pass
 
 
