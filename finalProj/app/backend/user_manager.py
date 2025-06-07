@@ -4,11 +4,17 @@ import os
 from datetime import datetime
 
 
+#--------------------------------------------------------------------------------------------------------
+
+
 # data holder for a user
 class Account:
     def __init__(self, username, password):
         self.username: str = username
         self.password: str = password
+
+
+#--------------------------------------------------------------------------------------------------------
 
 
 class UserRepository:
@@ -17,6 +23,7 @@ class UserRepository:
         self.connection = sqlite3.connect(db_folder + "/" + db_name)
         self.cursor = self.connection.cursor()
         self.initializeDatabase()
+
 
     def initializeDatabase(self):
         command_users = """
@@ -46,6 +53,7 @@ class UserRepository:
         self.cursor.execute(command_transactions)
         self.cursor.execute("PRAGMA foreign_keys = ON") 
         self.connection.commit()
+
 
     def addAccount(self, account: Account) -> bool:
         was_added = False
@@ -83,7 +91,9 @@ class UserRepository:
             user_id = user_id[0]
         return user_id
 
+
 # ------------------------------- Tests ------------------------------------------
+
 
     def testAddAccount(self):
         account = Account(username="jone doe", password="jonedoe123")
@@ -102,6 +112,7 @@ class UserRepository:
         result = self.cursor.execute(command, values).fetchone()
         print(f"\t{result = }")
 
+
     def testGetAccountID(self):
         account = Account(username="jone", password="jonedoe123")
         user_id = self.getAccountID(account)
@@ -112,7 +123,7 @@ class UserRepository:
             print("\tNo Match Found")
 
 
-
+#--------------------------------------------------------------------------------------------------------
 
 
 if __name__ == "__main__":

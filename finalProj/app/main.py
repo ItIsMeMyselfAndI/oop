@@ -1,6 +1,8 @@
 # built-in/external modules/libs
 import customtkinter as ctk
 import os
+import sys
+from PIL import Image, ImageTk
 # our modules/libs
 from frontend.styles import BaseStyles, AppStyles # paddings, dimensions, colors, etc
 from frontend.components import SidebarTabs # navigation page-tabs
@@ -27,7 +29,8 @@ class App(ctk.CTk):
         self.username = username
         self.tm = tm
 
-        # initialize app 
+        # initialize app
+        self.after(100, self.setupLogo)
         self.title(app_title)
         x_pos, y_pos = 0, 0
         self.geometry(f"{AppStyles.WIN_W}x{AppStyles.WIN_H}+{x_pos}+{y_pos}")
@@ -161,6 +164,19 @@ class App(ctk.CTk):
         self.bind("<Button-1>", self.onClickNonEntry)
 
 
+    def setupLogo(self):
+        # icon path
+        if hasattr(sys, "_MEIPASS"): # # for .exe: memory resources path
+            LOGO_FOLDER = os.path.join(sys._MEIPASS, "assets/logo")
+        else: # for .py: storage resources path
+            LOGO_FOLDER = "assets/logo"
+        # logo_path = os.path.join(LOGO_FOLDER, "app.png")
+        # self.img = ImageTk.PhotoImage(file=logo_path)
+        # self.iconphoto(True, self.img)
+        logo_path = os.path.join(LOGO_FOLDER, "app.ico")
+        self.iconbitmap(logo_path)
+
+
     def createSubmitBTN(self, master, text, font, popup_font):
         submitBTN = SubmitBTN(
             user_id=self.user_id,
@@ -215,6 +231,9 @@ class App(ctk.CTk):
 
     def onClickNonEntry(self, event):
         self._unfocusEntries(event=event)
+
+
+#--------------------------------------------------------------------------------------------------------
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
 # external/built-in modules/libs
 import customtkinter as ctk
+import tkinter as tk
 from tkinter import messagebox
-from PIL import Image
+from PIL import Image, ImageTk
 import os
 import sys
 # our modules/libs
@@ -21,13 +22,14 @@ class LoginWin(ctk.CTk):
         self.userRepo = userRepo
 
         # initialize login
+        self.after(100, self.setupLogo)
+        self.title(app_title)
         x_pos, y_pos = 0, 0
         self.geometry(f"{width}x{height}+{x_pos}+{y_pos}")
         self.maxsize(width, height)
         self.minsize(width, height)
         self.resizable(width=True, height=True)
         self.configure(fg_color=fg_color)
-        self.title(app_title)
 
         # initialize page state
         self.mask_id = None
@@ -130,6 +132,19 @@ class LoginWin(ctk.CTk):
 
         # mouse left click 
         self.bind("<Button-1>", self.onClickNonEntry)
+
+
+    def setupLogo(self):
+        # icon path
+        if hasattr(sys, "_MEIPASS"): # # for .exe: memory resources path
+            LOGO_FOLDER = os.path.join(sys._MEIPASS, "assets/logo")
+        else: # for .py: storage resources path
+            LOGO_FOLDER = "assets/logo"
+        # logo_path = os.path.join(LOGO_FOLDER, "app.png")
+        # self.img = ImageTk.PhotoImage(file=logo_path)
+        # self.iconphoto(True, self.img)
+        logo_path = os.path.join(LOGO_FOLDER, "app.ico")
+        self.iconbitmap(logo_path)
 
 
     def loadImages(self):
