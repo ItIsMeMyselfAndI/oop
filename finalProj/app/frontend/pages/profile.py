@@ -37,7 +37,7 @@ class ProfileHeader(ctk.CTkFrame):
         )
         self.uname_label = ctk.CTkLabel(
             master=self.uname_frame,
-            text=uname,
+            text=f"Hi there,\n{uname}!",
             font=self.font6,
             text_color=ProfileStyles.UNAME_TEXT_COLOR,
             width=ProfileStyles.UNAME_LABEL_W,
@@ -153,11 +153,11 @@ class ProfilePage(ctk.CTkFrame):
         # header
         self.header_section = ProfileHeader(
             img=self.profile_icon,
-            uname=f"Hi there\n{self.app.username.title()}!", 
+            uname=self.app.username.title(), 
             summary_type="Total Balance:",
             amount=balance,
             master=self,
-            fg_color=BaseStyles.BLUE,
+            fg_color=ProfileStyles.HEADER_SECTION_COLOR,
             corner_radius=BaseStyles.RAD_2
         )
         self.header_section.pack(pady=(BaseStyles.PAD_5+BaseStyles.PAD_5,0))
@@ -165,7 +165,7 @@ class ProfilePage(ctk.CTkFrame):
         # summaries section
         self.summary_section = ctk.CTkFrame(
             master=self,
-            fg_color=BaseStyles.WHITE,
+            fg_color=ProfileStyles.SUMMARY_SECTION_COLOR,
             corner_radius=BaseStyles.RAD_2
         )
         self.summary_section.pack(pady=(BaseStyles.PAD_2,0))

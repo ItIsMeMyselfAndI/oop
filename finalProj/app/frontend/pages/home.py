@@ -341,7 +341,7 @@ class MonthlyReport(ctk.CTkFrame):
         # income section
         self.income_frame = ctk.CTkFrame(
             master=self.graphs_section,
-            fg_color=HomeStyles.MONTHLY_LEFT_GRAPH_FRAME_FG_COLOR,
+            fg_color=HomeStyles.MONTHLY_INCOME_GRAPH_FRAME_FG_COLOR,
             corner_radius=BaseStyles.RAD_2
         )
         self.income_frame.grid(row=0, column=0, padx=(0,BaseStyles.PAD_2))
@@ -349,7 +349,7 @@ class MonthlyReport(ctk.CTkFrame):
         # expense section
         self.expense_frame = ctk.CTkFrame(
             master=self.graphs_section,
-            fg_color=HomeStyles.MONTHLY_RIGHT_GRAPH_FRAME_FG_COLOR,
+            fg_color=HomeStyles.MONTHLY_EXPENSE_GRAPH_FRAME_FG_COLOR,
             corner_radius=BaseStyles.RAD_2
         )
         self.expense_frame.grid(row=0, column=1)
@@ -455,9 +455,9 @@ class HomePage(ctk.CTkFrame):
             master=self,
             orientation="vertical",
             corner_radius=0,
-            fg_color=HomeStyles.MAIN_FRAME_FG_COLOR,
-            width=HomeStyles.MAIN_FRAME_W,
-            height=HomeStyles.MAIN_FRAME_H
+            fg_color=HomeStyles.SCROLL_FRAME_FG_COLOR,
+            width=HomeStyles.SCROLL_FRAME_W,
+            height=HomeStyles.SCROLL_FRAME_H
         )
         self.scroll_frame.pack()
 

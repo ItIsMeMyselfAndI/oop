@@ -5,16 +5,13 @@ from frontend.styles.base import BaseStyles, scale
 class EditStyles:
     # header
     HEADER_TITLE_LABEL_W = scale(1630)
-    
     HEADER_TITLE_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
     HEADER_TITLE_TEXT_COLOR = BaseStyles.DARK_GREY
 
 
     # transaction form
     FORM_TOP_SECTION_FG_COLOR = BaseStyles.WHITE
-    FORM_MID_SECTION_FG_COLOR = BaseStyles.WHITE
-    FORM_BOT_SECTION_FG_COLOR = BaseStyles.WHITE
-
+    
     TRANSACTION_MENU_W = scale(800)
     TRANSACTION_MENU_H = scale(60)
     TRANSACTION_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
@@ -38,6 +35,8 @@ class EditStyles:
     DATE_DROPDOWN_HOVER_COLOR = BaseStyles.BLUE
     DATE_DROPDOWN_TEXT_COLOR = BaseStyles.DARK_GREY
 
+    FORM_MID_SECTION_FG_COLOR = BaseStyles.WHITE
+
     CATEGORY_MENU_W = scale(800)
     CATEGORY_MENU_H = scale(60)
     CATEGORY_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
@@ -56,6 +55,8 @@ class EditStyles:
     DESCRIPTION_ENTRY_BG_COLOR = BaseStyles.TRANSPARENT
     DESCRIPTION_ENTRY_TEXT_COLOR = BaseStyles.DARK_GREY
     DESCRIPTION_PLACEHOLDER_TEXT_COLOR = BaseStyles.GREY
+    
+    FORM_BOT_SECTION_FG_COLOR = BaseStyles.WHITE
 
     AMOUNT_ENTRY_W = scale(1430)
     AMOUNT_ENTRY_H = scale(60)
@@ -82,8 +83,8 @@ class EditStyles:
 
     # main page
     HEADER_SECTION_FG_COLOR = BaseStyles.TRANSPARENT
+
     FORMS_SECTION_FG_COLOR = BaseStyles.TRANSPARENT
+    FORM_FRAME_FG_COLOR = BaseStyles.WHITE
 
     TABS_FRAME_FG_COLOR = BaseStyles.TRANSPARENT
-
-    FORM_FRAME_FG_COLOR = BaseStyles.WHITE
