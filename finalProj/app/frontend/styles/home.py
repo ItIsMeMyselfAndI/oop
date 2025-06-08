@@ -17,44 +17,19 @@ class HomeStyles:
     BALANCE_AMOUNT_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
     BALANCE_AMOUNT_TEXT_COLOR = BaseStyles.WHITE
 
-    
-    # table header/row
-    TABLE_ROW_H = scale(40) 
 
-    DATE_COL_W = scale(180)
-    DATE_COL_FG_COLOR = BaseStyles.TRANSPARENT
-    DATE_COL_TEXT_COLOR = BaseStyles.DARK_GREY
-
-    TYPE_COL_W = scale(250)
-    TYPE_COL_FG_COLOR = BaseStyles.TRANSPARENT
-    TYPE_COL_TEXT_COLOR = BaseStyles.DARK_GREY
-
-    CATEGORY_COL_W = scale(250)
-    CATEGORY_COL_FG_COLOR = BaseStyles.TRANSPARENT
-    CATEGORY_COL_TEXT_COLOR = BaseStyles.DARK_GREY
-
-    DESCRIPTION_COL_W = scale(390)
-    DESCRIPTION_COL_FG_COLOR = BaseStyles.TRANSPARENT
-    DESCRIPTION_COL_TEXT_COLOR = BaseStyles.DARK_GREY
-
-    AMOUNT_COL_W = scale(390)
-    AMOUNT_COL_FG_COLOR = BaseStyles.TRANSPARENT
-    AMOUNT_COL_TEXT_COLOR = BaseStyles.DARK_GREY
-
-
-    # main table
+    # table
     TABLE_TITLE_SECTION_FG_COLOR = BaseStyles.BLUE
     TABLE_TITLE_TEXT_COLOR = BaseStyles.WHITE
     TABLE_TITLE_SECTION_W = scale(1630)
     TABLE_TITLE_SECTION_H = scale(100)
 
     TABLE_HEADER_FG_COLOR = BaseStyles.WHITE
+    TABLE_ROW_FG_COLOR = BaseStyles.TRANSPARENT
     
-    TABLE_BODY_FG_COLOR = BaseStyles.WHITE
     TABLE_BODY_W = scale(1560) - 20 # minus unchangeable sidebar width
     TABLE_BODY_H = scale(500)
-
-    TABLE_ROW_FG_COLOR = BaseStyles.TRANSPARENT
+    TABLE_BODY_FG_COLOR = BaseStyles.WHITE
 
 
     # monthly report
@@ -92,5 +67,3 @@ class HomeStyles:
     TABLE_SECTION_FG_COLOR = BaseStyles.TRANSPARENT
     MONTHLY_SECTION_FG_COLOR = BaseStyles.TRANSPARENT
     QUARTERLY_SECTION_FG_COLOR = BaseStyles.TRANSPARENT
-
-

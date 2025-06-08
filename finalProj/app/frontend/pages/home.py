@@ -6,6 +6,7 @@ import sys
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 # our modules/libs
 from frontend.styles import BaseStyles, HomeStyles # paddings, dimensions, colors, etc
+from frontend.components import TransactionTableHeader, TransactionTableBody 
 
 
 #--------------------------------------------------------------------------------------------------------
@@ -63,183 +64,15 @@ class HomeHeader(ctk.CTkFrame):
 #--------------------------------------------------------------------------------------------------------
 
 
-class TableHeader(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
+class RecentTable(ctk.CTkFrame):
+    def __init__(self, transactions_per_filter, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font3 = ("Bodoni MT", BaseStyles.FONT_SIZE_3, "italic")
-        self.font4 = ("Bodoni MT", BaseStyles.FONT_SIZE_4, "italic")
-        
-        # date
-        self.date_header = ctk.CTkLabel(
-            master=self,
-            text="Date",
-            font=self.font3,
-            text_color=HomeStyles.DATE_COL_TEXT_COLOR,
-            fg_color=HomeStyles.DATE_COL_FG_COLOR,
-            width=HomeStyles.DATE_COL_W,
-            height=HomeStyles.TABLE_ROW_H,
-            anchor="w"
-        )
-        self.date_header.grid(row=0, column=0, padx=(BaseStyles.PAD_2,BaseStyles.PAD_2), pady=BaseStyles.PAD_1)
-        
-        # type
-        self.type_header = ctk.CTkLabel(
-            master=self,
-            text="Type",
-            font=self.font3,
-            text_color=HomeStyles.TYPE_COL_TEXT_COLOR,
-            fg_color=HomeStyles.TYPE_COL_FG_COLOR,
-            width=HomeStyles.TYPE_COL_W,
-            height=HomeStyles.TABLE_ROW_H,
-            anchor="w"
-        )
-        self.type_header.grid(row=0, column=1, padx=(0,BaseStyles.PAD_2), pady=BaseStyles.PAD_1)
-        
-        # category
-        self.category_header = ctk.CTkLabel(
-            master=self,
-            text="Category",
-            font=self.font3,
-            text_color=HomeStyles.CATEGORY_COL_TEXT_COLOR,
-            fg_color=HomeStyles.CATEGORY_COL_FG_COLOR,
-            width=HomeStyles.CATEGORY_COL_W,
-            height=HomeStyles.TABLE_ROW_H,
-            anchor="w"
-        )
-        self.category_header.grid(row=0, column=2, padx=(0,BaseStyles.PAD_2), pady=BaseStyles.PAD_1)
-        
-        # description
-        self.description_header = ctk.CTkLabel(
-            master=self,
-            text="Description",
-            font=self.font3,
-            text_color=HomeStyles.DESCRIPTION_COL_TEXT_COLOR,
-            fg_color=HomeStyles.DESCRIPTION_COL_FG_COLOR,
-            width=HomeStyles.DESCRIPTION_COL_W,
-            height=HomeStyles.TABLE_ROW_H,
-            anchor="w"
-        )
-        self.description_header.grid(row=0, column=3, padx=(0,BaseStyles.PAD_2), pady=BaseStyles.PAD_1)
-        
-        # amount
-        self.amount_header = ctk.CTkLabel(
-            master=self,
-            text="Amount",
-            font=self.font3,
-            text_color=HomeStyles.AMOUNT_COL_TEXT_COLOR,
-            fg_color=HomeStyles.AMOUNT_COL_FG_COLOR,
-            width=HomeStyles.AMOUNT_COL_W,
-            height=HomeStyles.TABLE_ROW_H,
-            anchor="e"
-        )
-        self.amount_header.grid(row=0, column=4, padx=(0,BaseStyles.PAD_2), pady=BaseStyles.PAD_1)
-
-
-#--------------------------------------------------------------------------------------------------------
-
-
-class TableRow(ctk.CTkFrame):
-    def __init__(self, transaction, master, **kwargs):
-        super().__init__(master, **kwargs)
-        self.t = transaction
-        
         # initialize font
-        self.font2 = ("Bodoni MT", BaseStyles.FONT_SIZE_2, "italic")
         self.font4 = ("Bodoni MT", BaseStyles.FONT_SIZE_4, "italic")
         
-        # date
-        self.date_col = ctk.CTkLabel(
-            master=self,
-            text=self.t.t_date,
-            font=self.font2,
-            text_color=HomeStyles.DATE_COL_TEXT_COLOR,
-            fg_color=HomeStyles.DATE_COL_FG_COLOR,
-            width=HomeStyles.DATE_COL_W,
-            height=HomeStyles.TABLE_ROW_H,
-            wraplength=HomeStyles.DATE_COL_W,
-            anchor="w",
-            justify="left"
-        )
-        
-        # type
-        self.type_col = ctk.CTkLabel(
-            master=self,
-            text=self.t.t_type,
-            font=self.font2,
-            text_color=HomeStyles.TYPE_COL_TEXT_COLOR,
-            fg_color=HomeStyles.TYPE_COL_FG_COLOR,
-            width=HomeStyles.TYPE_COL_W,
-            height=HomeStyles.TABLE_ROW_H,
-            wraplength=HomeStyles.TYPE_COL_W,
-            anchor="w",
-            justify="left"
-        )
-        
-        # category
-        self.category_col = ctk.CTkLabel(
-            master=self,
-            text=self.t.t_category,
-            font=self.font2,
-            text_color=HomeStyles.CATEGORY_COL_TEXT_COLOR,
-            fg_color=HomeStyles.CATEGORY_COL_FG_COLOR,
-            width=HomeStyles.CATEGORY_COL_W,
-            height=HomeStyles.TABLE_ROW_H,
-            wraplength=HomeStyles.CATEGORY_COL_W,
-            anchor="w",
-            justify="left"
-        )
-        
-        # description
-        self.description_col = ctk.CTkLabel(
-            master=self,
-            text=self.t.t_description,
-            font=self.font2,
-            text_color=HomeStyles.DESCRIPTION_COL_TEXT_COLOR,
-            fg_color=HomeStyles.DESCRIPTION_COL_FG_COLOR,
-            width=HomeStyles.DESCRIPTION_COL_W,
-            height=HomeStyles.TABLE_ROW_H,
-            wraplength=HomeStyles.DESCRIPTION_COL_W,
-            anchor="w",
-            justify="left"
-        )
-        
-        # amount
-        if self.t.t_type == "income":
-            amount = f"₱ +{self.t.t_amount}"
-        elif self.t.t_type == "expense":
-            amount = f"₱ -{self.t.t_amount}"
-        else:
-            amount = f"₱ {self.t.t_amount}"
-        self.amount_col = ctk.CTkLabel(
-            master=self,
-            text=amount,
-            font=self.font2,
-            text_color=HomeStyles.AMOUNT_COL_TEXT_COLOR,
-            fg_color=HomeStyles.AMOUNT_COL_FG_COLOR,
-            width=HomeStyles.AMOUNT_COL_W-BaseStyles.PAD_1,
-            height=HomeStyles.TABLE_ROW_H,
-            wraplength=HomeStyles.AMOUNT_COL_W,
-            anchor="e",
-            justify="right"
-        )
-        
-
-#--------------------------------------------------------------------------------------------------------
-
-
-class Table(ctk.CTkFrame):
-    def __init__(self, app, tm, master, **kwargs):
-        super().__init__(master, **kwargs)
-        self.app = app
-        self.tm = tm
-        
-        # initialize font
-        self.font3 = ("Bodoni MT", BaseStyles.FONT_SIZE_3, "italic")
-        self.font4 = ("Bodoni MT", BaseStyles.FONT_SIZE_4, "italic")
-
-        # table title
-        self.title_section = ctk.CTkLabel(
-            master=self,
+        # title
+        self.table_title = ctk.CTkLabel(
+            master=master,
             text="Recent Transactions",
             font=self.font4,
             corner_radius=BaseStyles.RAD_2,
@@ -248,61 +81,28 @@ class Table(ctk.CTkFrame):
             width=HomeStyles.TABLE_TITLE_SECTION_W,
             height=HomeStyles.TABLE_TITLE_SECTION_H
         )
-        self.title_section.pack(pady=(0, BaseStyles.PAD_2))
+        self.table_title.pack(pady=(BaseStyles.PAD_2, 0))
         
-        # table header
-        self.table_header = TableHeader(
+        # header
+        self.table_header = TransactionTableHeader(
             master=self,
             corner_radius=BaseStyles.RAD_2,
             fg_color=HomeStyles.TABLE_HEADER_FG_COLOR
         )
         self.table_header.pack(pady=(0,BaseStyles.PAD_1))
         
-        # table body
-        self.table_body = ctk.CTkScrollableFrame(
+        # header
+        self.table_body = TransactionTableBody(
+            has_filter=False,
+            transactions_per_filter=transactions_per_filter,
             master=self,
+            fg_color=HomeStyles.TABLE_BODY_FG_COLOR,
             orientation="vertical",
             corner_radius=BaseStyles.RAD_2,
-            width=HomeStyles.TABLE_BODY_W,
             height=HomeStyles.TABLE_BODY_H,
-            fg_color=HomeStyles.TABLE_BODY_FG_COLOR
+            width=HomeStyles.TABLE_BODY_W
         )
         self.table_body.pack()
-
-        # table rows 
-        self.recent_rows = self.loadRecentRows()
-        self.showRows()
-
-
-    def loadRecentRows(self):
-        # retrieve 5 recent transactions
-        recent_transactions = self.tm.repo.getRecentTransactions(user_id=self.app.user_id, t_count=10)
-        # convert transactions to rows
-        recent_rows = []
-        for t in recent_transactions:
-            row = TableRow(
-                transaction=t,
-                master=self.table_body,
-                fg_color=HomeStyles.TABLE_ROW_FG_COLOR
-            )
-            recent_rows.append(row)
-        return recent_rows
-
-
-    def deletePrevRowsVersion(self):
-        for row in self.recent_rows:
-            row.destroy()
-
-
-    def showRows(self):
-        # show rows
-        for row in self.recent_rows:
-            row.pack(pady=(0,BaseStyles.PAD_1))
-            row.date_col.grid(row=0, column=0, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
-            row.type_col.grid(row=0, column=1, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
-            row.category_col.grid(row=0, column=2, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
-            row.description_col.grid(row=0, column=3, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
-            row.amount_col.grid(row=0, column=4, padx=(0,BaseStyles.PAD_2), pady=0, sticky="nw")
 
 
 #--------------------------------------------------------------------------------------------------------
@@ -317,7 +117,7 @@ class MonthlyReport(ctk.CTkFrame):
         # initialize font
         self.font3 = ("Bodoni MT", BaseStyles.FONT_SIZE_3, "italic")
         self.font4 = ("Bodoni MT", BaseStyles.FONT_SIZE_4, "italic")
-        
+
         # title
         self.title_section = ctk.CTkLabel(
             master=self,
@@ -475,11 +275,10 @@ class HomePage(ctk.CTkFrame):
         self.header_section.pack(pady=(BaseStyles.PAD_5*2,0))
 
         # table
-        self.table_section = Table(
-            app=self.app,
-            tm=self.tm,
+        transactions_per_filter = {"recent": self.tm.repo.getRecentTransactions(user_id=self.app.user_id, t_count=10)}
+        self.table_section = RecentTable(
+            transactions_per_filter=transactions_per_filter,
             master=self.scroll_frame,
-            corner_radius=0,
             fg_color=HomeStyles.TABLE_SECTION_FG_COLOR
         )
         self.table_section.pack(pady=(BaseStyles.PAD_2,0))
@@ -527,13 +326,19 @@ class HomePage(ctk.CTkFrame):
 
 
     def updatePageDisplay(self):
-        # update balance
-        finance = self.tm.calculateOverallFinance(self.app.user_id)
-        balance = self.tm.calculateOverallBalance(finance)
+        # update total balance in header
+        balance = self.loadOverallBalance()
         self.header_section.amount_label.configure(text=f"₱ {balance:,}")
-        # update table
-        self.table_section.deletePrevRowsVersion()
-        self.table_section.recent_rows = self.table_section.loadRecentRows()
-        self.table_section.showRows()
-        # update monthly
+
+        # destroy prev ver of the recent transactions
+        for page in self.table_section.table_body.winfo_children():
+            page.destroy()
+        
+        # re initialize recent transactions
+        transactions_per_filter = {"recent": self.tm.repo.getRecentTransactions(user_id=self.app.user_id, t_count=10)}
+        self.table_section.table_body.initializeTableBodyContent(transactions_per_filter)
+        self.table_section.table_body.displayCurrentTablePage()
+
+        # update graphs 
         self.monthly_section.updateGraphsDisplay()
+        # self.quarterly_section.updateGraphDisplay()

@@ -2,8 +2,8 @@
 import customtkinter as ctk
 # our modules/libs
 from frontend.styles import BaseStyles, EditStyles # paddings, dimensions, colors, etc
-from frontend.components.date_picker import DatePicker
-from backend.transaction_manager import Transaction
+from frontend.components import DatePicker
+from backend import Transaction
 
 
 #--------------------------------------------------------------------------------------------------------
@@ -384,8 +384,8 @@ class EditPage(ctk.CTkFrame):
         }
         for transaction_type, form in self.transactionForms.items():
             if form.is_current_transaction_form == True:
-                print(f"{len(form.transaction_options) = }")
-                print(f"{form.transaction_options = }")
+                # print(f"{len(form.transaction_options) = }")
+                # print(f"{form.transaction_options = }")
                 # retrieve user inputs from the UI
                 original_transaction = form.transactionMenu.get().strip()
                 if original_transaction == "No Available Transaction":

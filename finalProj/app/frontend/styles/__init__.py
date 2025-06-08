@@ -7,4 +7,5 @@ from .home import HomeStyles
 from .edit import EditStyles
 from .history import HistoryStyles
 from .add import AddStyles
+from .transaction_table import TransactionTableStyles
 from .popup_win import PopUpWinStyles

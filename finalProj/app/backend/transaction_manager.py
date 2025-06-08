@@ -456,8 +456,7 @@ class TransactionManager:
         return sorted_quarterly_finances
 
 
-    def createMonthlyGraph(self, user_id:int, width_in:float, height_in:float,
-                           dpi:float, title_size:int, label_size:int) -> tuple[plt.Figure, plt.Figure]:
+    def createMonthlyGraph(self, user_id:int, width_in:float, height_in:float, dpi:float, title_size:int, label_size:int) -> tuple[plt.Figure, plt.Figure]:
         monthly_finances = self.calculateMonthlyFinances(user_id=user_id)
         def filter_non_zero(data_dict, attr):
             filtered_months = []
@@ -505,10 +504,9 @@ class TransactionManager:
         return fig_income, fig_expenses
 
 
-    def createQuarterlyGraph(self, user_id:int, width_in:float, height_in:float,
-                             dpi:float, title_size:int, label_size:int) -> plt.Figure:
+    def createQuarterlyGraph(self, user_id:int, width_in:float, height_in:float, dpi:float, title_size:int, label_size:int) -> plt.Figure:
         # _in = inch
-        # use 
+        # use calcQuarterGrph
         pass
 
 

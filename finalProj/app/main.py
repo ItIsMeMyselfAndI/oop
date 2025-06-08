@@ -29,6 +29,10 @@ class App(ctk.CTk):
         self.username = username
         self.tm = tm
 
+        # initialize fonts
+        self.font2 = ("Bodoni MT", BaseStyles.FONT_SIZE_2, "italic")
+        self.font3 = ("Bodoni MT", BaseStyles.FONT_SIZE_3, "italic")
+        
         # initialize app
         self.after(100, self.setupLogo)
         self.title(app_title)
@@ -40,10 +44,6 @@ class App(ctk.CTk):
         self.configure(fg_color=AppStyles.WIN_FG_COLOR)
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
-
-        # initialize fonts
-        self.font2 = ("Bodoni MT", BaseStyles.FONT_SIZE_2, "italic")
-        self.font3 = ("Bodoni MT", BaseStyles.FONT_SIZE_3, "italic")
 
         # pages
         self.page_frame = ctk.CTkFrame(
@@ -149,7 +149,7 @@ class App(ctk.CTk):
         print("[App] Started successfully")
         print("\n[Pages] Loading...")
         self.loading_popup.showWin()
-        self.loading_popup.after(100, self.loadPages) # load all pages
+        self.loading_popup.after(100, self.loadPages)
         self.loading_popup.hideWin()
         print("\n[Pages] Loaded successfully")
 
@@ -244,7 +244,7 @@ if __name__ == "__main__":
     # user_id = 2
 
     try:
-    # initialize db
+        # initialize db
         db_folder = os.path.abspath("db")
         db_name = "transactions.db"
         userRepo = UserRepository(db_folder, db_name)
@@ -268,6 +268,8 @@ if __name__ == "__main__":
         exit(0)
 
 
+    # user_id = 1
+    # username = "mirasol"
     # app win
     if user_id and username:
         try:
