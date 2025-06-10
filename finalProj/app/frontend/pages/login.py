@@ -171,7 +171,7 @@ class LoginWin(ctk.CTk):
         user_id = self.userRepo.getAccountID(account)
         if not (account.username and account.password):
             # self.empty_field_popup.showWin()
-            messagebox.showwarning(title="[Input] Invalid", message="Empty field is not allowed")
+            messagebox.showwarning(title="[Invalid] Input", message="Empty field is not allowed")
             print("[Input] Empty field is not allowed")
         elif user_id:
             self.user_id = user_id
@@ -198,7 +198,7 @@ class LoginWin(ctk.CTk):
         was_added = self.userRepo.addAccount(account)
         if not (account.username and account.password):
             # self.empty_field_popup.showWin()
-            messagebox.showwarning(title="[Input] Invalid", message="Empty field is not allowed")
+            messagebox.showwarning(title="[Invalid] Input", message="Empty field is not allowed")
             print("[Input] Empty field is not allowed")
         elif was_added:
             self.user_id = self.userRepo.getAccountID(account)
@@ -208,7 +208,7 @@ class LoginWin(ctk.CTk):
             self.destroy()
         else:
             # self.already_taken_popup.showWin()
-            messagebox.showwarning(title="[Input] Invalid", message="Username is already taken")
+            messagebox.showwarning(title="[Invalid] Input", message="Username is already taken")
             print("[Input] Username is already taken")
 
 

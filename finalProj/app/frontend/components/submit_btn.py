@@ -35,12 +35,17 @@ class SubmitBTN(ctk.CTkButton):
     def _updateBackendAndFrontend(self):
         # save to database
         for page_name, page in self.pages.items():
-            if page_name == "login" and page.is_current_page == True:
-                pass
-            elif page_name == "edit" and page.is_current_page == True:
-                self.pages["edit"].saveEditedTransactionToDatabase()
-            elif page_name == "add" and page.is_current_page == True:
-                self.pages["add"].saveNewTransactionToDatabase()
+            try:
+                if page_name == "login" and page.is_current_page == True:
+                    pass
+                elif page_name == "edit" and page.is_current_page == True:
+                    self.pages["edit"].saveEditedTransactionToDatabase()
+                elif page_name == "add" and page.is_current_page == True:
+                    self.pages["add"].saveNewTransactionToDatabase()
+            except ValueError:
+                messagebox.showwarning(title="[Invalid] Input", message="Only enter positive decimal number for amount")
+                return
+
         # update pages
         self.pages["profile"].updatePageDisplay()
         self.pages["home"].updatePageDisplay()

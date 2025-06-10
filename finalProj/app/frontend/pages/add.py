@@ -344,13 +344,17 @@ class AddPage(ctk.CTkFrame):
                 new_category = form.categoryMenu.get()
                 new_description = form.descriptionEntry.get()
                 new_amount = form.amountEntry.get()
+                
+                if "-" in new_amount:
+                    raise ValueError
 
+                new_amount = float(new_amount)
                 # create new_transaction obj
                 new_transaction = Transaction(
                     t_date=new_date,
                     t_type=transaction_type,
                     t_category=new_category,
-                    t_amount=float(new_amount),
+                    t_amount=new_amount,
                     t_description=new_description
                 )
 

@@ -383,7 +383,6 @@ class TransactionTableNavigation(ctk.CTkFrame):
             self.table_body.current_page_num -= 1
             # print("table prev")
             self.after_idle(self.table_body.displayCurrentTablePage)
-            self.table_body.displayCurrentTable()
         
 
     def onClickNext(self):
