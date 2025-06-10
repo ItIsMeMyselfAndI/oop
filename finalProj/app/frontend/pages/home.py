@@ -160,7 +160,7 @@ class MonthlyReport(ctk.CTkFrame):
     
     def loadAndDisplayGraphsWidget(self):
         # graph figures
-        income_graph, expense_graph = self.tm.createMonthlyGraph(
+        income_graph, expense_graph = self.tm.createMonthlyGraphs(
             user_id=self.app.user_id,
             title_size=HomeStyles.MONTHLY_GRAPH_TITLE_SIZE,
             label_size=HomeStyles.MONTHLY_GRAPH_LABEL_SIZE,
@@ -172,12 +172,12 @@ class MonthlyReport(ctk.CTkFrame):
         # income graph widget
         income_canvas = FigureCanvasTkAgg(figure=income_graph, master=self.income_frame)
         income_canvas.draw()
-        income_canvas.get_tk_widget().pack(padx=BaseStyles.PAD_1, pady=(BaseStyles.PAD_1,BaseStyles.PAD_3))
+        income_canvas.get_tk_widget().pack(padx=BaseStyles.PAD_1, pady=BaseStyles.PAD_1)
         
         # expense graph widget
         expense_canvas = FigureCanvasTkAgg(figure=expense_graph, master=self.expense_frame)
         expense_canvas.draw()
-        expense_canvas.get_tk_widget().pack(padx=BaseStyles.PAD_1, pady=(BaseStyles.PAD_1,BaseStyles.PAD_3))
+        expense_canvas.get_tk_widget().pack(padx=BaseStyles.PAD_1, pady=BaseStyles.PAD_1)
         
         return income_canvas, expense_canvas
     
@@ -218,24 +218,33 @@ class QuarterlyReport(ctk.CTkFrame):
             master=self,
             fg_color=HomeStyles.QUARTERLY_GRAPHS_SECTION_FG_COLOR,
             corner_radius=BaseStyles.RAD_2,
-            width=HomeStyles.QUARTERLY_GRAPH_SECTION_W,
-            height=HomeStyles.QUARTERLY_GRAPH_SECTION_H
         )
         self.graph_section.pack()
+        self.graph_canvas = self.loadAndDisplayGraphWidget()
         
-        # graph
-        # dpi = self.winfo_fpixels("1i") # pixels per inch
-        # graph_width = 760 / dpi
-        # graph_height = 700 / dpi
-        # title_size = 15
-        # label_size = 10
-        # self.graph = self.tm.createQuarterlyGraph(user_id=self.app.user_id, width=graph_width, height=graph_height,
-        #                                           dpi=dpi, title_size=title_size, label_size=label_size)
-        # # layout graph
-        # self.graph_canvas = FigureCanvasTkAgg(figure=self.income_graph, master=self.income_frame)
-        # self.graph_canvas.draw()
-        # self.graph_canvas.get_tk_widget().pack(padx=BaseStyles.PAD_1, pady=(BaseStyles.PAD_1,BaseStyles.PAD_3))
-        # display sections
+        
+    def loadAndDisplayGraphWidget(self):
+        # graph figure
+        graph = self.tm.createQuarterlyGraph(
+            user_id=self.app.user_id,
+            title_size=HomeStyles.QUARTERLY_GRAPH_TITLE_SIZE,
+            label_size=HomeStyles.QUARTERLY_GRAPH_LABEL_SIZE,
+            dpi=BaseStyles.DPI,
+            width_in=HomeStyles.QUARTERLY_GRAPH_W_IN,
+            height_in=HomeStyles.QUARTERLY_GRAPH_H_IN
+        )
+
+        # graph widget
+        graph_canvas = FigureCanvasTkAgg(figure=graph, master=self.graph_section)
+        graph_canvas.draw()
+        graph_canvas.get_tk_widget().pack(padx=BaseStyles.PAD_1, pady=BaseStyles.PAD_1)
+        
+        return graph_canvas
+    
+
+    def updateGraphDisplay(self):
+        self.graph_canvas.get_tk_widget().destroy()
+        self.graph_canvas = self.loadAndDisplayGraphWidget()
 
 
 #--------------------------------------------------------------------------------------------------------
@@ -295,7 +304,7 @@ class HomePage(ctk.CTkFrame):
         # quarterly
         self.quarterly_section = QuarterlyReport(
             app=self.app,
-            tm=self,
+            tm=self.tm,
             master=self.scroll_frame,
             fg_color=HomeStyles.QUARTERLY_SECTION_FG_COLOR
         )
@@ -341,4 +350,4 @@ class HomePage(ctk.CTkFrame):
 
         # update graphs 
         self.monthly_section.updateGraphsDisplay()
-        # self.quarterly_section.updateGraphDisplay()
+        self.quarterly_section.updateGraphDisplay()

@@ -139,3 +139,4 @@ if __name__ == "__main__":
     # userRepo.testGetAccountID()
     
     userRepo.connection.close()
+    exit(0)

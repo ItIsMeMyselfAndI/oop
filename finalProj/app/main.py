@@ -211,8 +211,10 @@ class App(ctk.CTk):
         self.tm.repo.connection.close()
         print("[DB] Closed successfully")
         print("\n[App] Closing...")
+        self.quit()
         self.destroy()
         print("[App] Closed successfully.")
+        # self.after_idle(lambda: exit(0))
 
 
     def onClickCloseApp(self):
@@ -252,24 +254,24 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"{e = }")
 
-    try:
-        # login win
-        login = LoginWin(app_title=app_title, userRepo=userRepo, fg_color=AppStyles.WIN_FG_COLOR, width=AppStyles.WIN_W, height=AppStyles.WIN_H)
-        login.mainloop()
-        user_id = login.user_id
-        username = login.username
-    except KeyboardInterrupt:
-        print("\n[DB] Closing connection...")
-        tm.repo.connection.close()
-        print("[DB] Connection closed successfully")
-        print("\n[LoginStyles] Closing...")
-        login.destroy()
-        print("[LoginStyles] Closed successfully")
-        exit(0)
+    # try:
+    #     # login win
+    #     login = LoginWin(app_title=app_title, userRepo=userRepo, fg_color=AppStyles.WIN_FG_COLOR, width=AppStyles.WIN_W, height=AppStyles.WIN_H)
+    #     login.mainloop()
+    #     user_id = login.user_id
+    #     username = login.username
+    # except KeyboardInterrupt:
+    #     print("\n[DB] Closing connection...")
+    #     tm.repo.connection.close()
+    #     print("[DB] Connection closed successfully")
+    #     print("\n[LoginStyles] Closing...")
+    #     login.destroy()
+    #     print("[LoginStyles] Closed successfully")
+    #     exit(0)
 
 
-    # user_id = 1
-    # username = "mirasol"
+    user_id = 1
+    username = "mirasol"
     # app win
     if user_id and username:
         try:
@@ -288,6 +290,9 @@ if __name__ == "__main__":
             print("\n[App] Closing...")
             app.destroy()
             print("[App] Closed successfully")
+            exit(0)
 
     else:
         print("[App] Closed successfully")
+    
+exit(0)

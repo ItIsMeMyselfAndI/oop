@@ -6,7 +6,7 @@ import os
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from datetime import datetime, timedelta
 from collections import defaultdict
-from typing import List
+from typing import List, Dict
 
 
 #--------------------------------------------------------------------------------------------------------
@@ -349,7 +349,7 @@ class TransactionManager:
         return round(overall_balance, 2)
 
 
-    def calculateMonthlyFinances(self, user_id: int) -> List[Finance]:
+    def calculateMonthlyFinances(self, user_id: int) -> Dict[str, Finance]:
         transactions = self.repo.getAllTransactions(user_id)
         monthly_data = defaultdict(lambda: {"income": 0.0, "expense": 0.0, "savings": 0.0, "investment": 0.0})
         month_keys = set()
@@ -366,10 +366,12 @@ class TransactionManager:
             t_type = t.t_type.lower()
             if t_type in monthly_data[month_key]:
                 monthly_data[month_key][t_type] += t.t_amount
+
         # Determine the full range of months (from earliest to latest transaction)
         if month_keys:
             first_month = min(datetime.strptime(k, "%Y-%m") for k in month_keys)
             last_month = max(datetime.strptime(k, "%Y-%m") for k in month_keys)
+
             current = first_month
             while current <= last_month:
                 key = current.strftime("%Y-%m")
@@ -380,7 +382,7 @@ class TransactionManager:
 
         # Convert to dictionary of Finance objects, sorted
         monthly_finances = {}
-        for month, values in sorted(monthly_data.items()):
+        for month, values in sorted(monthly_data.items())[-12:]: # latest 12 months
             finance = Finance(
                 total_income=round(values["income"], 2),
                 total_expenses=round(values["expense"], 2),
@@ -392,7 +394,7 @@ class TransactionManager:
         return monthly_finances
 
 
-    def calculateQuarterlyFinances(self, user_id: int) -> List[Finance]:
+    def calculateQuarterlyFinances(self, user_id: int) -> Dict[str, Finance]:
         transactions = self.repo.getAllTransactions(user_id)
         quarterly_data = defaultdict(lambda: {"income": 0.0, "expense": 0.0, "savings": 0.0, "investment": 0.0})
         quarter_keys = set()
@@ -443,7 +445,7 @@ class TransactionManager:
 
         # 3. final dictionary of sorted quarters => Finance
         sorted_quarterly_finances = {}
-        all_quarters = sorted(quarterly_data.keys())
+        all_quarters = sorted(quarterly_data.keys())[-4:] # latest 4 quarters
         for k in all_quarters:
             values = quarterly_data[k]
             finance = Finance(
@@ -456,58 +458,51 @@ class TransactionManager:
         return sorted_quarterly_finances
 
 
-    def createMonthlyGraph(self, user_id:int, width_in:float, height_in:float, dpi:float, title_size:int, label_size:int) -> tuple[plt.Figure, plt.Figure]:
+    def createMonthlyGraphs(self, user_id:int, width_in:float, height_in:float, dpi:float, title_size:int, label_size:int) -> tuple[plt.Figure, plt.Figure]:
         monthly_finances = self.calculateMonthlyFinances(user_id=user_id)
-        def filter_non_zero(data_dict, attr):
-            filtered_months = []
-            filtered_values = []
-            for month, finance in sorted(data_dict.items()):
-                value = getattr(finance, attr)
-                if value != 0:
-                    filtered_months.append(month)
-                    filtered_values.append(value)
-            return filtered_months, filtered_values
-
+        months = list(monthly_finances.keys())
+        incomes = [] 
+        expenses = []
+        for m in months:
+            finance_data: Finance = monthly_finances[m]
+            incomes.append(finance_data.total_income)
+            expenses.append(finance_data.total_expenses)
+        
         # === Income Figure ===
         fig_income = plt.Figure(figsize=(width_in, height_in), dpi=dpi) # 1 in = 100 px
         ax_income = fig_income.add_subplot(111)
-
-        months_inc, incomes = filter_non_zero(monthly_finances, "total_income")
-        ax_income.plot(months_inc, incomes, color='green', marker='o', linestyle='-')
+        
+        ax_income.plot(months, incomes, color='green', marker='o', linestyle='-')
         ax_income.set_title("Income", fontsize=title_size)
-        ax_income.set_ylabel("Amount (₱)")
-        ax_income.tick_params(axis="y", labelsize=label_size)
-        ax_income.grid(axis='y')
-        ax_income.set_xticks(months_inc)
-        ax_income.set_xticklabels(months_inc, rotation=80, ha='center', fontsize=label_size)
-
-        if len(incomes) > 1:
-            sorted_incomes = sorted(incomes, reverse=True)
-            second_largest = sorted_incomes[1]
-            cap = second_largest * 1.1
-            if cap < sorted_incomes[0]:
-                ax_income.set_ylim(0, cap)
+        ax_income.set_ylabel("Amount (₱)", fontsize=label_size)
+        ax_income.set_xlabel("Months", fontsize=label_size)
+        ax_income.set_xticks(range(len(months)))
+        ax_income.set_xticklabels(months, rotation=45, ha='center', fontsize=label_size)
+        ax_income.tick_params(axis="both", labelsize=label_size)
+        ax_income.grid(True, linestyle='--', alpha=0.6)
+        fig_income.tight_layout()
 
         # === Expenses Figure ===
         fig_expenses = plt.Figure(figsize=(width_in, height_in), dpi=dpi) # 1 in = 100 px
         ax_expenses = fig_expenses.add_subplot(111)
 
-        months_exp, expenses = filter_non_zero(monthly_finances, "total_expenses")
-        ax_expenses.plot(months_exp, expenses, color='red', marker='o', linestyle='-')
+        ax_expenses.plot(months, expenses, color='red', marker='o', linestyle='-')
         ax_expenses.set_title("Expenses", fontsize=title_size)
-        ax_expenses.set_ylabel("Amount (₱)")
-        ax_expenses.tick_params(axis="y", labelsize=label_size)
-        ax_expenses.grid(axis='y')
-        ax_expenses.set_xticks(months_exp)
-        ax_expenses.set_xticklabels(months_exp, rotation=80, ha='center', fontsize=label_size)
+        ax_expenses.set_ylabel("Amount (₱)", fontsize=label_size)
+        ax_expenses.set_xlabel("Months", fontsize=label_size)
+        ax_expenses.set_xticks(range(len(months)))
+        ax_expenses.set_xticklabels(months, rotation=45, ha='center', fontsize=label_size)
+        ax_expenses.tick_params(axis="both", labelsize=label_size)
+        ax_expenses.grid(True, linestyle='--', alpha=0.6)
+        fig_expenses.tight_layout()
 
         return fig_income, fig_expenses
 
 
     def createQuarterlyGraph(self, user_id:int, width_in:float, height_in:float, dpi:float, title_size:int, label_size:int) -> plt.Figure:
         quarterly_finances = self.calculateQuarterlyFinances(user_id=user_id)
-        fig, ax = plt.subplots(figsize=(7, 5))
-        quarters = sorted(quarterly_finances.keys())
+        fig, ax = plt.subplots(figsize=(width_in, height_in), dpi=dpi)
+        quarters = list(quarterly_finances.keys())
         
         incomes = []
         expenses = []
@@ -527,10 +522,11 @@ class TransactionManager:
         ax.plot(quarters, savings, color='blue', marker='o', linestyle='-', label="Savings")
         ax.plot(quarters, investments, color='orange', marker='o', linestyle='-', label="Investment")
 
-        ax.set_title("Quarterly Financial Trends")
-        ax.set_ylabel("Amount")
-
-    #    ax.tick_params(axis='x', rotation=45)
+        ax.set_ylabel("Amount (₱)", fontsize=label_size)
+        ax.set_xlabel("Months", fontsize=label_size)
+        ax.set_xticks(range(len(quarters)))
+        ax.set_xticklabels(quarters, ha='center', fontsize=label_size)
+        ax.tick_params(axis="both", labelsize=label_size)
         ax.grid(True, linestyle='--', alpha=0.6)
         ax.legend()
 
@@ -592,13 +588,13 @@ class TransactionManager:
         print(dpi)
         width_in = 780 / dpi
         height_in = 500 / dpi
-        graph_income, graph_expenses = self.createMonthlyGraph(
+        graph_income, graph_expenses = self.createMonthlyGraphs(
             user_id=self.user_id,
             width_in=width_in,
             height_in=height_in,
             dpi=dpi,
-            title_size=20,
-            label_size=15
+            title_size=15,
+            label_size=10
         )
 
         income_frame = ctk.CTkFrame(root) 
@@ -631,8 +627,8 @@ class TransactionManager:
             width_in=width_in,
             height_in=height_in,
             dpi=dpi,
-            title_size=20,
-            label_size=15
+            title_size=15,
+            label_size=10
         )
         # display result
         canvas = FigureCanvasTkAgg(graph, master=root)
@@ -668,6 +664,7 @@ if __name__ == "__main__":
     # tm.testCalculateMonthlyFinances()
     # tm.testCalculateQuarterlyFinances()
     # tm.testCreateMonthlyGraph()
-    tm.testCreateQuarterlyGraph()
+    # tm.testCreateQuarterlyGraph()
 
     tm.repo.connection.close()
+    exit(0)
