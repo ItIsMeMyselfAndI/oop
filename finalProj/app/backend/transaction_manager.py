@@ -505,9 +505,37 @@ class TransactionManager:
 
 
     def createQuarterlyGraph(self, user_id:int, width_in:float, height_in:float, dpi:float, title_size:int, label_size:int) -> plt.Figure:
-        # _in = inch
-        # use calcQuarterGrph
-        pass
+        quarterly_finances = self.calculateQuarterlyFinances(user_id=user_id)
+        fig, ax = plt.subplots(figsize=(7, 5))
+        quarters = sorted(quarterly_finances.keys())
+        
+        incomes = []
+        expenses = []
+        savings = []
+        investments = []
+
+        for q in quarters:
+            finance_data: Finance = quarterly_finances[q]
+            
+            incomes.append(finance_data.total_income)
+            expenses.append(finance_data.total_expenses)
+            savings.append(finance_data.total_savings)
+            investments.append(finance_data.total_investment)
+
+        ax.plot(quarters, incomes, color='green', marker='o', linestyle='-', label="Income")
+        ax.plot(quarters, expenses, color='red', marker='o', linestyle='-', label="Expenses")
+        ax.plot(quarters, savings, color='blue', marker='o', linestyle='-', label="Savings")
+        ax.plot(quarters, investments, color='orange', marker='o', linestyle='-', label="Investment")
+
+        ax.set_title("Quarterly Financial Trends")
+        ax.set_ylabel("Amount")
+
+    #    ax.tick_params(axis='x', rotation=45)
+        ax.grid(True, linestyle='--', alpha=0.6)
+        ax.legend()
+
+        fig.tight_layout()
+        return fig
 
 
     # ------------------------------- Tests ------------------------------------------
@@ -640,6 +668,6 @@ if __name__ == "__main__":
     # tm.testCalculateMonthlyFinances()
     # tm.testCalculateQuarterlyFinances()
     # tm.testCreateMonthlyGraph()
-    # tm.testCreateQuarterlyGraph()
+    tm.testCreateQuarterlyGraph()
 
     tm.repo.connection.close()
