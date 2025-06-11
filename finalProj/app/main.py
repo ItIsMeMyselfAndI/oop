@@ -2,11 +2,10 @@
 import customtkinter as ctk
 import os
 import sys
-from PIL import Image, ImageTk
 # our modules/libs
 from frontend.styles import BaseStyles, AppStyles # paddings, dimensions, colors, etc
 from frontend.components import SidebarTabs # navigation page-tabs
-from frontend.pages import LoginWin
+from frontend.pages import LoginForm # login form
 from frontend.pages import ProfilePage # profile page
 from frontend.pages import HomePage # home page
 from frontend.pages import EditPage # edit page
@@ -21,13 +20,21 @@ from backend import TransactionManager # db manager
 #--------------------------------------------------------------------------------------------------------
 
 
+def prematureClose(tm):
+    tm.repo.connection.close()
+    os._exit(0)
+
+
+#--------------------------------------------------------------------------------------------------------
+
+
 # main app class
 class App(ctk.CTk):
-    def __init__(self, app_title, user_id, username, tm):
+    def __init__(self, app_title, tm, userRepo):
         super().__init__()
-        self.user_id = user_id
-        self.username = username
         self.tm = tm
+        self.user_id = ctk.StringVar()
+        self.username = ctk.StringVar()
 
         # initialize fonts
         self.font2 = ("Bodoni MT", BaseStyles.FONT_SIZE_2, "italic")
@@ -44,6 +51,45 @@ class App(ctk.CTk):
         self.configure(fg_color=AppStyles.WIN_FG_COLOR)
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
+        
+        # loading popup
+        self.loading_popup = PopUpWin(
+            title="[App] Start",
+            msg="Loading...",
+            font=self.font2,
+            enable_close=False,
+            master=self,
+            fg_color=AppStyles.LOAD_POP_UP_FG_COLOR,
+            enable_frame_blocker=False
+        )
+        
+        # for closing db properly while app not ready
+        self.protocol("WM_DELETE_WINDOW", lambda: prematureClose(tm=tm))
+
+        # login page
+        self.login = LoginForm(
+            user_id=self.user_id,
+            username=self.username,
+            userRepo=userRepo,
+            master=self,
+            fg_color=AppStyles.LOGIN_FORM_FG_COLOR,
+            corner_radius=BaseStyles.RAD_5
+        )
+        self.login.place(relx=0.5, rely=0.5, anchor="center")
+        
+        # block code bellow till user_id is not empty
+        self.update()
+        self.wait_variable(self.user_id)
+
+        # load app
+        print("[App] Started successfully")
+        print("\n[Pages] Loading...")
+        self.loading_popup.showWin()
+        self.update()
+
+        # convert StringVar to normal str
+        self.user_id = self.user_id.get()
+        self.username = self.username.get()
 
         # pages
         self.page_frame = ctk.CTkFrame(
@@ -122,19 +168,13 @@ class App(ctk.CTk):
             popup_font=self.font2
         )
         self.add_save_btn.grid(row=3, column=0, pady=BaseStyles.PAD_4)
-        
-        # loading
-        self.loading_popup = PopUpWin(
-            title="[App] Load",
-            msg="Loading...",
-            font=self.font2,
-            enable_close=False,
-            master=self,
-            fg_color=AppStyles.LOAD_POP_UP_FG_COLOR,
-            enable_frame_blocker=False
-        )
-        
-        # closing
+
+        # load all pages
+        self.loading_popup.after(100, self.loadPages)
+        self.loading_popup.hideWin()
+        print("\n[Pages] Loaded successfully")
+
+        # closing popup
         self.closing_popup = PopUpWin(
             title="[App] Exit",
             msg="Exiting...",
@@ -144,15 +184,6 @@ class App(ctk.CTk):
             fg_color=AppStyles.CLOSE_APP_POP_UP_FG_COLOR,
             enable_frame_blocker=False
         )
-
-        # load all pages
-        print("[App] Started successfully")
-        print("\n[Pages] Loading...")
-        self.loading_popup.showWin()
-        self.loading_popup.after(100, self.loadPages)
-        self.loading_popup.hideWin()
-        print("\n[Pages] Loaded successfully")
-
         # for closing app and db properly
         self.protocol("WM_DELETE_WINDOW", self.onClickCloseApp)
         
@@ -170,9 +201,6 @@ class App(ctk.CTk):
             LOGO_FOLDER = os.path.join(sys._MEIPASS, "assets/logo")
         else: # for .py: storage resources path
             LOGO_FOLDER = "assets/logo"
-        # logo_path = os.path.join(LOGO_FOLDER, "app.png")
-        # self.img = ImageTk.PhotoImage(file=logo_path)
-        # self.iconphoto(True, self.img)
         logo_path = os.path.join(LOGO_FOLDER, "app.ico")
         self.iconbitmap(logo_path)
 
@@ -206,21 +234,16 @@ class App(ctk.CTk):
         self.after_idle(self.sidebar.onClickProfilePage)
 
 
-    def _closeAll(self):
-        print("\n[DB] Closing...")
-        self.tm.repo.connection.close()
-        print("[DB] Closed successfully")
-        print("\n[App] Closing...")
-        self.quit()
-        self.destroy()
-        print("[App] Closed successfully.")
-        # self.after_idle(lambda: exit(0))
-
-
     def onClickCloseApp(self):
         self.closing_popup.showWin()
-        self.closing_popup.after(100, self._closeAll)
-        self.closing_popup.hideWin()
+        self.update()
+        self.after_idle(print, "\n[DB] Closing...")
+        self.after_idle(self.tm.repo.connection.close)
+        self.after_idle(print, "[DB] Closed successfully")
+        self.after_idle(print, "\n[App] Closing...")
+        self.after_idle(self.quit)
+        self.after_idle(self.destroy)
+        self.after_idle(print, "[App] Closed successfully.")
 
 
     def _unfocusEntries(self, event):
@@ -241,12 +264,8 @@ class App(ctk.CTk):
 if __name__ == "__main__":
     print("\n[App] Starting...")
     app_title = "Personal Finance Tracker"
-    user_id = None
-    username = None
-    # user_id = 2
 
-    try:
-        # initialize db
+    try: # initialize db
         db_folder = os.path.abspath("db")
         db_name = "transactions.db"
         userRepo = UserRepository(db_folder, db_name)
@@ -254,45 +273,20 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"{e = }")
 
-    # try:
-    #     # login win
-    #     login = LoginWin(app_title=app_title, userRepo=userRepo, fg_color=AppStyles.WIN_FG_COLOR, width=AppStyles.WIN_W, height=AppStyles.WIN_H)
-    #     login.mainloop()
-    #     user_id = login.user_id
-    #     username = login.username
-    # except KeyboardInterrupt:
-    #     print("\n[DB] Closing connection...")
-    #     tm.repo.connection.close()
-    #     print("[DB] Connection closed successfully")
-    #     print("\n[LoginStyles] Closing...")
-    #     login.destroy()
-    #     print("[LoginStyles] Closed successfully")
-    #     exit(0)
+    try:
+        app = App(app_title=app_title, tm=tm, userRepo=userRepo)
+    except KeyboardInterrupt:
+        print("\n[App] Closed successfully")
+        os._exit(0)
 
-
-    user_id = 1
-    username = "mirasol"
-    # app win
-    if user_id and username:
-        try:
-            app = App(app_title=app_title, user_id=user_id, username=username, tm=tm)
-        except KeyboardInterrupt:
-            print("\n[App] Closed successfully")
-            exit(0)
-
-        # exit properly during keyboard interrupt
-        try:
-            app.mainloop()
-        except KeyboardInterrupt:
-            print("\n[DB] Closing connection...")
-            tm.repo.connection.close()
-            print("[DB] Connection closed successfully")
-            print("\n[App] Closing...")
-            app.destroy()
-            print("[App] Closed successfully")
-            exit(0)
-
-    else:
+    try:
+        app.mainloop()
+    # exit properly during keyboard interrupt
+    except KeyboardInterrupt:
+        print("\n[DB] Closing connection...")
+        tm.repo.connection.close()
+        print("[DB] Connection closed successfully")
+        print("\n[App] Closing...")
+        app.destroy()
         print("[App] Closed successfully")
-    
-exit(0)
+        os._exit(0)

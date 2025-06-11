@@ -27,7 +27,7 @@ class BaseStyles:
     # ---- actual screen dimensions ----
     SCREEN_W = SCREEN_W
     SCREEN_H = SCREEN_H
-    DPI = scale(DPI)
+    DPI = DPI
 
     # ---- paddings ----
     PAD_1 = scale(10)

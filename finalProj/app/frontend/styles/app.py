@@ -6,6 +6,8 @@ class AppStyles:
 
     WIN_FG_COLOR = BaseStyles.SKY_BLUE
 
+    LOGIN_FORM_FG_COLOR = BaseStyles.WHITE
+
     SIDEBAR_FG_COLOR = BaseStyles.WHITE
     SIDEBAR_H = BaseStyles.SCREEN_H
 

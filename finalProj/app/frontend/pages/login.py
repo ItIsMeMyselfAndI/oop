@@ -2,52 +2,33 @@
 import customtkinter as ctk
 import tkinter as tk
 from tkinter import messagebox
-from PIL import Image, ImageTk
+from PIL import Image
 import os
 import sys
 # our modules/libs
 from frontend.styles import BaseStyles, LoginStyles # paddings, dimensions, colors, etc
 from backend import Account
-from frontend.components import PopUpWin
 
 
 #--------------------------------------------------------------------------------------------------------
 
 
-class LoginWin(ctk.CTk):
-    def __init__(self, app_title, userRepo, fg_color, width, height):
-        super().__init__()
-        self.user_id = None
-        self.username = None
+class LoginForm(ctk.CTkFrame):
+    def __init__(self, userRepo, user_id, username, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.user_id: ctk.StringVar = user_id
+        self.username: ctk.StringVar = username
         self.userRepo = userRepo
-
-        # initialize login
-        self.after(100, self.setupLogo)
-        self.title(app_title)
-        x_pos, y_pos = 0, 0
-        self.geometry(f"{width}x{height}+{x_pos}+{y_pos}")
-        self.maxsize(width, height)
-        self.minsize(width, height)
-        self.resizable(width=True, height=True)
-        self.configure(fg_color=fg_color)
 
         # initialize page state
         self.mask_id = None
         self.actual_password = ""
         self.isCurrentPage = False
 
-        # form frame
-        self.form_frame = ctk.CTkFrame(
-            master=self,
-            fg_color=LoginStyles.LOGIN_FRAME_FG_COLOR,
-            corner_radius=BaseStyles.RAD_5
-        )
-        self.form_frame.place(relx=0.5, rely=0.5, anchor="center")
-
         # logo
         self.logo_icon = self.loadImages()
         self.logo_img_bg = ctk.CTkLabel(
-            master=self.form_frame, text="",
+            master=self, text="",
             image=self.logo_icon,
             fg_color=LoginStyles.LOGO_IMG_BG_COLOR,
             width=LoginStyles.LOGO_IMG_BG_W,
@@ -57,7 +38,7 @@ class LoginWin(ctk.CTk):
         
         # title
         self.title_label = ctk.CTkLabel(
-            master=self.form_frame,
+            master=self,
             text="Welcome!",
             font=LoginStyles.TITLE_LABEL_FONT,
             text_color=LoginStyles.TITLE_TEXT_COLOR,
@@ -67,7 +48,7 @@ class LoginWin(ctk.CTk):
 
         # username entry
         self.user_entry = ctk.CTkEntry(
-            master=self.form_frame,
+            master=self,
             fg_color=LoginStyles.USER_ENTRY_FG_COLOR,
             font=LoginStyles.USER_ENTRY_FONT,
             text_color=LoginStyles.USER_ENTRY_TEXT_COLOR,
@@ -82,7 +63,7 @@ class LoginWin(ctk.CTk):
 
         # password entry
         self.pass_entry = ctk.CTkEntry(
-            master=self.form_frame,
+            master=self,
             fg_color=LoginStyles.PASS_ENTRY_FG_COLOR,
             font=LoginStyles.PASS_ENTRY_FONT,
             text_color=LoginStyles.PASS_ENTRY_TEXT_COLOR,
@@ -98,7 +79,7 @@ class LoginWin(ctk.CTk):
 
         # login button 
         self.login_button = ctk.CTkButton(
-            master=self.form_frame,
+            master=self,
             text="LOGIN",
             font=LoginStyles.LOGIN_BUTTON_FONT,
             corner_radius=BaseStyles.RAD_5,
@@ -113,7 +94,7 @@ class LoginWin(ctk.CTk):
         
         # signin button 
         self.signup_button = ctk.CTkButton(
-            master=self.form_frame,
+            master=self,
             text="SIGN UP",
             font=LoginStyles.SIGNUP_BUTTON_FONT,
             corner_radius=BaseStyles.RAD_5,
@@ -130,21 +111,8 @@ class LoginWin(ctk.CTk):
         self.outside_entry = ctk.CTkEntry(self)
         self.outside_entry.place(x=-1*BaseStyles.SCREEN_W, y=-1*BaseStyles.SCREEN_W)
 
-        # mouse left click 
-        self.bind("<Button-1>", self.onClickNonEntry)
-
-
-    def setupLogo(self):
-        # icon path
-        if hasattr(sys, "_MEIPASS"): # # for .exe: memory resources path
-            LOGO_FOLDER = os.path.join(sys._MEIPASS, "assets/logo")
-        else: # for .py: storage resources path
-            LOGO_FOLDER = "assets/logo"
-        # logo_path = os.path.join(LOGO_FOLDER, "app.png")
-        # self.img = ImageTk.PhotoImage(file=logo_path)
-        # self.iconphoto(True, self.img)
-        logo_path = os.path.join(LOGO_FOLDER, "app.ico")
-        self.iconbitmap(logo_path)
+        # # mouse left click 
+        # self.bind("<Button-1>", self.onClickNonEntry)
 
 
     def loadImages(self):
@@ -174,11 +142,11 @@ class LoginWin(ctk.CTk):
             messagebox.showwarning(title="[Invalid] Input", message="Empty field is not allowed")
             print("[Input] Empty field is not allowed")
         elif user_id:
-            self.user_id = user_id
-            self.username = username
+            self.user_id.set(user_id)
+            self.username.set(username)
             print("\tUsername:", username)
             print("\tPassword:", password)
-            self.destroy()
+            self.place_forget()
         else:
             messagebox.showwarning(title="[DB] No Match Found", message="Incorrect Username or Password")
             # self.no_match_popup.showWin()
@@ -201,11 +169,12 @@ class LoginWin(ctk.CTk):
             messagebox.showwarning(title="[Invalid] Input", message="Empty field is not allowed")
             print("[Input] Empty field is not allowed")
         elif was_added:
-            self.user_id = self.userRepo.getAccountID(account)
-            self.username = username
+            user_id = self.userRepo.getAccountID(account)
+            self.user_id.set(user_id)
+            self.username.set(username)
             print("\tUsername:", username)
             print("\tPassword:", password)
-            self.destroy()
+            self.place_forget()
         else:
             # self.already_taken_popup.showWin()
             messagebox.showwarning(title="[Invalid] Input", message="Username is already taken")

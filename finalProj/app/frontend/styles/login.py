@@ -1,8 +1,6 @@
 from frontend.styles.base import BaseStyles, scale
 
 class LoginStyles:
-    LOGIN_FRAME_FG_COLOR = BaseStyles.WHITE
-
     LOGO_IMG_W = scale(120)
     LOGO_IMG_H = scale(120)
     LOGO_IMG_BG_W = scale(120)
