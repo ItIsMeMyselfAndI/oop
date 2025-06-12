@@ -46,6 +46,8 @@ class App(ctk.CTk):
         self.initializeApp(app_title=app_title)
         self.createPopUps()
         self.protocol("WM_DELETE_WINDOW", self.onPrematureAppClose)
+        self.createDummyEntry() # for redirecting focus away from main entries
+        self.bind("<Button-1>", self.onClickNonEntry) # mouse left click 
 
         # start app
         self.createLoginForm()
@@ -59,11 +61,6 @@ class App(ctk.CTk):
 
         # close app and db properly
         self.protocol("WM_DELETE_WINDOW", self.onClickAppClose)
-        
-        # for redirecting focus away from main entries
-        self.createDummyEntry()
-        # mouse left click 
-        self.bind("<Button-1>", self.onClickNonEntry)
 
 
     def onPrematureAppClose(self):
@@ -120,6 +117,23 @@ class App(ctk.CTk):
             fg_color=AppStyles.CLOSE_APP_POP_UP_FG_COLOR,
             enable_frame_blocker=False
         )
+
+
+    def createDummyEntry(self):
+        self.dummy_entry = ctk.CTkEntry(self)
+        self.dummy_entry.place(x=-1*BaseStyles.SCREEN_W, y=-1*BaseStyles.SCREEN_W)
+
+
+    def _unfocusEntries(self, event):
+        print()
+        print(event)
+        print(f"{event.widget.winfo_class() = }")
+        if not event.widget.winfo_class() == "Entry":
+            self.dummy_entry.focus_set()
+
+
+    def onClickNonEntry(self, event):
+        self._unfocusEntries(event=event)
 
 
     def createLoginForm(self):
@@ -278,23 +292,6 @@ class App(ctk.CTk):
         self.after(2500, self.quit)
         self.after(3000, self.destroy)
         self.after(3500, print, "[App] Closed successfully.")
-
-
-    def createDummyEntry(self):
-        self.dummy_entry = ctk.CTkEntry(self)
-        self.dummy_entry.place(x=-1*BaseStyles.SCREEN_W, y=-1*BaseStyles.SCREEN_W)
-
-
-    def _unfocusEntries(self, event):
-        print()
-        print(event)
-        print(f"{event.widget.winfo_class() == "Entry" = }")
-        if not event.widget.winfo_class() == "Entry":
-            self.dummy_entry.focus_set()
-
-
-    def onClickNonEntry(self, event):
-        self._unfocusEntries(event=event)
 
 
 #--------------------------------------------------------------------------------------------------------

@@ -126,11 +126,11 @@ class SidebarTabs(ctk.CTkFrame):
             )
         # open selected page and change fg, hover & text color
         self.pages[page_name].is_current_page = True
-        self.pages[page_name].pack()
         self.tabBTNs[page_name].configure(
             fg_color=SidebarStyles.ON_BTN_FG_COLOR,
             hover_color=SidebarStyles.ON_BTN_HOVER_COLOR
         )
+        self.pages[page_name].pack()
 
 
     def onClickProfilePage(self):

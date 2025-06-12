@@ -11,12 +11,12 @@ class LoginStyles:
     TITLE_TEXT_COLOR = "#333333"
     TITLE_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
 
-    USER_ENTRY_FONT = ("Arial", scale(20), "bold")
-    USER_ENTRY_TEXT_COLOR = "#292929"
-    USER_ENTRY_FG_COLOR = "#d9d9d9"
+    uname_entry_FONT = ("Arial", scale(20), "bold")
+    uname_entry_TEXT_COLOR = "#292929"
+    uname_entry_FG_COLOR = "#d9d9d9"
     USER_PLACEHOLDER_TEXT_COLOR = "#545454"
-    USER_ENTRY_W = scale(350)
-    USER_ENTRY_H = scale(60)
+    uname_entry_W = scale(350)
+    uname_entry_H = scale(60)
 
     PASS_ENTRY_FONT = ("Arial", scale(20), "bold")
     PASS_ENTRY_TEXT_COLOR = "#292929"

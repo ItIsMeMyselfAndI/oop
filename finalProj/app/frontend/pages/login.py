@@ -47,19 +47,19 @@ class LoginForm(ctk.CTkFrame):
         self.title_label.pack(padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_5))
 
         # username entry
-        self.user_entry = ctk.CTkEntry(
+        self.uname_entry = ctk.CTkEntry(
             master=self,
-            fg_color=LoginStyles.USER_ENTRY_FG_COLOR,
-            font=LoginStyles.USER_ENTRY_FONT,
-            text_color=LoginStyles.USER_ENTRY_TEXT_COLOR,
+            fg_color=LoginStyles.uname_entry_FG_COLOR,
+            font=LoginStyles.uname_entry_FONT,
+            text_color=LoginStyles.uname_entry_TEXT_COLOR,
             placeholder_text="Username",
             placeholder_text_color=LoginStyles.USER_PLACEHOLDER_TEXT_COLOR,
-            width=LoginStyles.USER_ENTRY_W,
-            height=LoginStyles.USER_ENTRY_H,
+            width=LoginStyles.uname_entry_W,
+            height=LoginStyles.uname_entry_H,
             corner_radius=BaseStyles.RAD_5,
             border_width=0 
         )
-        self.user_entry.pack(padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_1))
+        self.uname_entry.pack(padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_1))
 
         # password entry
         self.pass_entry = ctk.CTkEntry(
@@ -107,13 +107,6 @@ class LoginForm(ctk.CTkFrame):
         )
         self.signup_button.pack(padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_4*2))
 
-        # dummy entry: for redirecting focus away from main entries
-        self.outside_entry = ctk.CTkEntry(self)
-        self.outside_entry.place(x=-1*BaseStyles.SCREEN_W, y=-1*BaseStyles.SCREEN_W)
-
-        # # mouse left click 
-        # self.bind("<Button-1>", self.onClickNonEntry)
-
 
     def loadImages(self):
         if hasattr(sys, "_MEIPASS"): # # for .exe: memory resources path
@@ -133,7 +126,7 @@ class LoginForm(ctk.CTkFrame):
 
     def onClickLogin(self):
         print("\n[User] LoginStyles")
-        username = self.user_entry.get()
+        username = self.uname_entry.get()
         password = self.actual_password
         account = Account(username=username, password=password)
         user_id = self.userRepo.getAccountID(account)
@@ -155,7 +148,7 @@ class LoginForm(ctk.CTkFrame):
 
     def onClickSignUp(self):
         print("\n[User] Sign Up")
-        username = self.user_entry.get()
+        username = self.uname_entry.get()
         password = self.actual_password
         account = Account(username=username, password=password)
         # verify action
@@ -201,15 +194,3 @@ class LoginForm(ctk.CTkFrame):
         self.pass_entry.delete(0, ctk.END)
         self.pass_entry.insert(0, self.actual_password)
         self.pass_entry.configure(show="*")
-
-
-    def _unfocusEntries(self, event):
-        print()
-        print(event)
-        print(f"{event.widget.winfo_class() == "Entry" = }")
-        if not event.widget.winfo_class() == "Entry":
-            self.outside_entry.focus_set()
-
-
-    def onClickNonEntry(self, event):
-        self._unfocusEntries(event=event)
