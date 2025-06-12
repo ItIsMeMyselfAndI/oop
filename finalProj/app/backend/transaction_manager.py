@@ -523,7 +523,7 @@ class TransactionManager:
         ax.plot(quarters, investments, color='orange', marker='o', linestyle='-', label="Investment")
 
         ax.set_ylabel("Amount (₱)", fontsize=label_size)
-        ax.set_xlabel("Months", fontsize=label_size)
+        ax.set_xlabel("Quarters", fontsize=label_size)
         ax.set_xticks(range(len(quarters)))
         ax.set_xticklabels(quarters, ha='center', fontsize=label_size)
         ax.tick_params(axis="both", labelsize=label_size)
