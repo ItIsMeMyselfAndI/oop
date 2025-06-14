@@ -20,14 +20,6 @@ from backend import TransactionManager # db manager
 #--------------------------------------------------------------------------------------------------------
 
 
-def prematureClose(tm):
-    tm.repo.connection.close()
-    os._exit(0)
-
-
-#--------------------------------------------------------------------------------------------------------
-
-
 # main app class
 class App(ctk.CTk):
     def __init__(self, app_title, tm, userRepo):

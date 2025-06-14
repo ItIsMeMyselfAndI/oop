@@ -8,99 +8,6 @@ from frontend.styles import BaseStyles, TransactionTableStyles # paddings, dimen
 #--------------------------------------------------------------------------------------------------------
 
 
-class TransactionTableFilters(ctk.CTkFrame):
-    def __init__(self, table_body, master, **kwargs):
-        super().__init__(master, **kwargs)
-        self.table_body = table_body
-
-        # initialize fonts
-        self.font1 = ("Bodoni MT", BaseStyles.FONT_SIZE_1, "italic")
-
-        # options
-        self.t_type = ["All Types", "Income", "Expenses", "Savings", "Investment"]
-        self.categories_by_type = {
-            "Income": ["All Categories", "Salary", "Bonus", "Side-hustles", "Tips"],
-            "Expenses": ["All Categories", "Bills", "Education", "Entertainment", "Food & Drinks",
-                        "Grocery", "Healthcare", "House", "Shopping",
-                        "Transportation", "Wellness", "Other"],
-            "Savings": ["All Categories", "Monthly Allowance", "Change", "Miscellaneous"],
-            "Investment": ["All Categories", "Stocks", "Crypto", "Bonds", "Real Estate"]
-        }
-        self.all_categories = ["All Categories"] + [c for categories in self.categories_by_type.values() for c in categories[1:]]
-        
-        # type filter
-        self.type_menu = ctk.CTkOptionMenu(
-            master=self,
-            values=self.t_type,
-            font=self.font1,
-            dropdown_font=self.font1,
-            text_color=TransactionTableStyles.FILTER_TYPE_MENU_TEXT_COLOR,
-            fg_color=TransactionTableStyles.FILTER_TYPE_MENU_FG_COLOR,
-            dropdown_fg_color=TransactionTableStyles.FILTER_TYPE_DROPDOWN_FG_COLOR,
-            dropdown_hover_color=TransactionTableStyles.FILTER_TYPE_DROPDOWN_HOVER_COLOR,
-            dropdown_text_color=TransactionTableStyles.FILTER_TYPE_DROPDOWN_TEXT_COLOR,
-            button_color=TransactionTableStyles.FILTER_TYPE_BUTTON_FG_COLOR,
-            button_hover_color=TransactionTableStyles.FILTER_TYPE_BUTTON_HOVER_COLOR,
-            width=TransactionTableStyles.FILTER_MENU_W,
-            height=TransactionTableStyles.FILTER_MENU_H,
-            corner_radius=BaseStyles.RAD_2,
-            command=self.onPickType
-        )
-        self.type_menu.grid(row=0, column=0, padx=(0,BaseStyles.PAD_1))
-        
-        # category filter
-        self.current_categories = self.all_categories
-        self.category_menu = ctk.CTkOptionMenu(
-            master=self,
-            values=self.current_categories,
-            font=self.font1,
-            dropdown_font=self.font1,
-            text_color=TransactionTableStyles.FILTER_CATEGORY_MENU_TEXT_COLOR,
-            fg_color=TransactionTableStyles.FILTER_CATEGORY_MENU_FG_COLOR,
-            dropdown_fg_color=TransactionTableStyles.FILTER_CATEGORY_DROPDOWN_FG_COLOR,
-            dropdown_hover_color=TransactionTableStyles.FILTER_CATEGORY_DROPDOWN_HOVER_COLOR,
-            dropdown_text_color=TransactionTableStyles.FILTER_CATEGORY_DROPDOWN_TEXT_COLOR,
-            button_color=TransactionTableStyles.FILTER_CATEGORY_BUTTON_FG_COLOR,
-            button_hover_color=TransactionTableStyles.FILTER_CATEGORY_BUTTON_HOVER_COLOR,
-            width=TransactionTableStyles.FILTER_MENU_W,
-            height=TransactionTableStyles.FILTER_MENU_H,
-            corner_radius=BaseStyles.RAD_2,
-            command=self.onPickCategories
-        )
-        self.category_menu.grid(row=0, column=1)
-
-
-    def _filterRows(self, filter_type):
-        # set new table body base on type
-        self.table_body.current_filter_pages = self.table_body.pages_per_filter[filter_type]
-        # reset page num
-        self.table_body.current_page_num = 0
-        # display current table page
-        self.table_body.displayCurrentTablePage()
-
-
-    def _updateCategoryMenuByType(self, t_type):
-        if t_type == "All Types":
-            self.current_categories = self.all_categories
-        else:
-            self.current_categories = self.categories_by_type[t_type]
-        self.category_menu.configure(values=self.current_categories)
-        self.category_menu.set(self.current_categories[0])
-    
-
-    def onPickType(self, t_type):
-        self._filterRows(filter_type=t_type)
-        self._updateCategoryMenuByType(t_type=t_type)
-
-
-    def onPickCategories(self, t_categories):
-        self._filterRows(filter_type=t_categories)
-        pass
-
-
-#--------------------------------------------------------------------------------------------------------
-
-
 class TransactionTableHeader(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
@@ -266,7 +173,7 @@ class TransactionTableRow(ctk.CTkFrame):
 
 
 class TransactionTableBody(ctk.CTkScrollableFrame):
-    def __init__(self, has_filter, transactions_per_filter, master, **kwargs):
+    def __init__(self, transactions_per_filter, master, has_filter, **kwargs):
         super().__init__(master, **kwargs)
         self.has_filter = has_filter
 
@@ -280,9 +187,9 @@ class TransactionTableBody(ctk.CTkScrollableFrame):
     def initializeTableBodyContent(self, transactions_per_filter):
         self.pages_per_filter = self.createTablePagesPerFilter(transactions_per_filter=transactions_per_filter)
         if self.has_filter:
-            self.current_filter_pages = self.pages_per_filter["All Types"]
+            self.current_table_pages = self.pages_per_filter["All Types"]
         else:
-            self.current_filter_pages = list(self.pages_per_filter.values())[0]
+            self.current_table_pages = list(self.pages_per_filter.values())[0]
 
 
     def _createTablePages(self, transactions) -> List[ctk.CTkFrame]:
@@ -319,23 +226,25 @@ class TransactionTableBody(ctk.CTkScrollableFrame):
                 page_frame.pack_forget()
 
 
-    def _showCurrentTablePage(self):
-        # show rows in current page
-        if self.current_filter_pages:
-            page_frame = list(self.current_filter_pages)[self.current_page_num]
-            page_frame.pack()
-            for row in page_frame.winfo_children():
-                row.pack(pady=(0,BaseStyles.PAD_1))
-                row.date_col.grid(row=0, column=0, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
-                row.type_col.grid(row=0, column=1, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
-                row.category_col.grid(row=0, column=2, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
-                row.description_col.grid(row=0, column=3, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
-                row.amount_col.grid(row=0, column=4, padx=(0,BaseStyles.PAD_2), pady=0, sticky="nw")
+    def _layoutRow(self, row):
+        row.date_col.grid(row=0, column=0, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
+        row.type_col.grid(row=0, column=1, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
+        row.category_col.grid(row=0, column=2, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
+        row.description_col.grid(row=0, column=3, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
+        row.amount_col.grid(row=0, column=4, padx=(0,BaseStyles.PAD_2), pady=0, sticky="nw")
+        row.pack(pady=(0,BaseStyles.PAD_1))
 
 
     def displayCurrentTablePage(self):
-        self._hideAllTablePages()
-        self.after_idle(self._showCurrentTablePage)
+        self.after_idle(self._hideAllTablePages)
+
+        # show rows in current page
+        if self.current_table_pages:
+            page_frame = list(self.current_table_pages)[self.current_page_num]
+
+            for row in page_frame.winfo_children():
+                self.after_idle(self._layoutRow, row)
+            self.after_idle(page_frame.pack)
 
 
 #--------------------------------------------------------------------------------------------------------
@@ -358,9 +267,24 @@ class TransactionTableNavigation(ctk.CTkFrame):
             height=TransactionTableStyles.TABLE_NAV_BTN_H,
             font=self.font1,
             corner_radius=BaseStyles.RAD_2,
-            command=self.onClickPrev
+            command=self.onClickPrev,
         )
         self.prevBTN.grid(row=0, column=0, padx=(0,BaseStyles.PAD_1))
+
+        # page number display
+        self.page_num_label = ctk.CTkLabel(
+            master=self,
+            corner_radius=BaseStyles.RAD_2,
+            font=self.font1,
+            text=f"{self.table_body.current_page_num+1}/{len(self.table_body.current_table_pages)}",
+            text_color=TransactionTableStyles.PAGE_NUM_LABEL_TEXT_COLOR,
+            fg_color=TransactionTableStyles.PAGE_NUM_LABEL_FG_COLOR,
+            width=TransactionTableStyles.PAGE_NUM_LABEL_W,
+            height=TransactionTableStyles.PAGE_NUM_LABEL_H,
+            anchor="center",
+            justify="center"
+        )
+        self.page_num_label.grid(row=0, column=1, padx=(0,BaseStyles.PAD_1))
 
         # next button
         self.nextBTN = ctk.CTkButton(
@@ -375,7 +299,14 @@ class TransactionTableNavigation(ctk.CTkFrame):
             corner_radius=BaseStyles.RAD_2,
             command=self.onClickNext
         )
-        self.nextBTN.grid(row=0, column=1)
+        self.nextBTN.grid(row=0, column=2)
+        
+        # disable table navigation if in first and last page
+        self.prevBTN.configure(fg_color=TransactionTableStyles.NAV_PREV_BUTTON_HOVER_COLOR)
+        if len(self.table_body.current_table_pages) in [0, 1]:
+            self.nextBTN.configure(fg_color=TransactionTableStyles.NAV_NEXT_BUTTON_HOVER_COLOR)
+        else:
+            self.nextBTN.configure(fg_color=TransactionTableStyles.NAV_NEXT_BUTTON_FG_COLOR)
 
 
     def onClickPrev(self):
@@ -383,10 +314,152 @@ class TransactionTableNavigation(ctk.CTkFrame):
             self.table_body.current_page_num -= 1
             # print("table prev")
             self.after_idle(self.table_body.displayCurrentTablePage)
+
+            # enable next button
+            self.nextBTN.configure(fg_color=TransactionTableStyles.NAV_NEXT_BUTTON_FG_COLOR)
+
+            # disable previous button if in first page
+            if self.table_body.current_page_num == 0:
+                self.prevBTN.configure(fg_color=TransactionTableStyles.NAV_PREV_BUTTON_HOVER_COLOR)
+            
+            # update page number display
+            if not len(self.table_body.current_table_pages):
+                self.page_num_label.configure(text="0/0")
+            else:
+                self.page_num_label.configure(text=f"{self.table_body.current_page_num+1}/{len(self.table_body.current_table_pages)}")
         
 
     def onClickNext(self):
-        if self.table_body.current_page_num < len(self.table_body.current_filter_pages) - 1:
+        if self.table_body.current_page_num < len(self.table_body.current_table_pages) - 1:
             self.table_body.current_page_num += 1
             # print("table next")
             self.after_idle(self.table_body.displayCurrentTablePage)
+
+            # enable previous button
+            self.prevBTN.configure(fg_color=TransactionTableStyles.NAV_PREV_BUTTON_FG_COLOR)
+
+            # disable next button if in last page
+            if self.table_body.current_page_num == len(self.table_body.current_table_pages) - 1:
+                self.nextBTN.configure(fg_color=TransactionTableStyles.NAV_NEXT_BUTTON_HOVER_COLOR)
+            
+            # update page number display
+            if not len(self.table_body.current_table_pages):
+                self.page_num_label.configure(text="0/0")
+            else:
+                self.page_num_label.configure(text=f"{self.table_body.current_page_num+1}/{len(self.table_body.current_table_pages)}")
+
+
+    def disableNextIfOnlyOneTablePage(self):
+        if len(self.table_body.current_table_pages) == 1:
+            self.nextBTN.configure(state="disabled")
+
+
+#--------------------------------------------------------------------------------------------------------
+
+
+class TransactionTableFilters(ctk.CTkFrame):
+    def __init__(self, table_body, table_nav, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.table_body = table_body
+        self.table_nav = table_nav
+
+        # initialize fonts
+        self.font1 = ("Bodoni MT", BaseStyles.FONT_SIZE_1, "italic")
+
+        # options
+        self.t_type = ["All Types"] + sorted(["Income", "Expenses", "Savings", "Investment"])
+        self.categories_by_type = {
+            "Income": ["All Categories"] + sorted(["Salary", "Bonus", "Side-hustles", "Tips"]),
+            "Expenses": ["All Categories"] + sorted(["Bills", "Education", "Entertainment", "Food & Drinks",
+                        "Grocery", "Healthcare", "House", "Shopping",
+                        "Transportation", "Wellness", "Other"]),
+            "Savings": ["All Categories"] + sorted(["Monthly Allowance", "Change", "Miscellaneous"]),
+            "Investment": ["All Categories"] + sorted(["Stocks", "Crypto", "Bonds", "Real Estate"])
+        }
+        self.all_categories = ["All Categories"] + sorted([c for categories in self.categories_by_type.values() for c in categories if c != "All Categories"])
+        
+        # type filter
+        self.type_menu = ctk.CTkOptionMenu(
+            master=self,
+            values=self.t_type,
+            font=self.font1,
+            dropdown_font=self.font1,
+            text_color=TransactionTableStyles.FILTER_TYPE_MENU_TEXT_COLOR,
+            fg_color=TransactionTableStyles.FILTER_TYPE_MENU_FG_COLOR,
+            dropdown_fg_color=TransactionTableStyles.FILTER_TYPE_DROPDOWN_FG_COLOR,
+            dropdown_hover_color=TransactionTableStyles.FILTER_TYPE_DROPDOWN_HOVER_COLOR,
+            dropdown_text_color=TransactionTableStyles.FILTER_TYPE_DROPDOWN_TEXT_COLOR,
+            button_color=TransactionTableStyles.FILTER_TYPE_BUTTON_FG_COLOR,
+            button_hover_color=TransactionTableStyles.FILTER_TYPE_BUTTON_HOVER_COLOR,
+            width=TransactionTableStyles.FILTER_MENU_W,
+            height=TransactionTableStyles.FILTER_MENU_H,
+            corner_radius=BaseStyles.RAD_2,
+            command=self.onPickType
+        )
+        self.type_menu.grid(row=0, column=0, padx=(0,BaseStyles.PAD_1))
+        
+        # category filter
+        self.current_categories = self.all_categories
+        self.category_menu = ctk.CTkOptionMenu(
+            master=self,
+            values=self.current_categories,
+            font=self.font1,
+            dropdown_font=self.font1,
+            text_color=TransactionTableStyles.FILTER_CATEGORY_MENU_TEXT_COLOR,
+            fg_color=TransactionTableStyles.FILTER_CATEGORY_MENU_FG_COLOR,
+            dropdown_fg_color=TransactionTableStyles.FILTER_CATEGORY_DROPDOWN_FG_COLOR,
+            dropdown_hover_color=TransactionTableStyles.FILTER_CATEGORY_DROPDOWN_HOVER_COLOR,
+            dropdown_text_color=TransactionTableStyles.FILTER_CATEGORY_DROPDOWN_TEXT_COLOR,
+            button_color=TransactionTableStyles.FILTER_CATEGORY_BUTTON_FG_COLOR,
+            button_hover_color=TransactionTableStyles.FILTER_CATEGORY_BUTTON_HOVER_COLOR,
+            width=TransactionTableStyles.FILTER_MENU_W,
+            height=TransactionTableStyles.FILTER_MENU_H,
+            corner_radius=BaseStyles.RAD_2,
+            command=self.onPickCategories
+        )
+        self.category_menu.grid(row=0, column=1)
+
+
+    def _filterRows(self, filter_type):
+        # set new table page base on filter
+        self.table_body.current_table_pages = self.table_body.pages_per_filter[filter_type]
+        # reset page num
+        self.table_body.current_page_num = 0
+        # display current table page
+        self.table_body.displayCurrentTablePage()
+
+    
+    def _disableTableNavigation(self):
+        # disable table navigation if in first and last page
+        self.table_nav.prevBTN.configure(fg_color=TransactionTableStyles.NAV_PREV_BUTTON_HOVER_COLOR)
+        if len(self.table_body.current_table_pages) in [0, 1]:
+            self.table_nav.nextBTN.configure(fg_color=TransactionTableStyles.NAV_NEXT_BUTTON_HOVER_COLOR)
+        else:
+            self.table_nav.nextBTN.configure(fg_color=TransactionTableStyles.NAV_NEXT_BUTTON_FG_COLOR)
+        
+        # update page number display
+        if not len(self.table_body.current_table_pages):
+            self.table_nav.page_num_label.configure(text="0/0")
+        else:
+            self.table_nav.page_num_label.configure(text=f"{self.table_body.current_page_num+1}/{len(self.table_body.current_table_pages)}")
+
+
+    def _updateCategoryMenuByType(self, t_type):
+        if t_type == "All Types":
+            self.current_categories = self.all_categories
+        else:
+            self.current_categories = self.categories_by_type[t_type]
+        self.category_menu.configure(values=self.current_categories)
+        self.category_menu.set(self.current_categories[0])
+    
+
+    def onPickType(self, t_type):
+        self.after_idle(self._filterRows, t_type)
+        self.after_idle(self._disableTableNavigation)
+        self.after_idle(self._updateCategoryMenuByType, t_type)
+
+
+    def onPickCategories(self, t_categories):
+        self.after_idle(self._filterRows, t_categories)
+        self.after_idle(self._disableTableNavigation)
+

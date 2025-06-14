@@ -113,17 +113,17 @@ class SidebarTabs(ctk.CTkFrame):
         return btn
 
 
-    def _switchTabTo(self, page_name):
+    def _hideAllPages(self):
         for name, page in self.pages.items():
             # set all page to not current page
             page.is_current_page = False 
             # close all pages
             page.pack_forget()
             # reset all buttons
-            self.tabBTNs[name].configure(
-                fg_color=SidebarStyles.OFF_BTN_FG_COLOR,
-                hover_color=SidebarStyles.OFF_BTN_HOVER_COLOR
-            )
+            self.tabBTNs[name].configure(fg_color=SidebarStyles.OFF_BTN_FG_COLOR, hover_color=SidebarStyles.OFF_BTN_HOVER_COLOR)
+
+
+    def _switchTabTo(self, page_name):
         # open selected page and change fg, hover & text color
         self.pages[page_name].is_current_page = True
         self.tabBTNs[page_name].configure(
@@ -134,20 +134,25 @@ class SidebarTabs(ctk.CTkFrame):
 
 
     def onClickProfilePage(self):
-        self._switchTabTo("profile")
+        self.after_idle(self._hideAllPages)
+        self.after_idle(self._switchTabTo, "profile")
 
 
     def onClickHomePage(self):
-        self._switchTabTo("home")
+        self.after_idle(self._hideAllPages)
+        self.after_idle(self._switchTabTo, "home")
 
 
     def onClickEditPage(self):
-        self._switchTabTo("edit")
+        self.after_idle(self._hideAllPages)
+        self.after_idle(self._switchTabTo, "edit")
 
 
     def onClickHistoryPage(self):
-        self._switchTabTo("history")
+        self.after_idle(self._hideAllPages)
+        self.after_idle(self._switchTabTo, "history")
 
 
     def onClickAddPage(self):
-        self._switchTabTo("add")
+        self.after_idle(self._hideAllPages)
+        self.after_idle(self._switchTabTo, "add")

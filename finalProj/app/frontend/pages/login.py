@@ -128,21 +128,22 @@ class LoginForm(ctk.CTkFrame):
         print("\n[User] LoginStyles")
         username = self.uname_entry.get()
         password = self.actual_password
+
         account = Account(username=username, password=password)
         user_id = self.userRepo.getAccountID(account)
         if not (account.username and account.password):
-            # self.empty_field_popup.showWin()
             messagebox.showwarning(title="[Invalid] Input", message="Empty field is not allowed")
             print("[Input] Empty field is not allowed")
+
         elif user_id:
             self.user_id.set(user_id)
             self.username.set(username)
             print("\tUsername:", username)
             print("\tPassword:", password)
             self.place_forget()
+
         else:
             messagebox.showwarning(title="[DB] No Match Found", message="Incorrect Username or Password")
-            # self.no_match_popup.showWin()
             print("[DB] No Match Found")
 
 
@@ -151,16 +152,18 @@ class LoginForm(ctk.CTkFrame):
         username = self.uname_entry.get()
         password = self.actual_password
         account = Account(username=username, password=password)
+
         # verify action
         is_continue = messagebox.askyesno(title="[Sign Up] New Account",message="Do you want to create a new account?") 
         if not is_continue:
             return
+        
         # create new account
         was_added = self.userRepo.addAccount(account)
         if not (account.username and account.password):
-            # self.empty_field_popup.showWin()
             messagebox.showwarning(title="[Invalid] Input", message="Empty field is not allowed")
             print("[Input] Empty field is not allowed")
+
         elif was_added:
             user_id = self.userRepo.getAccountID(account)
             self.user_id.set(user_id)
@@ -168,8 +171,8 @@ class LoginForm(ctk.CTkFrame):
             print("\tUsername:", username)
             print("\tPassword:", password)
             self.place_forget()
+
         else:
-            # self.already_taken_popup.showWin()
             messagebox.showwarning(title="[Invalid] Input", message="Username is already taken")
             print("[Input] Username is already taken")
 

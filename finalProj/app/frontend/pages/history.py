@@ -44,24 +44,16 @@ class TransactionTable(ctk.CTkFrame):
         
         # body
         self.table_body = TransactionTableBody(
-            has_filter=True,
             transactions_per_filter=transactions_per_filter,
             master=self,
             fg_color=HistoryStyles.TABLE_BODY_FG_COLOR,
             orientation="vertical",
             corner_radius=BaseStyles.RAD_2,
             height=HistoryStyles.TABLE_BODY_H,
-            width=HistoryStyles.TABLE_BODY_W
+            width=HistoryStyles.TABLE_BODY_W,
+            has_filter=True
         )
         self.table_body.pack()
-        
-        # filters
-        self.filters = TransactionTableFilters(
-            table_body=self.table_body,
-            master=header_section,
-            fg_color=HistoryStyles.FILTERS_FRAME_FG_COLOR
-        )
-        self.filters.grid(row=0, column=1, padx=(0, BaseStyles.PAD_2), pady=(0,BaseStyles.PAD_2), sticky="s")
         
         # navigation buttons
         self.table_nav = TransactionTableNavigation(
@@ -71,6 +63,15 @@ class TransactionTable(ctk.CTkFrame):
         )
         self.table_nav.pack(pady=(BaseStyles.PAD_1,0))
 
+        # filters
+        self.filters = TransactionTableFilters(
+            table_body=self.table_body,
+            table_nav=self.table_nav,
+            master=header_section,
+            fg_color=HistoryStyles.FILTERS_FRAME_FG_COLOR
+        )
+        self.filters.grid(row=0, column=1, padx=(0, BaseStyles.PAD_2), pady=(0,BaseStyles.PAD_2), sticky="s")
+        
 
 #--------------------------------------------------------------------------------------------------------
 
