@@ -40,7 +40,7 @@ class EditTransactionForm(ctk.CTkFrame):
         self.categories = categories
         
         # initialize state
-        self.is_current_transaction_form = False
+        self.is_current_form = False
         
         # initialize transaction options
         self.transaction_options = []
@@ -242,13 +242,13 @@ class EditPageTabs(ctk.CTkFrame):
         self.incomeBTN.grid(row=0, column=3, padx=(BaseStyles.PAD_3,0))
         
         # all tabs
-        self.tabBTNs = {
+        self.tab_btns = {
             "expense":self.expenseBTN, "savings":self.savingsBTN,
             "investment":self.investmentBTN, "income":self.incomeBTN
         }
         
         # open default tab (expense)
-        self._switchPageTo("expense")
+        self.onClickExpenseTab()
 
 
     def createTabButton(self, text, command):
@@ -265,47 +265,67 @@ class EditPageTabs(ctk.CTkFrame):
             command=command
         )
         return btn
-    
 
-    def _switchPageTo(self, transaction_type):
+
+    def _hideOtherPages(self, transaction_type):
+        # hide other pages
         for t_type, form in self.transactionForms.items():
-            # set all transaction forms's is_current_transaction_form attr to false
-            form.is_current_transaction_form = False
+            if not t_type == transaction_type:
 
-            # close all transaction forms
-            form.grid_forget()
+                try:
+                    form.is_current_form = False # set page to not current page
+                    form.pack_forget() # close page
+                    self.tab_btns[t_type].configure( # reset tab config
+                        fg_color=EditStyles.OFF_TAB_BUTTON_FG_COLOR, 
+                        hover_color=EditStyles.OFF_TAB_BUTTON_HOVER_COLOR,
+                        text_color=EditStyles.OFF_TAB_TEXT_COLOR
+                    )
 
-            # reset all buttons
-            self.tabBTNs[t_type].configure(
-                fg_color=EditStyles.OFF_TAB_BUTTON_FG_COLOR, 
-                hover_color=EditStyles.OFF_TAB_BUTTON_HOVER_COLOR,
-                text_color=EditStyles.OFF_TAB_TEXT_COLOR
-            )
+                except Exception as e:
+                    print(f"[Silent Error] Failed to hide: edit-{t_type} form")
+                    print(f"\t{e}")
 
-        # open selected and change fg, hover & text color
-        self.transactionForms[transaction_type].is_current_transaction_form = True
-        self.transactionForms[transaction_type].grid(row=2, column=0, sticky="nsew")
-        self.tabBTNs[transaction_type].configure(
-            fg_color=EditStyles.ON_TAB_BUTTON_FG_COLOR,
-            hover_color=EditStyles.ON_TAB_BUTTON_HOVER_COLOR,
-            text_color=EditStyles.ON_TAB_TEXT_COLOR
-        )
+        self.update_idletasks()
+
+
+    def _showPage(self, transaction_type):
+        # open selected page and change fg, hover & text color
+        if not self.transactionForms[transaction_type].is_current_form:
+
+            try:
+                self.transactionForms[transaction_type].is_current_form = True
+                self.tab_btns[transaction_type].configure(
+                    fg_color=EditStyles.ON_TAB_BUTTON_FG_COLOR,
+                    hover_color=EditStyles.ON_TAB_BUTTON_HOVER_COLOR,
+                    text_color=EditStyles.ON_TAB_TEXT_COLOR
+                )
+                self.transactionForms[transaction_type].pack()
+
+            except Exception as e:
+                print(f"[Silent Error] Failed to show: edit-{transaction_type} form")
+                print(f"\t{e}")
+
+        self.update_idletasks()
 
 
     def onClickExpenseTab(self):
-        self._switchPageTo("expense")
+        self.after(100, lambda: self._hideOtherPages("expense"))
+        self.after(300, lambda: self._showPage("expense"))
 
 
     def onClickSavingsTab(self):
-        self._switchPageTo("savings")
+        self.after(100, lambda: self._hideOtherPages("savings"))
+        self.after(300, lambda: self._showPage("savings"))
 
 
     def onClickInvestmentTab(self):
-        self._switchPageTo("investment")
+        self.after(100, lambda: self._hideOtherPages("investment"))
+        self.after(300, lambda: self._showPage("investment"))
 
 
     def onClickIncomeTab(self):
-        self._switchPageTo("income")
+        self.after(100, lambda: self._hideOtherPages("income"))
+        self.after(300, lambda: self._showPage("income"))
     
     
 #--------------------------------------------------------------------------------------------------------
@@ -321,7 +341,12 @@ class EditPage(ctk.CTkFrame):
         # initialize state
         self.is_current_page = False
 
-        # header sections 
+        self.createHeader()
+        self.createEditForms()
+        self.createTabs()
+
+
+    def createHeader(self):
         self.header_section = EditHeader(
             master=self,
             fg_color=EditStyles.HEADER_SECTION_FG_COLOR,
@@ -329,31 +354,8 @@ class EditPage(ctk.CTkFrame):
         )
         self.header_section.grid(row=0, column=0, pady=(BaseStyles.PAD_4+BaseStyles.PAD_4,0))
 
-        #  forms
-        self.forms_section = ctk.CTkFrame(
-            master=self,
-            fg_color=EditStyles.FORMS_SECTION_FG_COLOR,
-            corner_radius=BaseStyles.RAD_2
-        )
-        self.expenseForm = self.createEditTransactionForm("expense")
-        self.savingsForm = self.createEditTransactionForm("savings")
-        self.investmentForm = self.createEditTransactionForm("investment")
-        self.incomeForm = self.createEditTransactionForm("income")
-        self.transactionForms = {
-            "expense":self.expenseForm, "savings":self.savingsForm,
-            "investment":self.investmentForm, "income":self.incomeForm
-        }
-        self.forms_section.grid(row=2, column=0, pady=(BaseStyles.PAD_3,0))
 
-        # tabs
-        self.tabs = EditPageTabs(
-            transactionForms=self.transactionForms, master=self,
-            fg_color=EditStyles.TABS_FRAME_FG_COLOR, corner_radius=0
-        )
-        self.tabs.grid(row=1, column=0, padx=BaseStyles.PAD_3, pady=(BaseStyles.PAD_4,0))
-
-
-    def createEditTransactionForm(self, transaction_type):
+    def _createEditTransactionForm(self, transaction_type):
         # valid categories
         categories_by_type = {
             "expense": ["Bills", "Education", "Entertainment", "Food & Drinks",
@@ -374,6 +376,32 @@ class EditPage(ctk.CTkFrame):
             corner_radius=BaseStyles.RAD_2
         )
         return form
+    
+
+    def createEditForms(self):
+        self.forms_section = ctk.CTkFrame(
+            master=self,
+            fg_color=EditStyles.FORMS_SECTION_FG_COLOR,
+            corner_radius=BaseStyles.RAD_2
+        )
+        self.expenseForm = self._createEditTransactionForm("expense")
+        self.savingsForm = self._createEditTransactionForm("savings")
+        self.investmentForm = self._createEditTransactionForm("investment")
+        self.incomeForm = self._createEditTransactionForm("income")
+        self.forms_section.grid(row=2, column=0, pady=(BaseStyles.PAD_3,0))
+
+
+    def createTabs(self):
+        self.transactionForms = {
+            "expense":self.expenseForm, "savings":self.savingsForm,
+            "investment":self.investmentForm, "income":self.incomeForm
+        }
+        
+        self.tabs = EditPageTabs(
+            transactionForms=self.transactionForms, master=self,
+            fg_color=EditStyles.TABS_FRAME_FG_COLOR, corner_radius=0
+        )
+        self.tabs.grid(row=1, column=0, padx=BaseStyles.PAD_3, pady=(BaseStyles.PAD_4,0))
 
 
     def saveEditedTransactionToDatabase(self):
@@ -383,7 +411,7 @@ class EditPage(ctk.CTkFrame):
             "September":"09", "October":"10", "November":"11", "December":"12"
         }
         for transaction_type, form in self.transactionForms.items():
-            if form.is_current_transaction_form == True:
+            if form.is_current_form == True:
                 # retrieve user inputs from the UI
                 original_transaction = form.transactionMenu.get().strip()
                 if original_transaction == "No Available Transaction":

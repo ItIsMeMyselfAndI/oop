@@ -143,14 +143,55 @@ class ProfilePage(ctk.CTkFrame):
         # initialize state
         self.is_current_page = False
 
-        # calculate summaries
-        finance = self.tm.calculateOverallFinance(self.app.user_id)
-        balance = self.tm.calculateOverallBalance(finance)
-        
         # icons
         self.profile_icon, self.income_icon, self.savings_icon, self.expense_icon, self.investment_icon = self.loadIcons()
         
-        # header
+        # calculate summaries
+        finance = self.tm.calculateOverallFinance(self.app.user_id)
+        balance = self.tm.calculateOverallBalance(finance)
+
+        self.createHeader(balance)
+        self.createSummaries(finance)
+
+
+    def loadIcons(self):
+        # icon path
+        if hasattr(sys, "_MEIPASS"): # for .py: memory resources
+            ICONS_FOLDER = os.path.join(sys._MEIPASS, "assets/icons")
+        else: # for .py: true path resources
+            ICONS_FOLDER = "assets/icons"
+        print(ICONS_FOLDER)
+
+        # load images
+        profile_icon = ctk.CTkImage(
+            light_image=Image.open(os.path.join(ICONS_FOLDER, "profile1.png")),
+            dark_image=Image.open(os.path.join(ICONS_FOLDER, "profile1.png")),
+            size=(ProfileStyles.PROFILE_IMG_H, ProfileStyles.PROFILE_IMG_W)
+        )
+        income_icon = ctk.CTkImage(
+            light_image=Image.open(os.path.join(ICONS_FOLDER, "income.png")),
+            dark_image=Image.open(os.path.join(ICONS_FOLDER, "income.png")),
+            size=(ProfileStyles.SUMMARY_IMG_H, ProfileStyles.SUMMARY_IMG_W)
+        )
+        savings_icon = ctk.CTkImage(
+            light_image=Image.open(os.path.join(ICONS_FOLDER, "savings.png")),
+            dark_image=Image.open(os.path.join(ICONS_FOLDER, "savings.png")),
+            size=(ProfileStyles.SUMMARY_IMG_H, ProfileStyles.SUMMARY_IMG_W)
+        )
+        expense_icon = ctk.CTkImage(
+            light_image=Image.open(os.path.join(ICONS_FOLDER, "expense.png")),
+            dark_image=Image.open(os.path.join(ICONS_FOLDER, "expense.png")),
+            size=(ProfileStyles.SUMMARY_IMG_H, ProfileStyles.SUMMARY_IMG_W)
+        )
+        investment_icon = ctk.CTkImage(
+            light_image=Image.open(os.path.join(ICONS_FOLDER, "investment.png")),
+            dark_image=Image.open(os.path.join(ICONS_FOLDER, "investment.png")),
+            size=(ProfileStyles.SUMMARY_IMG_H, ProfileStyles.SUMMARY_IMG_W)
+        )
+        return profile_icon, income_icon, savings_icon, expense_icon, investment_icon
+
+    
+    def createHeader(self, balance):
         self.header_section = ProfileHeader(
             img=self.profile_icon,
             uname=self.app.username.title(), 
@@ -161,7 +202,9 @@ class ProfilePage(ctk.CTkFrame):
             corner_radius=BaseStyles.RAD_2
         )
         self.header_section.pack(pady=(BaseStyles.PAD_5+BaseStyles.PAD_5,0))
-        
+
+
+    def createSummaries(self, finance):
         # summaries section
         self.summary_section = ctk.CTkFrame(
             master=self,
@@ -206,7 +249,7 @@ class ProfilePage(ctk.CTkFrame):
         )
         self.savings_frame.grid(row=1, column=0, padx=(BaseStyles.PAD_4,0), pady=BaseStyles.PAD_4, sticky="nsew")
 
-        # investment  summary
+        # investment summary
         self.investment_frame = SummarySection(
             img=self.investment_icon,
             img_bg_color=ProfileStyles.INVESTMENT_IMG_BG_COLOR, 
@@ -218,43 +261,6 @@ class ProfilePage(ctk.CTkFrame):
         )
         self.investment_frame.grid(row=1, column=1, pady=BaseStyles.PAD_4, padx=BaseStyles.PAD_4, sticky="nsew")
 
-
-    def loadIcons(self):
-        # icon path
-        if hasattr(sys, "_MEIPASS"): # for .py: memory resources
-            ICONS_FOLDER = os.path.join(sys._MEIPASS, "assets/icons")
-        else: # for .py: true path resources
-            ICONS_FOLDER = "assets/icons"
-        print(ICONS_FOLDER)
-
-        # load images
-        profile_icon = ctk.CTkImage(
-            light_image=Image.open(os.path.join(ICONS_FOLDER, "profile1.png")),
-            dark_image=Image.open(os.path.join(ICONS_FOLDER, "profile1.png")),
-            size=(ProfileStyles.PROFILE_IMG_H, ProfileStyles.PROFILE_IMG_W)
-        )
-        income_icon = ctk.CTkImage(
-            light_image=Image.open(os.path.join(ICONS_FOLDER, "income.png")),
-            dark_image=Image.open(os.path.join(ICONS_FOLDER, "income.png")),
-            size=(ProfileStyles.SUMMARY_IMG_H, ProfileStyles.SUMMARY_IMG_W)
-        )
-        savings_icon = ctk.CTkImage(
-            light_image=Image.open(os.path.join(ICONS_FOLDER, "savings.png")),
-            dark_image=Image.open(os.path.join(ICONS_FOLDER, "savings.png")),
-            size=(ProfileStyles.SUMMARY_IMG_H, ProfileStyles.SUMMARY_IMG_W)
-        )
-        expense_icon = ctk.CTkImage(
-            light_image=Image.open(os.path.join(ICONS_FOLDER, "expense.png")),
-            dark_image=Image.open(os.path.join(ICONS_FOLDER, "expense.png")),
-            size=(ProfileStyles.SUMMARY_IMG_H, ProfileStyles.SUMMARY_IMG_W)
-        )
-        investment_icon = ctk.CTkImage(
-            light_image=Image.open(os.path.join(ICONS_FOLDER, "investment.png")),
-            dark_image=Image.open(os.path.join(ICONS_FOLDER, "investment.png")),
-            size=(ProfileStyles.SUMMARY_IMG_H, ProfileStyles.SUMMARY_IMG_W)
-        )
-        return profile_icon, income_icon, savings_icon, expense_icon, investment_icon
-    
 
     def updatePageDisplay(self):
         finance = self.tm.calculateOverallFinance(self.app.user_id)

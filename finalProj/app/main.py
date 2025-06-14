@@ -35,21 +35,23 @@ class App(ctk.CTk):
         self.font3 = ("Bodoni MT", BaseStyles.FONT_SIZE_3, "italic")
         
         # initialize app
-        self.initializeApp(app_title=app_title)
+        self.initializeAppSettings(app_title=app_title)
         self.createPopUps()
         self.protocol("WM_DELETE_WINDOW", self.onPrematureAppClose)
         self.createDummyEntry() # for redirecting focus away from main entries
         self.bind("<Button-1>", self.onClickNonEntry) # mouse left click 
 
-        # start app
+        # get user
         self.createLoginForm()
-        self.authenticateUser()
+        self.authenticateUser() # blocks code till login is complete
+        
+        # start app
         self.startLoadingPopUp()
         self.createAppPages()
         self.createSidebar()
         self.createSubmitBTNs()
-        self.loadPages()
-        self.after_idle(self.endLoadingPopUp)
+        self.loadPagesToMemory()
+        self.endLoadingPopUp()
 
         # close app and db properly
         self.protocol("WM_DELETE_WINDOW", self.onClickAppClose)
@@ -57,11 +59,11 @@ class App(ctk.CTk):
 
     def onPrematureAppClose(self):
         self.closing_popup.showWin()
-        self.after(500, print, "\n[DB] Closing...")
-        self.after(1000, self.tm.repo.connection.close)
-        self.after(1500, print, "[DB] Closed successfully")
-        self.after(2000, print, "\n[App] Premature close")
-        self.after(2500, os._exit, 0)
+        self.after_idle(print, "\n[DB] Closing...")
+        self.after_idle(self.tm.repo.connection.close)
+        self.after_idle(print, "[DB] Closed successfully")
+        self.after_idle(print, "\n[App] Premature close")
+        self.after_idle(os._exit, 0)
 
 
     def _setupLogo(self):
@@ -74,9 +76,9 @@ class App(ctk.CTk):
         self.iconbitmap(logo_path)
 
     
-    def initializeApp(self, app_title):
+    def initializeAppSettings(self, app_title):
         x_pos, y_pos = 0, 0
-        self.after(100, self._setupLogo)
+        self._setupLogo()
         self.title(app_title)
         self.geometry(f"{AppStyles.WIN_W}x{AppStyles.WIN_H}+{x_pos}+{y_pos}")
         self.maxsize(AppStyles.WIN_W, AppStyles.WIN_H)
@@ -113,7 +115,7 @@ class App(ctk.CTk):
 
     def createDummyEntry(self):
         self.dummy_entry = ctk.CTkEntry(self)
-        self.dummy_entry.place(x=-1*BaseStyles.SCREEN_W, y=-1*BaseStyles.SCREEN_W)
+        self.after_idle(lambda: self.dummy_entry.place(x=-1*BaseStyles.SCREEN_W, y=-1*BaseStyles.SCREEN_W))
 
 
     def _unfocusEntries(self, event):
@@ -137,7 +139,7 @@ class App(ctk.CTk):
             fg_color=AppStyles.LOGIN_FORM_FG_COLOR,
             corner_radius=BaseStyles.RAD_5
         )
-        self.login.place(relx=0.5, rely=0.5, anchor="center")
+        self.after_idle(lambda: self.login.place(relx=0.5, rely=0.5, anchor="center"))
 
 
     def authenticateUser(self):
@@ -150,8 +152,8 @@ class App(ctk.CTk):
 
 
     def startLoadingPopUp(self):
-        self.loading_popup.showWin()
-        self.update()
+        self.after_idle(self.loading_popup.showWin)
+        self.after_idle(self.update)
         self.after_idle(print, "[App] Started successfully")
         self.after_idle(print, "\n[Pages] Loading...")
 
@@ -199,7 +201,7 @@ class App(ctk.CTk):
             fg_color=AppStyles.WIN_FG_COLOR,
             corner_radius=0
         ) 
-        self.page_frame.grid(row=0, column=1, sticky="nesw")
+        self.after_idle(lambda: self.page_frame.grid(row=0, column=1, sticky="nesw"))
 
     
     def createSidebar(self):
@@ -215,7 +217,10 @@ class App(ctk.CTk):
             corner_radius=0,
             height=AppStyles.SIDEBAR_H
         )
-        self.sidebar.grid(row=0, column=0, sticky="ns")
+        self.after_idle(lambda: self.sidebar.grid(row=0, column=0, sticky="ns"))
+        
+        # display default page
+        self.after_idle(self.sidebar.onClickProfilePage)
 
 
     def createSubmitBTNs(self):
@@ -238,7 +243,7 @@ class App(ctk.CTk):
             popup_text="Updating...",
             popup_font=self.font2
         )
-        self.edit_submit_btn.grid(row=3, column=0, pady=BaseStyles.PAD_4)
+        self.after_idle(lambda: self.edit_submit_btn.grid(row=3, column=0, pady=BaseStyles.PAD_4))
         
         # add button
         self.add_submit_btn = SubmitBTN(
@@ -259,15 +264,13 @@ class App(ctk.CTk):
             popup_text="Updating...",
             popup_font=self.font2
         )
-        self.add_submit_btn.grid(row=3, column=0, pady=BaseStyles.PAD_4)
+        self.after_idle(lambda: self.add_submit_btn.grid(row=3, column=0, pady=BaseStyles.PAD_4))
 
 
-    def loadPages(self):
-        for page in reversed(self.pages.values()):
-            self.after_idle(page.pack)
-            self.after_idle(page.pack_forget)
-        # display default page
-        self.after_idle(self.sidebar.onClickProfilePage)
+    def loadPagesToMemory(self):
+        for name in reversed(self.pages.keys()):
+            self.after_idle(lambda: self.sidebar._hideOtherPages(name))
+            self.after_idle(lambda: self.sidebar._showPage(name))
 
 
     def endLoadingPopUp(self):
@@ -277,13 +280,13 @@ class App(ctk.CTk):
 
     def onClickAppClose(self):
         self.closing_popup.showWin()
-        self.after(500, print, "\n[DB] Closing...")
-        self.after(1000, self.tm.repo.connection.close)
-        self.after(1500, print, "[DB] Closed successfully")
-        self.after(2000, print, "\n[App] Closing...")
-        self.after(2500, self.quit)
-        self.after(3000, self.destroy)
-        self.after(3500, print, "[App] Closed successfully.")
+        self.after(300, print, "\n[DB] Closing...")
+        self.after(600, self.tm.repo.connection.close)
+        self.after(900, print, "[DB] Closed successfully")
+        self.after(1200, print, "\n[App] Closing...")
+        self.after(1500, self.quit)
+        self.after(1800, self.destroy)
+        self.after(2100, print, "[App] Closed successfully.")
 
 
 #--------------------------------------------------------------------------------------------------------

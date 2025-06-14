@@ -224,6 +224,7 @@ class TransactionTableBody(ctk.CTkScrollableFrame):
         for pages in self.pages_per_filter.values():
             for page_frame in pages:
                 page_frame.pack_forget()
+                self.update_idletasks()
 
 
     def _layoutRow(self, row):
@@ -233,18 +234,20 @@ class TransactionTableBody(ctk.CTkScrollableFrame):
         row.description_col.grid(row=0, column=3, padx=(0,BaseStyles.PAD_2), pady=0, sticky="n")
         row.amount_col.grid(row=0, column=4, padx=(0,BaseStyles.PAD_2), pady=0, sticky="nw")
         row.pack(pady=(0,BaseStyles.PAD_1))
+        self.update_idletasks()
 
 
     def displayCurrentTablePage(self):
-        self.after_idle(self._hideAllTablePages)
+        self._hideAllTablePages()
 
         # show rows in current page
         if self.current_table_pages:
             page_frame = list(self.current_table_pages)[self.current_page_num]
 
             for row in page_frame.winfo_children():
-                self.after_idle(self._layoutRow, row)
-            self.after_idle(page_frame.pack)
+                self._layoutRow(row)
+            page_frame.pack()
+            self.update_idletasks()
 
 
 #--------------------------------------------------------------------------------------------------------
@@ -313,7 +316,7 @@ class TransactionTableNavigation(ctk.CTkFrame):
         if self.table_body.current_page_num > 0:
             self.table_body.current_page_num -= 1
             # print("table prev")
-            self.after_idle(self.table_body.displayCurrentTablePage)
+            self.table_body.displayCurrentTablePage()
 
             # enable next button
             self.nextBTN.configure(fg_color=TransactionTableStyles.NAV_NEXT_BUTTON_FG_COLOR)
@@ -333,7 +336,7 @@ class TransactionTableNavigation(ctk.CTkFrame):
         if self.table_body.current_page_num < len(self.table_body.current_table_pages) - 1:
             self.table_body.current_page_num += 1
             # print("table next")
-            self.after_idle(self.table_body.displayCurrentTablePage)
+            self.table_body.displayCurrentTablePage()
 
             # enable previous button
             self.prevBTN.configure(fg_color=TransactionTableStyles.NAV_PREV_BUTTON_FG_COLOR)

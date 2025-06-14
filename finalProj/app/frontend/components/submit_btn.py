@@ -7,9 +7,9 @@ from frontend.styles import BaseStyles # paddings, dimensions, colors, etc
 from frontend.components.popup_win import PopUpWin
 
 
+#--------------------------------------------------------------------------------------------------------
 
 
-# save section
 class SubmitBTN(ctk.CTkButton):
     def __init__(self, master, user_id, tm, pages, app, popup_title, popup_text, popup_font, **kwargs):
         super().__init__(master, **kwargs)
@@ -17,20 +17,18 @@ class SubmitBTN(ctk.CTkButton):
         self.user_id = user_id
         self.tm = tm
         self.pages = pages
-        # create button
-        # create update popup
+        # update popup
         self.configure(command=self.onClickSubmit)
-        self.updatePopUp = PopUpWin(title=popup_title, msg=popup_text, font=popup_font,
-                                    enable_close=False, master=self.app, fg_color=BaseStyles.WHITE,
-                                    enable_frame_blocker=False)
-        # # create invalid input popups
-        # self.emptyDescriptionPopUp = PopUpWin(title="[Err] Invalid Input", msg="Only submit non-empty description.\nTry again.", enable_close=True,
-        #                                       master=self.app, fg_color=BaseStyles.WHITE)
-        # self.invalidAmountPopUp = PopUpWin(title="[Err] Invalid Input", msg="Only submit decimal number for amount.\nTry again.", enable_close=True,
-        #                                    master=self.app, fg_color=BaseStyles.WHITE)
-        # self.emptyAmountPopUp = PopUpWin(title="[Err] Invalid Input", msg="Only submit non-empty amount.\nTry again.", enable_close=True,
-        #                                  master=self.app, fg_color=BaseStyles.WHITE)
-        # display button
+        self.updatePopUp = PopUpWin(
+            title=popup_title,
+            msg=popup_text,
+            font=popup_font,
+            enable_close=False,
+            master=self.app,
+            fg_color=BaseStyles.WHITE,
+            enable_frame_blocker=False
+        )
+    
     
     def _updateBackendAndFrontend(self):
         # save to database
@@ -52,6 +50,7 @@ class SubmitBTN(ctk.CTkButton):
         self.pages["edit"].updatePageDisplay()
         self.pages["history"].updatePageDisplay()
 
+    
     def onClickSubmit(self):
         # start updatePopUp
         print("\nstart update")

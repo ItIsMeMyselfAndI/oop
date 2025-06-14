@@ -258,8 +258,15 @@ class HomePage(ctk.CTkFrame):
 
         # initialize state
         self.is_current_page = False
-        
-        # scrollable frame
+
+        self.createScrollableFrame()
+        self.createHeader()
+        self.createTableSection()
+        self.createMonthlySection()
+        self.createQuarterlySection()
+
+    
+    def createScrollableFrame(self):
         self.scroll_frame = ctk.CTkScrollableFrame(
             master=self,
             orientation="vertical",
@@ -270,54 +277,14 @@ class HomePage(ctk.CTkFrame):
         )
         self.scroll_frame.pack()
 
-        # header
-        home_icon = self.loadIcons()
-        balance = self.loadOverallBalance()
-        self.header_section = HomeHeader(
-            img=home_icon,
-            summary_type="Total Balance:",
-            amount=balance,
-            master=self.scroll_frame,
-            fg_color=HomeStyles.HEADER_SECTION_FG_COLOR,
-            corner_radius=BaseStyles.RAD_2
-        )
-        self.header_section.pack(pady=(BaseStyles.PAD_5*2,0))
 
-        # table
-        transactions_per_filter = {"recent": self.tm.repo.getRecentTransactions(user_id=self.app.user_id, t_count=10)}
-        self.table_section = RecentTable(
-            transactions_per_filter=transactions_per_filter,
-            master=self.scroll_frame,
-            fg_color=HomeStyles.TABLE_SECTION_FG_COLOR
-        )
-        self.table_section.pack(pady=(BaseStyles.PAD_2,0))
-
-        # monthly
-        self.monthly_section = MonthlyReport(
-            app=self.app,
-            tm=self.tm,
-            master=self.scroll_frame,
-            fg_color=HomeStyles.MONTHLY_SECTION_FG_COLOR
-        )
-        self.monthly_section.pack(pady=(BaseStyles.PAD_2,0))
-
-        # quarterly
-        self.quarterly_section = QuarterlyReport(
-            app=self.app,
-            tm=self.tm,
-            master=self.scroll_frame,
-            fg_color=HomeStyles.QUARTERLY_SECTION_FG_COLOR
-        )
-        self.quarterly_section.pack(pady=(BaseStyles.PAD_2,BaseStyles.PAD_5*3))
-
-
-    def loadOverallBalance(self):
+    def _loadOverallBalance(self):
         finance = self.tm.calculateOverallFinance(self.app.user_id)
         balance = self.tm.calculateOverallBalance(finance)
         return balance
 
 
-    def loadIcons(self):
+    def _loadIcon(self):
         # icon path
         if hasattr(sys, "_MEIPASS"): # # for .exe: memory resources path
             ICONS_FOLDER = os.path.join(sys._MEIPASS, "assets/icons")
@@ -334,9 +301,53 @@ class HomePage(ctk.CTkFrame):
         return home_icon
 
 
+    def createHeader(self):
+        home_icon = self._loadIcon()
+        balance = self._loadOverallBalance()
+        self.header_section = HomeHeader(
+            img=home_icon,
+            summary_type="Total Balance:",
+            amount=balance,
+            master=self.scroll_frame,
+            fg_color=HomeStyles.HEADER_SECTION_FG_COLOR,
+            corner_radius=BaseStyles.RAD_2
+        )
+        self.header_section.pack(pady=(BaseStyles.PAD_5*2,0))
+
+
+    def createTableSection(self):
+        transactions_per_filter = {"recent": self.tm.repo.getRecentTransactions(user_id=self.app.user_id, t_count=10)}
+        self.table_section = RecentTable(
+            transactions_per_filter=transactions_per_filter,
+            master=self.scroll_frame,
+            fg_color=HomeStyles.TABLE_SECTION_FG_COLOR
+        )
+        self.table_section.pack(pady=(BaseStyles.PAD_2,0))
+
+    
+    def createMonthlySection(self):
+        self.monthly_section = MonthlyReport(
+            app=self.app,
+            tm=self.tm,
+            master=self.scroll_frame,
+            fg_color=HomeStyles.MONTHLY_SECTION_FG_COLOR
+        )
+        self.monthly_section.pack(pady=(BaseStyles.PAD_2,0))
+
+    
+    def createQuarterlySection(self):
+        self.quarterly_section = QuarterlyReport(
+            app=self.app,
+            tm=self.tm,
+            master=self.scroll_frame,
+            fg_color=HomeStyles.QUARTERLY_SECTION_FG_COLOR
+        )
+        self.quarterly_section.pack(pady=(BaseStyles.PAD_2,BaseStyles.PAD_5*3))
+
+
     def updatePageDisplay(self):
         # update total balance in header
-        balance = self.loadOverallBalance()
+        balance = self._loadOverallBalance()
         self.header_section.amount_label.configure(text=f"₱ {balance:,}")
 
         # destroy prev ver of the recent transactions

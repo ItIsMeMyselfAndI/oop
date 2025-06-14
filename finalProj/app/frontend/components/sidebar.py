@@ -54,11 +54,12 @@ class SidebarTabs(ctk.CTkFrame):
         self.add_btn.pack(pady=(BaseStyles.PAD_2, 0), padx=BaseStyles.PAD_1)
         
         # page buttons/tabs
-        self.tabBTNs = {
+        self.tab_btns = {
             "profile":self.profile_btn, "home":self.home_btn,
             "edit":self.edit_btn, "history":self.history_btn,
             "add":self.add_btn
         }
+        self.update_idletasks()
 
 
     def loadIcons(self):
@@ -113,46 +114,65 @@ class SidebarTabs(ctk.CTkFrame):
         return btn
 
 
-    def _hideAllPages(self):
+    def _hideOtherPages(self, page_name):
+        # hide other pages
         for name, page in self.pages.items():
-            # set all page to not current page
-            page.is_current_page = False 
-            # close all pages
-            page.pack_forget()
-            # reset all buttons
-            self.tabBTNs[name].configure(fg_color=SidebarStyles.OFF_BTN_FG_COLOR, hover_color=SidebarStyles.OFF_BTN_HOVER_COLOR)
+            if not name == page_name:
+
+                try:
+                    page.is_current_page = False # set page to not current page
+                    page.pack_forget() # close page
+                    self.tab_btns[name].configure( # reset tab config
+                        fg_color=SidebarStyles.OFF_BTN_FG_COLOR,
+                        hover_color=SidebarStyles.OFF_BTN_HOVER_COLOR
+                    )
+
+                except Exception as e:
+                    print(f"[Silent Error] Failed to hide: app-{page_name} page")
+                    print(f"\t{e}")
+
+        self.update_idletasks()
 
 
-    def _switchTabTo(self, page_name):
+    def _showPage(self, page_name):
         # open selected page and change fg, hover & text color
-        self.pages[page_name].is_current_page = True
-        self.tabBTNs[page_name].configure(
-            fg_color=SidebarStyles.ON_BTN_FG_COLOR,
-            hover_color=SidebarStyles.ON_BTN_HOVER_COLOR
-        )
-        self.pages[page_name].pack()
+        if not self.pages[page_name].is_current_page:
+
+            try:
+                self.pages[page_name].is_current_page = True
+                self.tab_btns[page_name].configure(
+                    fg_color=SidebarStyles.ON_BTN_FG_COLOR,
+                    hover_color=SidebarStyles.ON_BTN_HOVER_COLOR
+                )
+                self.pages[page_name].pack()
+
+            except Exception as e:
+                print(f"[Silent Error] Failed to show: app-{page_name} page")
+                print(f"\t{e}")
+
+        self.update_idletasks()
 
 
     def onClickProfilePage(self):
-        self.after_idle(self._hideAllPages)
-        self.after_idle(self._switchTabTo, "profile")
+        self.after(100, lambda: self._hideOtherPages("profile"))
+        self.after(300, lambda: self._showPage("profile"))
 
 
     def onClickHomePage(self):
-        self.after_idle(self._hideAllPages)
-        self.after_idle(self._switchTabTo, "home")
+        self.after(100, lambda: self._hideOtherPages("home"))
+        self.after(300, lambda: self._showPage("home"))
 
 
     def onClickEditPage(self):
-        self.after_idle(self._hideAllPages)
-        self.after_idle(self._switchTabTo, "edit")
+        self.after(100, lambda: self._hideOtherPages("edit"))
+        self.after(300, lambda: self._showPage("edit"))
 
 
     def onClickHistoryPage(self):
-        self.after_idle(self._hideAllPages)
-        self.after_idle(self._switchTabTo, "history")
+        self.after(100, lambda: self._hideOtherPages("history"))
+        self.after(300, lambda: self._showPage("history"))
 
 
     def onClickAddPage(self):
-        self.after_idle(self._hideAllPages)
-        self.after_idle(self._switchTabTo, "add")
+        self.after(100, lambda: self._hideOtherPages("add"))
+        self.after(300, lambda: self._showPage("add"))

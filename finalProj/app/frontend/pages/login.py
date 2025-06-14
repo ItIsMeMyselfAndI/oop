@@ -20,13 +20,39 @@ class LoginForm(ctk.CTkFrame):
         self.username: ctk.StringVar = username
         self.userRepo = userRepo
 
-        # initialize page state
+        self.initializePageState()
+
+        self.createHeader()
+        self.createEntries()
+        self.createBTNs()
+        self.bindKey()
+
+
+    def initializePageState(self):
         self.mask_id = None
         self.actual_password = ""
         self.isCurrentPage = False
 
+
+    def _loadIcon(self):
+        if hasattr(sys, "_MEIPASS"): # # for .exe: memory resources path
+            ICONS_FOLDER = os.path.join(sys._MEIPASS, "assets/icons")
+        else: # for .py: storage resources path
+            ICONS_FOLDER = "assets/icons"
+        print(ICONS_FOLDER)
+        
+        # load image
+        logo_icon = ctk.CTkImage(
+            light_image=Image.open(os.path.join(ICONS_FOLDER, "logo.png")),
+            dark_image=Image.open(os.path.join(ICONS_FOLDER, "logo.png")),
+            size=(LoginStyles.LOGO_IMG_W, LoginStyles.LOGO_IMG_H)
+        )
+        return logo_icon
+
+
+    def createHeader(self):
         # logo
-        self.logo_icon = self.loadImages()
+        self.logo_icon = self._loadIcon()
         self.logo_img_bg = ctk.CTkLabel(
             master=self, text="",
             image=self.logo_icon,
@@ -46,6 +72,8 @@ class LoginForm(ctk.CTkFrame):
         )
         self.title_label.pack(padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_5))
 
+
+    def createEntries(self):
         # username entry
         self.uname_entry = ctk.CTkEntry(
             master=self,
@@ -75,8 +103,9 @@ class LoginForm(ctk.CTkFrame):
             border_width=0
         )
         self.pass_entry.pack( padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_3))
-        self.pass_entry.bind("<KeyRelease>", self.on_password_key_release)
 
+
+    def createBTNs(self):
         # login button 
         self.login_button = ctk.CTkButton(
             master=self,
@@ -107,23 +136,7 @@ class LoginForm(ctk.CTkFrame):
         )
         self.signup_button.pack(padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_4*2))
 
-
-    def loadImages(self):
-        if hasattr(sys, "_MEIPASS"): # # for .exe: memory resources path
-            ICONS_FOLDER = os.path.join(sys._MEIPASS, "assets/icons")
-        else: # for .py: storage resources path
-            ICONS_FOLDER = "assets/icons"
-        print(ICONS_FOLDER)
         
-        # load image
-        logo_icon = ctk.CTkImage(
-            light_image=Image.open(os.path.join(ICONS_FOLDER, "logo.png")),
-            dark_image=Image.open(os.path.join(ICONS_FOLDER, "logo.png")),
-            size=(LoginStyles.LOGO_IMG_W, LoginStyles.LOGO_IMG_H)
-        )
-        return logo_icon
-
-
     def onClickLogin(self):
         print("\n[User] LoginStyles")
         username = self.uname_entry.get()
@@ -141,6 +154,7 @@ class LoginForm(ctk.CTkFrame):
             print("\tUsername:", username)
             print("\tPassword:", password)
             self.place_forget()
+            self.update_idletasks()
 
         else:
             messagebox.showwarning(title="[DB] No Match Found", message="Incorrect Username or Password")
@@ -171,13 +185,21 @@ class LoginForm(ctk.CTkFrame):
             print("\tUsername:", username)
             print("\tPassword:", password)
             self.place_forget()
+            self.update_idletasks()
 
         else:
             messagebox.showwarning(title="[Invalid] Input", message="Username is already taken")
             print("[Input] Username is already taken")
 
 
-    def on_password_key_release(self, event):
+    def _maskPassword(self):
+        # hide pass display
+        self.pass_entry.delete(0, ctk.END)
+        self.pass_entry.insert(0, self.actual_password)
+        self.pass_entry.configure(show="*")
+
+
+    def onPasswordKeyRelease(self, event):
         # cancel masking
         if self.mask_id:
             self.after_cancel(self.mask_id)
@@ -189,11 +211,9 @@ class LoginForm(ctk.CTkFrame):
         self.pass_entry.insert(0, self.actual_password)
         self.pass_entry.configure(show="")
         # mask pass after 1 secs
-        self.mask_id = self.after(1000, self.mask_password)
+        self.mask_id = self.after(1000, self._maskPassword)
+    
+    
+    def bindKey(self):
+        self.pass_entry.bind("<KeyRelease>", self.onPasswordKeyRelease)
 
-
-    def mask_password(self):
-        # hide pass display
-        self.pass_entry.delete(0, ctk.END)
-        self.pass_entry.insert(0, self.actual_password)
-        self.pass_entry.configure(show="*")
