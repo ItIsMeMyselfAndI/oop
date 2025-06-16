@@ -72,12 +72,12 @@ class EditStyles:
     TAB_W = scale(350)
     TAB_H = scale(60)
 
-    OFF_TAB_BUTTON_FG_COLOR = BaseStyles.WHITE
-    OFF_TAB_BUTTON_HOVER_COLOR = BaseStyles.LIGHT_GREY
+    OFF_TAB_BTN_FG_COLOR = BaseStyles.WHITE
+    OFF_TAB_BTN_HOVER_COLOR = BaseStyles.LIGHT_GREY
     OFF_TAB_TEXT_COLOR = BaseStyles.DARK_GREY
 
-    ON_TAB_BUTTON_FG_COLOR = BaseStyles.BLUE
-    ON_TAB_BUTTON_HOVER_COLOR = BaseStyles.DARK_BLUE
+    ON_TAB_BTN_FG_COLOR = BaseStyles.BLUE
+    ON_TAB_BTN_HOVER_COLOR = BaseStyles.DARK_BLUE
     ON_TAB_TEXT_COLOR = BaseStyles.WHITE
 
 

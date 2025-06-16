@@ -258,8 +258,8 @@ class EditPageTabs(ctk.CTkFrame):
             font=self.font3,
             corner_radius=BaseStyles.RAD_2,
             text_color=EditStyles.OFF_TAB_TEXT_COLOR,
-            fg_color=EditStyles.OFF_TAB_BUTTON_FG_COLOR,
-            hover_color=EditStyles.OFF_TAB_BUTTON_HOVER_COLOR,
+            fg_color=EditStyles.OFF_TAB_BTN_FG_COLOR,
+            hover_color=EditStyles.OFF_TAB_BTN_HOVER_COLOR,
             height=EditStyles.TAB_H,
             width=EditStyles.TAB_W,
             command=command
@@ -276,8 +276,8 @@ class EditPageTabs(ctk.CTkFrame):
                     form.is_current_form = False # set page to not current page
                     form.pack_forget() # close page
                     self.tab_btns[t_type].configure( # reset tab config
-                        fg_color=EditStyles.OFF_TAB_BUTTON_FG_COLOR, 
-                        hover_color=EditStyles.OFF_TAB_BUTTON_HOVER_COLOR,
+                        fg_color=EditStyles.OFF_TAB_BTN_FG_COLOR, 
+                        hover_color=EditStyles.OFF_TAB_BTN_HOVER_COLOR,
                         text_color=EditStyles.OFF_TAB_TEXT_COLOR
                     )
 
@@ -295,8 +295,8 @@ class EditPageTabs(ctk.CTkFrame):
             try:
                 self.transactionForms[transaction_type].is_current_form = True
                 self.tab_btns[transaction_type].configure(
-                    fg_color=EditStyles.ON_TAB_BUTTON_FG_COLOR,
-                    hover_color=EditStyles.ON_TAB_BUTTON_HOVER_COLOR,
+                    fg_color=EditStyles.ON_TAB_BTN_FG_COLOR,
+                    hover_color=EditStyles.ON_TAB_BTN_HOVER_COLOR,
                     text_color=EditStyles.ON_TAB_TEXT_COLOR
                 )
                 self.transactionForms[transaction_type].pack()

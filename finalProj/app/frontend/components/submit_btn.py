@@ -28,7 +28,7 @@ class SubmitBTN(ctk.CTkButton):
             fg_color=BaseStyles.WHITE,
             enable_frame_blocker=False
         )
-    
+
     
     def _updateBackendAndFrontend(self):
         # save to database

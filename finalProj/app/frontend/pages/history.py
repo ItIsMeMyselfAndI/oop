@@ -44,6 +44,7 @@ class TransactionTable(ctk.CTkFrame):
         
         # body
         self.table_body = TransactionTableBody(
+            init_filter_type="All Types",
             transactions_per_filter=transactions_per_filter,
             master=self,
             fg_color=HistoryStyles.TABLE_BODY_FG_COLOR,
@@ -51,7 +52,6 @@ class TransactionTable(ctk.CTkFrame):
             corner_radius=BaseStyles.RAD_2,
             height=HistoryStyles.TABLE_BODY_H,
             width=HistoryStyles.TABLE_BODY_W,
-            has_filter=True
         )
         self.table_body.pack()
         
@@ -142,11 +142,9 @@ class HistoryPage(ctk.CTkFrame):
 
     
     def updatePageDisplay(self):
-        # destroy prev ver of the history
-        for page in self.table_section.table_body.winfo_children():
-            page.destroy()
-        
-        # re initialize history content
-        transactions_per_filter = self.loadTransactionsPerFilter()
-        self.table_section.table_body.initializeTableBodyContent(transactions_per_filter)
-        self.table_section.table_body.displayCurrentTablePage()
+        # refresh history content
+        self.table_section.table_body.transactions_per_filter = self.loadTransactionsPerFilter()
+        self.table_section.table_body.filterTransactions()
+        self.table_section.table_body.countFilteredTablePages()
+        self.table_section.table_body.separateFilteredTransactionsPerPage()
+        self.table_section.table_body.updateCurrentTablePage()

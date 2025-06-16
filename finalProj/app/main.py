@@ -29,7 +29,6 @@ class App(ctk.CTk):
         self.user_id = ctk.StringVar()
         self.username = ctk.StringVar()
         
-
         # initialize fonts
         self.font2 = ("Bodoni MT", BaseStyles.FONT_SIZE_2, "italic")
         self.font3 = ("Bodoni MT", BaseStyles.FONT_SIZE_3, "italic")
@@ -44,7 +43,10 @@ class App(ctk.CTk):
         # get user
         self.createLoginForm()
         self.authenticateUser() # blocks code till login is complete
-        
+        print(f"[DEBUG] {self.user_id = }")
+        print(f"[DEBUG] {self.username = }")
+
+
         # start app
         self.startLoadingPopUp()
         self.createAppPages()

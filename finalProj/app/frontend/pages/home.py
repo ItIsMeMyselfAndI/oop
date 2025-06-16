@@ -93,7 +93,7 @@ class RecentTable(ctk.CTkFrame):
         
         # header
         self.table_body = TransactionTableBody(
-            has_filter=False,
+            init_filter_type="Recent",
             transactions_per_filter=transactions_per_filter,
             master=self,
             fg_color=HomeStyles.TABLE_BODY_FG_COLOR,
@@ -316,7 +316,7 @@ class HomePage(ctk.CTkFrame):
 
 
     def createTableSection(self):
-        transactions_per_filter = {"recent": self.tm.repo.getRecentTransactions(user_id=self.app.user_id, t_count=10)}
+        transactions_per_filter = {"Recent": self.tm.repo.getRecentTransactions(user_id=self.app.user_id, t_count=10)}
         self.table_section = RecentTable(
             transactions_per_filter=transactions_per_filter,
             master=self.scroll_frame,
@@ -350,14 +350,16 @@ class HomePage(ctk.CTkFrame):
         balance = self._loadOverallBalance()
         self.header_section.amount_label.configure(text=f"₱ {balance:,}")
 
-        # destroy prev ver of the recent transactions
+        # destroy prev ver of the Recent transactions
         for page in self.table_section.table_body.winfo_children():
             page.destroy()
         
-        # re initialize recent transactions
-        transactions_per_filter = {"recent": self.tm.repo.getRecentTransactions(user_id=self.app.user_id, t_count=10)}
-        self.table_section.table_body.initializeTableBodyContent(transactions_per_filter)
-        self.table_section.table_body.displayCurrentTablePage()
+        # refresh history content
+        self.table_section.table_body.transactions_per_filter = {"Recent": self.tm.repo.getRecentTransactions(user_id=self.app.user_id, t_count=10)}
+        self.table_section.table_body.filterTransactions()
+        self.table_section.table_body.countFilteredTablePages()
+        self.table_section.table_body.separateFilteredTransactionsPerPage()
+        self.table_section.table_body.updateCurrentTablePage()
 
         # update graphs 
         self.monthly_section.updateGraphsDisplay()

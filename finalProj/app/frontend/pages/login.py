@@ -110,13 +110,13 @@ class LoginForm(ctk.CTkFrame):
         self.login_button = ctk.CTkButton(
             master=self,
             text="LOGIN",
-            font=LoginStyles.LOGIN_BUTTON_FONT,
+            font=LoginStyles.LOGIN_BTN_FONT,
             corner_radius=BaseStyles.RAD_5,
-            text_color=LoginStyles.LOGIN_BUTTON_TEXT_COLOR,
-            hover_color=LoginStyles.LOGIN_BUTTON_HOVER_COLOR,
-            fg_color=LoginStyles.LOGIN_BUTTON_FG_COLOR,
-            width=LoginStyles.LOGIN_BUTTON_W,
-            height=LoginStyles.LOGIN_BUTTON_H,
+            text_color=LoginStyles.LOGIN_BTN_TEXT_COLOR,
+            hover_color=LoginStyles.LOGIN_BTN_HOVER_COLOR,
+            fg_color=LoginStyles.LOGIN_BTN_FG_COLOR,
+            width=LoginStyles.LOGIN_BTN_W,
+            height=LoginStyles.LOGIN_BTN_H,
             command=self.onClickLogin
         )
         self.login_button.pack(padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_1))
@@ -125,13 +125,13 @@ class LoginForm(ctk.CTkFrame):
         self.signup_button = ctk.CTkButton(
             master=self,
             text="SIGN UP",
-            font=LoginStyles.SIGNUP_BUTTON_FONT,
+            font=LoginStyles.SIGNUP_BTN_FONT,
             corner_radius=BaseStyles.RAD_5,
-            text_color=LoginStyles.SIGNUP_BUTTON_TEXT_COLOR,
-            hover_color=LoginStyles.SIGNUP_BUTTON_HOVER_COLOR,
-            fg_color=LoginStyles.SIGNUP_BUTTON_FG_COLOR,
-            width=LoginStyles.SIGNUP_BUTTON_W,
-            height=LoginStyles.SIGNUP_BUTTON_H,
+            text_color=LoginStyles.SIGNUP_BTN_TEXT_COLOR,
+            hover_color=LoginStyles.SIGNUP_BTN_HOVER_COLOR,
+            fg_color=LoginStyles.SIGNUP_BTN_FG_COLOR,
+            width=LoginStyles.SIGNUP_BTN_W,
+            height=LoginStyles.SIGNUP_BTN_H,
             command=self.onClickSignUp
         )
         self.signup_button.pack(padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_4*2))
