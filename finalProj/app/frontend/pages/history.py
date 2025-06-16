@@ -148,3 +148,4 @@ class HistoryPage(ctk.CTkFrame):
         self.table_section.table_body.countFilteredTablePages()
         self.table_section.table_body.separateFilteredTransactionsPerPage()
         self.table_section.table_body.updateCurrentTablePage()
+        self.table_section.table_nav._updatePageNumberDisplay()

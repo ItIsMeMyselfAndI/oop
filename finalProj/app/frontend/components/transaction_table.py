@@ -276,6 +276,9 @@ class TransactionTableBody(ctk.CTkScrollableFrame):
     def updateCurrentTablePage(self):
         print("[DEBUG] updateCurrentTablePage()")
         self._destroyPrevTablePage()
+        if self.pages_count == 0:
+            print("[DEBUG] empty page")
+            return
         self._createCurrentTablePage()
         self._displayCurrentTablePage()
 
@@ -305,12 +308,15 @@ class TransactionTableNavigation(ctk.CTkFrame):
         )
         self.prevBTN.grid(row=0, column=0, padx=(0,BaseStyles.PAD_1))
 
+        page_num_text = self.table_body.current_page_num + 1
+        if self.table_body.pages_count == 0:
+            page_num_text = 0
         # page number display
         self.page_num_label = ctk.CTkLabel(
             master=self,
             corner_radius=BaseStyles.RAD_2,
             font=self.font1,
-            text=f"{self.table_body.current_page_num+1}/{self.table_body.pages_count}",
+            text=f"{page_num_text}/{self.table_body.pages_count}",
             text_color=TransactionTableStyles.PAGE_NUM_LABEL_TEXT_COLOR,
             fg_color=TransactionTableStyles.PAGE_NUM_LABEL_FG_COLOR,
             width=TransactionTableStyles.PAGE_NUM_LABEL_W,
@@ -365,8 +371,9 @@ class TransactionTableNavigation(ctk.CTkFrame):
 
 
     def _updatePageNumberDisplay(self):
-        if not self.table_body.current_table_page: # no page
+        if self.table_body.pages_count == 0: # no page
             self.page_num_label.configure(text="0/0")
+            print("[DEBUG] 0/0 page")
         else:
             self.page_num_label.configure(text=f"{self.table_body.current_page_num+1}/{self.table_body.pages_count}")
 
