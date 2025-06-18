@@ -6,14 +6,148 @@ from backend import Transaction
 from frontend.styles import BaseStyles, HistoryStyles # paddings, dimensions, colors, etc
 from frontend.components import TransactionTableFilters, TransactionTableHeader, TransactionTableBody, TransactionTableNavigation
 
+from backend import Transaction, TransactionManager # db manager
+
+from models.base_model import Model
+from controllers.base_controller import Controller
+
 
 #--------------------------------------------------------------------------------------------------------
 
 
-class HistoryHeader(ctk.CTkFrame):
+class HistoryPageModel(Model):
+    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.StringVar):
+        self.initialize_managers(transaction_manager)
+        self.initialize_vars(user_id_var)
+
+        self.is_current_page = False
+
+
+    def initialize_managers(self, transaction_manager: TransactionManager):
+        self.t_man = transaction_manager
+    
+
+    def initialize_vars(self, user_id_var: ctk.StringVar):
+        self.user_id_var = user_id_var
+    
+    
+    def load_transactions_per_filter(self) -> Dict[str, List[Transaction]]:
+        print("\n[DEBUG] loading transactions per filter...")
+        transactions_per_filter = {
+            "All Types": self.t_man.repo.getAllTransactions(self.user_id_var.get()),
+            "Income": self.t_man.repo.getTransactionsByType(self.user_id_var.get(), "income"),
+            "Savings": self.t_man.repo.getTransactionsByType(self.user_id_var.get(), "savings"),
+            "Expenses": self.t_man.repo.getTransactionsByType(self.user_id_var.get(), "expense"),
+            "Investment": self.t_man.repo.getTransactionsByType(self.user_id_var.get(), "investment"),
+            # income
+            "Salary":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Salary"),
+            "Bonus":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Bonus"),
+            "Side-hustles":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Side-hustles"),
+            "Tips":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Tips"),
+            # expenses
+            "Bills":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Bills"),
+            "Education":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Education"),
+            "Entertainment":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Entertainment"),
+            "Food & Drinks":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Food & Drinks"),
+            "Grocery":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Grocery"),
+            "Healthcare":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Healthcare"),
+            "House":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "House"),
+            "Shopping":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Shopping"),
+            "Transportation":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Transportation"),
+            "Wellness":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Wellness"),
+            "Other":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Other"),
+            # savings
+            "Monthly Allowance":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Monthly Allowance"),
+            "Change":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Change"),
+            "Miscellaneous":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Miscellaneous"),
+            # investment
+            "Stocks":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Stocks"),
+            "Crypto":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Crypto"),
+            "Bonds":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Bonds"),
+            "Real Estate":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Real Estate")
+        }
+        print("\n[DEBUG] transactions per filter loaded successfully...")
+        return transactions_per_filter
+
+
+#--------------------------------------------------------------------------------------------------------
+
+
+class HistoryPageView(ctk.CTkFrame):
+    def __init__(self, model: Model, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.model = model
+
+
+    def create(self):
+        print("\n[DEBUG] creating history page...")
+        self._create_header()
+        self._create_table()
+        print("[DEBUG] history page created successfully")
+        
+
+    def _create_header(self):
+        print("[DEBUG] creating header...")
+        self.header = Header(
+            master=self,
+            fg_color=HistoryStyles.HEADER_SECTION_FG_COLOR,
+            corner_radius=BaseStyles.RAD_2
+        )
+        self.header.pack(pady=(BaseStyles.PAD_5+BaseStyles.PAD_5,0))
+        self.update_idletasks()
+        print("[DEBUG] header created successfully")
+
+
+    def _create_table(self):
+        print("[DEBUG] creating table...")
+        transactions_per_filter = self.model.load_transactions_per_filter()
+        self.table = TransactionTable(
+            transactions_per_filter=transactions_per_filter,
+            filter_master=self.header,
+            master=self,
+            fg_color=HistoryStyles.TABLE_SECTION_FG_COLOR
+        )
+        self.table.pack(padx=BaseStyles.PAD_3, pady=(BaseStyles.PAD_2,0))
+        self.update_idletasks()
+        print("[DEBUG] table created successfully")
+
+
+#--------------------------------------------------------------------------------------------------------
+
+
+class HistoryPageController(Controller):
+    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.StringVar, master):
+        self.model = HistoryPageModel(transaction_manager=transaction_manager, user_id_var=user_id_var)
+        self.view = HistoryPageView(model=self.model, master=master, fg_color=HistoryStyles.MAIN_FRAME_FG_COLOR)
+
+
+    def run(self):
+        pass
+
+
+    def update_display(self):
+        print("[DEBUG] updating history page display...")
+        # destroy prev ver of the table
+        for page in self.view.table.body.winfo_children():
+            page.destroy()
+
+        self.view.table.body.transactions_per_filter = self.model.load_transactions_per_filter()
+        self.view.table.body.filterTransactions()
+        self.view.table.body.countFilteredTablePages()
+        self.view.table.body.separateFilteredTransactionsPerPage()
+        self.view.table.body.updateCurrentTablePage()
+        self.view.table.nav._updatePageNumberDisplay()
+        self.view.update_idletasks()
+        print("[DEBUG] history page display updated successfully")
+
+
+#--------------------------------------------------------------------------------------------------------
+
+
+class Header(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font6 = ("Bodoni MT", BaseStyles.FONT_SIZE_6, "italic")
+        self.font6 = ("Arial", BaseStyles.FONT_SIZE_6, "normal")
         # title
         self.title_label = ctk.CTkLabel(
             master=self,
@@ -32,18 +166,34 @@ class HistoryHeader(ctk.CTkFrame):
 
 
 class TransactionTable(ctk.CTkFrame):
-    def __init__(self, transactions_per_filter, header_section, master, **kwargs):
+    def __init__(self, transactions_per_filter, filter_master, master, **kwargs):
         super().__init__(master, **kwargs)
-        # header
-        self.table_header = TransactionTableHeader(
+
+        self.create(transactions_per_filter, filter_master)
+
+
+    def create(self, transactions_per_filter, filter_master):
+        self._create_header()
+        self._create_body(transactions_per_filter)
+        self._create_nav()
+        self._create_filters(filter_master)
+
+
+    def _create_header(self):
+        print("[DEBUG] creating table header...")
+        self.header = TransactionTableHeader(
             master=self,
             corner_radius=BaseStyles.RAD_2,
             fg_color=HistoryStyles.TABLE_HEADER_FG_COLOR
         )
-        self.table_header.pack(pady=(0,BaseStyles.PAD_1))
+        self.header.pack(pady=(0,BaseStyles.PAD_1))
+        self.update_idletasks()
+        print("[DEBUG] table header created successfully")
         
-        # body
-        self.table_body = TransactionTableBody(
+    
+    def _create_body(self, transactions_per_filter):
+        print("[DEBUG] creating table body...")
+        self.body = TransactionTableBody(
             init_filter_type="All Types",
             transactions_per_filter=transactions_per_filter,
             master=self,
@@ -53,99 +203,31 @@ class TransactionTable(ctk.CTkFrame):
             height=HistoryStyles.TABLE_BODY_H,
             width=HistoryStyles.TABLE_BODY_W,
         )
-        self.table_body.pack()
+        self.body.pack()
+        self.update_idletasks()
+        print("[DEBUG] table body created successfully")
         
-        # navigation buttons
-        self.table_nav = TransactionTableNavigation(
-            table_body=self.table_body,
+        
+    def _create_nav(self):
+        print("[DEBUG] creating table navigation...")
+        self.nav = TransactionTableNavigation(
+            table_body=self.body,
             master=self,
             fg_color=HistoryStyles.TABLE_NAV_FG_COLOR
         )
-        self.table_nav.pack(pady=(BaseStyles.PAD_1,0))
+        self.nav.pack(pady=(BaseStyles.PAD_1,0))
+        self.update_idletasks()
+        print("[DEBUG] table navigation created successfully")
 
-        # filters
+    
+    def _create_filters(self, filter_master):
+        print("[DEBUG] creating table filters...")
         self.filters = TransactionTableFilters(
-            table_body=self.table_body,
-            table_nav=self.table_nav,
-            master=header_section,
+            table_body=self.body,
+            table_nav=self.nav,
+            master=filter_master,
             fg_color=HistoryStyles.FILTERS_FRAME_FG_COLOR
         )
         self.filters.grid(row=0, column=1, padx=(0, BaseStyles.PAD_2), pady=(0,BaseStyles.PAD_2), sticky="s")
-        
-
-#--------------------------------------------------------------------------------------------------------
-
-
-class HistoryPage(ctk.CTkFrame):
-    def __init__(self, app, t_man, master, **kwargs):
-        super().__init__(master, **kwargs)
-        self.app = app
-        self.t_man = t_man
-
-        # initialize state
-        self.is_current_page = False
-
-        # header
-        self.header_section = HistoryHeader(
-            master=self,
-            fg_color=HistoryStyles.HEADER_SECTION_FG_COLOR,
-            corner_radius=BaseStyles.RAD_2
-        )
-        self.header_section.pack(pady=(BaseStyles.PAD_5+BaseStyles.PAD_5,0))
-
-        # table
-        transactions_per_filter = self.loadTransactionsPerFilter()
-        self.table_section = TransactionTable(
-            transactions_per_filter=transactions_per_filter,
-            header_section=self.header_section,
-            master=self,
-            fg_color=HistoryStyles.TABLE_SECTION_FG_COLOR
-        )
-        self.table_section.pack(padx=BaseStyles.PAD_3, pady=(BaseStyles.PAD_2,0))
-
-
-    def loadTransactionsPerFilter(self) -> Dict[str, List[Transaction]]:
-        transactions_per_filter = {
-            "All Types": self.t_man.repo.getAllTransactions(self.app.user_id),
-            "Income": self.t_man.repo.getTransactionsByType(self.app.user_id, "income"),
-            "Savings": self.t_man.repo.getTransactionsByType(self.app.user_id, "savings"),
-            "Expenses": self.t_man.repo.getTransactionsByType(self.app.user_id, "expense"),
-            "Invest_manent": self.t_man.repo.getTransactionsByType(self.app.user_id, "investment"),
-            # income
-            "Salary":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Salary"),
-            "Bonus":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Bonus"),
-            "Side-hustles":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Side-hustles"),
-            "Tips":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Tips"),
-            # expenses
-            "Bills":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Bills"),
-            "Education":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Education"),
-            "Entertainment":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Entertainment"),
-            "Food & Drinks":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Food & Drinks"),
-            "Grocery":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Grocery"),
-            "Healthcare":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Healthcare"),
-            "House":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "House"),
-            "Shopping":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Shopping"),
-            "Transportation":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Transportation"),
-            "Wellness":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Wellness"),
-            "Other":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Other"),
-            # savings
-            "Monthly Allowance":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Monthly Allowance"),
-            "Change":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Change"),
-            "Miscellaneous":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Miscellaneous"),
-            # investment
-            "Stocks":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Stocks"),
-            "Crypto":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Crypto"),
-            "Bonds":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Bonds"),
-            "Real Estate":self.t_man.repo.getTransactionsByCategory(self.app.user_id, "Real Estate")
-        }
-        return transactions_per_filter
-
-    
-    def updatePageDisplay(self):
-        # refresh history content
-        self.table_section.table_body.transactions_per_filter = self.loadTransactionsPerFilter()
-        self.table_section.table_body.filterTransactions()
-        self.table_section.table_body.countFilteredTablePages()
-        self.table_section.table_body.separateFilteredTransactionsPerPage()
-        self.table_section.table_body.updateCurrentTablePage()
-        self.table_section.table_nav._updatePageNumberDisplay()
+        self.update_idletasks()
+        print("[DEBUG] table filters created successfully")

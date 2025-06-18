@@ -11,58 +11,16 @@ from frontend.styles import BaseStyles, SidebarStyles # paddings, dimensions, co
 
 
 class SidebarTabs(ctk.CTkFrame):
-    def __init__(self, pages, master, **kwargs):
+    def __init__(self, controller_per_page, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.pages = pages
+        self.controller_per_page = controller_per_page
 
         # sidebar icons
-        home_icon, profile_icon, add_icon, edit_icon, history_icon = self.loadIcons()
+        self.load_icons()
+        self.create_tab_per_page()
         
-        # profile buttons/tabs
-        self.profile_btn = self.createTabBtn(
-            image=profile_icon,
-            command=self.onClickProfilePage
-        )
-        self.profile_btn.pack(pady=(BaseStyles.PAD_1,0), padx=BaseStyles.PAD_1)
-        
-        # home buttons/tabs
-        self.home_btn = self.createTabBtn(
-            image=home_icon,
-            command=self.onClickHomePage
-        )
-        self.home_btn.pack(pady=(BaseStyles.PAD_2,0), padx=BaseStyles.PAD_1)
-        
-        # edit buttons/tabs
-        self.edit_btn = self.createTabBtn(
-            image=edit_icon,
-            command=self.onClickEditPage
-        )
-        self.edit_btn.pack(pady=(BaseStyles.PAD_2,0), padx=BaseStyles.PAD_1)
-        
-        # history buttons/tabs
-        self.history_btn = self.createTabBtn(
-            image=history_icon,
-            command=self.onClickHistoryPage
-        )
-        self.history_btn.pack(pady=(BaseStyles.PAD_2,0), padx=BaseStyles.PAD_1)
-        
-        # add buttons/tabs
-        self.add_btn = self.createTabBtn(
-            image=add_icon,
-            command=self.onClickAddPage
-        )
-        self.add_btn.pack(pady=(BaseStyles.PAD_2, 0), padx=BaseStyles.PAD_1)
-        
-        # page buttons/tabs
-        self.tab_btns = {
-            "profile":self.profile_btn, "home":self.home_btn,
-            "edit":self.edit_btn, "history":self.history_btn,
-            "add":self.add_btn
-        }
-        self.update_idletasks()
 
-
-    def loadIcons(self):
+    def load_icons(self):
         # icon path
         if hasattr(sys, "_MEIPASS"): # # for .exe: memory resources path
             ICONS_FOLDER = os.path.join(sys._MEIPASS, "assets/icons")
@@ -71,35 +29,73 @@ class SidebarTabs(ctk.CTkFrame):
         print(ICONS_FOLDER)
         
         # load images
-        home_icon = ctk.CTkImage(
+        self.home_icon = ctk.CTkImage(
             light_image=Image.open(os.path.join(ICONS_FOLDER, "home.png")),
             dark_image=Image.open(os.path.join(ICONS_FOLDER, "home.png")),
             size=(SidebarStyles.IMG_W,SidebarStyles.IMG_H)
         )
-        profile_icon = ctk.CTkImage(
+        self.profile_icon = ctk.CTkImage(
             light_image=Image.open(os.path.join(ICONS_FOLDER, "profile.png")),
             dark_image=Image.open(os.path.join(ICONS_FOLDER, "profile.png")),
             size=(SidebarStyles.IMG_W,SidebarStyles.IMG_H)
         )
-        add_icon = ctk.CTkImage(
-            light_image=Image.open(os.path.join(ICONS_FOLDER, "add.png")),
-            dark_image=Image.open(os.path.join(ICONS_FOLDER, "add.png")),
-            size=(SidebarStyles.IMG_W,SidebarStyles.IMG_H)
-        )
-        edit_icon = ctk.CTkImage(
+        self.edit_icon = ctk.CTkImage(
             light_image=Image.open(os.path.join(ICONS_FOLDER, "edit.png")),
             dark_image=Image.open(os.path.join(ICONS_FOLDER, "edit.png")),
             size=(SidebarStyles.IMG_W,SidebarStyles.IMG_H)
         )
-        history_icon = ctk.CTkImage(
+        self.history_icon = ctk.CTkImage(
             light_image=Image.open(os.path.join(ICONS_FOLDER, "history.png")),
             dark_image=Image.open(os.path.join(ICONS_FOLDER, "history.png")),
             size=(SidebarStyles.IMG_W,SidebarStyles.IMG_H)
         )
-        return home_icon, profile_icon, add_icon, edit_icon, history_icon
+        self.add_icon = ctk.CTkImage(
+            light_image=Image.open(os.path.join(ICONS_FOLDER, "add.png")),
+            dark_image=Image.open(os.path.join(ICONS_FOLDER, "add.png")),
+            size=(SidebarStyles.IMG_W,SidebarStyles.IMG_H)
+        )
 
 
-    def createTabBtn(self, image, command):
+    def create_tab_per_page(self):
+        self.profile_btn = self._create_tab(
+            image=self.profile_icon,
+            command=self.on_click_profile_page
+        )
+        self.profile_btn.pack(pady=(BaseStyles.PAD_1,0), padx=BaseStyles.PAD_1)
+        
+        self.home_btn = self._create_tab(
+            image=self.home_icon,
+            command=self.on_click_home_page
+        )
+        self.home_btn.pack(pady=(BaseStyles.PAD_2,0), padx=BaseStyles.PAD_1)
+        
+        self.edit_btn = self._create_tab(
+            image=self.edit_icon,
+            command=self.on_click_edit_page
+        )
+        self.edit_btn.pack(pady=(BaseStyles.PAD_2,0), padx=BaseStyles.PAD_1)
+        
+        self.history_btn = self._create_tab(
+            image=self.history_icon,
+            command=self.on_click_history_page
+        )
+        self.history_btn.pack(pady=(BaseStyles.PAD_2,0), padx=BaseStyles.PAD_1)
+        
+        self.add_btn = self._create_tab(
+            image=self.add_icon,
+            command=self.on_click_add_page
+        )
+        self.add_btn.pack(pady=(BaseStyles.PAD_2, 0), padx=BaseStyles.PAD_1)
+        
+        self.tab_per_page = {
+            "profile":self.profile_btn, "home":self.home_btn,
+            "edit":self.edit_btn, "history":self.history_btn,
+            "add":self.add_btn
+        }
+        self.update_idletasks()
+
+
+    def _create_tab(self, image, command):
         btn = ctk.CTkButton(
             master=self,
             text="",
@@ -114,65 +110,51 @@ class SidebarTabs(ctk.CTkFrame):
         return btn
 
 
-    def _hideOtherPages(self, page_name):
+    def on_click_profile_page(self):
+        self.after(100, lambda: self._hide_other_pages("profile"))
+        self.after(300, lambda: self._show_page("profile"))
+
+
+    def on_click_home_page(self):
+        self.after(100, lambda: self._hide_other_pages("home"))
+        self.after(300, lambda: self._show_page("home"))
+
+
+    def on_click_edit_page(self):
+        self.after(100, lambda: self._hide_other_pages("edit"))
+        self.after(300, lambda: self._show_page("edit"))
+
+
+    def on_click_history_page(self):
+        self.after(100, lambda: self._hide_other_pages("history"))
+        self.after(300, lambda: self._show_page("history"))
+
+
+    def on_click_add_page(self):
+        self.after(100, lambda: self._hide_other_pages("add"))
+        self.after(300, lambda: self._show_page("add"))
+
+
+    def _hide_other_pages(self, page_name):
         # hide other pages
-        for name, page in self.pages.items():
-            if not name == page_name:
-
-                try:
-                    page.is_current_page = False # set page to not current page
-                    page.pack_forget() # close page
-                    self.tab_btns[name].configure( # reset tab config
-                        fg_color=SidebarStyles.OFF_BTN_FG_COLOR,
-                        hover_color=SidebarStyles.OFF_BTN_HOVER_COLOR
-                    )
-
-                except Exception as e:
-                    print(f"[Silent Error] Failed to hide: app-{page_name} page")
-                    print(f"\t{e}")
-
-        self.update_idletasks()
-
-
-    def _showPage(self, page_name):
-        # open selected page and change fg, hover & text color
-        if not self.pages[page_name].is_current_page:
-
-            try:
-                self.pages[page_name].is_current_page = True
-                self.tab_btns[page_name].configure(
-                    fg_color=SidebarStyles.ON_BTN_FG_COLOR,
-                    hover_color=SidebarStyles.ON_BTN_HOVER_COLOR
+        for name, controller in self.controller_per_page.items():
+            if not page_name == name:
+                controller.model.is_current_page = False # set page to not current page
+                controller.view.pack_forget() # close page
+                self.tab_per_page[name].configure( # reset tab config
+                    fg_color=SidebarStyles.OFF_BTN_FG_COLOR,
+                    hover_color=SidebarStyles.OFF_BTN_HOVER_COLOR
                 )
-                self.pages[page_name].pack()
-
-            except Exception as e:
-                print(f"[Silent Error] Failed to show: app-{page_name} page")
-                print(f"\t{e}")
-
-        self.update_idletasks()
+                self.update_idletasks()
 
 
-    def onClickProfilePage(self):
-        self.after(100, lambda: self._hideOtherPages("profile"))
-        self.after(300, lambda: self._showPage("profile"))
-
-
-    def onClickHomePage(self):
-        self.after(100, lambda: self._hideOtherPages("home"))
-        self.after(300, lambda: self._showPage("home"))
-
-
-    def onClickEditPage(self):
-        self.after(100, lambda: self._hideOtherPages("edit"))
-        self.after(300, lambda: self._showPage("edit"))
-
-
-    def onClickHistoryPage(self):
-        self.after(100, lambda: self._hideOtherPages("history"))
-        self.after(300, lambda: self._showPage("history"))
-
-
-    def onClickAddPage(self):
-        self.after(100, lambda: self._hideOtherPages("add"))
-        self.after(300, lambda: self._showPage("add"))
+    def _show_page(self, page_name):
+        # open selected page and change fg, hover & text color
+        if not self.controller_per_page[page_name].model.is_current_page:
+            self.controller_per_page[page_name].model.is_current_page = True
+            self.tab_per_page[page_name].configure(
+                fg_color=SidebarStyles.ON_BTN_FG_COLOR,
+                hover_color=SidebarStyles.ON_BTN_HOVER_COLOR
+            )
+            self.controller_per_page[page_name].view.pack()
+            self.update_idletasks()

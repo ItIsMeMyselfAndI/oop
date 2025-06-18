@@ -12,8 +12,8 @@ from backend import Transaction
 class TransactionTableHeader(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font3 = ("Bodoni MT", BaseStyles.FONT_SIZE_3, "italic")
-        self.font4 = ("Bodoni MT", BaseStyles.FONT_SIZE_4, "italic")
+        self.font3 = ("Arial", BaseStyles.FONT_SIZE_3, "normal")
+        self.font4 = ("Arial", BaseStyles.FONT_SIZE_4, "normal")
         
         # date
         self.date_header = ctk.CTkLabel(
@@ -90,8 +90,8 @@ class TransactionTableRow(ctk.CTkFrame):
         self.t = transaction
         
         # initialize font
-        self.font2 = ("Bodoni MT", BaseStyles.FONT_SIZE_2, "italic")
-        self.font4 = ("Bodoni MT", BaseStyles.FONT_SIZE_4, "italic")
+        self.font2 = ("Arial", BaseStyles.FONT_SIZE_2, "normal")
+        self.font4 = ("Arial", BaseStyles.FONT_SIZE_4, "normal")
         
         # date
         self.date_col = ctk.CTkLabel(
@@ -290,7 +290,7 @@ class TransactionTableNavigation(ctk.CTkFrame):
     def __init__(self, table_body, master, **kwargs):
         super().__init__(master, **kwargs)
         self.table_body = table_body
-        self.font1 = ("Bodoni MT", BaseStyles.FONT_SIZE_1, "italic")
+        self.font1 = ("Arial", BaseStyles.FONT_SIZE_1, "normal")
         
         # previous button
         self.prevBTN = ctk.CTkButton(
@@ -418,17 +418,17 @@ class TransactionTableFilters(ctk.CTkFrame):
         self.table_nav = table_nav
 
         # initialize fonts
-        self.font1 = ("Bodoni MT", BaseStyles.FONT_SIZE_1, "italic")
+        self.font1 = ("Arial", BaseStyles.FONT_SIZE_1, "normal")
 
         # options
-        self.t_type = ["All Types"] + sorted(["Income", "Expenses", "Savings", "Invest_manent"])
+        self.t_type = ["All Types"] + sorted(["Income", "Expenses", "Savings", "Investment"])
         self.categories_by_type = {
             "Income": ["All Categories"] + sorted(["Salary", "Bonus", "Side-hustles", "Tips"]),
             "Expenses": ["All Categories"] + sorted(["Bills", "Education", "Entertainment", "Food & Drinks",
                         "Grocery", "Healthcare", "House", "Shopping",
                         "Transportation", "Wellness", "Other"]),
             "Savings": ["All Categories"] + sorted(["Monthly Allowance", "Change", "Miscellaneous"]),
-            "Invest_manent": ["All Categories"] + sorted(["Stocks", "Crypto", "Bonds", "Real Estate"])
+            "Investment": ["All Categories"] + sorted(["Stocks", "Crypto", "Bonds", "Real Estate"])
         }
         self.all_categories = ["All Categories"] + sorted([c for categories in self.categories_by_type.values() for c in categories if c != "All Categories"])
         

@@ -72,6 +72,8 @@ class AddStyles:
 
 
     # main page
+    MAIN_FRAME_FG_COLOR = BaseStyles.TRANSPARENT
+
     HEADER_SECTION_FG_COLOR = BaseStyles.TRANSPARENT
 
     FORMS_SECTION_FG_COLOR = BaseStyles.TRANSPARENT

@@ -520,7 +520,7 @@ class TransactionManager:
         ax.plot(quarters, incomes, color='green', marker='o', linestyle='-', label="Income")
         ax.plot(quarters, expenses, color='red', marker='o', linestyle='-', label="Expenses")
         ax.plot(quarters, savings, color='blue', marker='o', linestyle='-', label="Savings")
-        ax.plot(quarters, investments, color='orange', marker='o', linestyle='-', label="Invest_manent")
+        ax.plot(quarters, investments, color='orange', marker='o', linestyle='-', label="Investment")
 
         ax.set_ylabel("Amount (₱)", fontsize=label_size)
         ax.set_xlabel("Quarters", fontsize=label_size)

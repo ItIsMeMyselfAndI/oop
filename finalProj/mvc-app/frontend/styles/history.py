@@ -20,6 +20,8 @@ class HistoryStyles:
 
 
     # main table
+    MAIN_FRAME_FG_COLOR = BaseStyles.TRANSPARENT
+    
     HEADER_SECTION_FG_COLOR = BaseStyles.BLUE
     TABLE_SECTION_FG_COLOR = BaseStyles.TRANSPARENT
     

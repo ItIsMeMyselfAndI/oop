@@ -8,11 +8,6 @@ from typing import List, Dict
 from frontend.styles import BaseStyles, AppStyles # paddings, dimensions, colors, etc
 from frontend.components import SidebarTabs # navigation page-tabs
 from frontend.pages import LoginForm # login form
-from frontend.pages import ProfilePage # profile page
-from frontend.pages import HomePage # home page
-from frontend.pages import EditPage # edit page
-from frontend.pages import HistoryPage # history page
-from frontend.pages import AddPage # edit page
 from frontend.components import SubmitBTN # save btn
 from frontend.components import PopUpWin # pop up win
 from backend import UserRepository, TransactionManager # db manager
@@ -20,6 +15,9 @@ from backend import UserRepository, TransactionManager # db manager
 from controllers.base_controller import Controller
 from frontend.pages.profile import ProfilePageController
 from frontend.pages.home import HomePageController
+from frontend.pages.edit import EditPageController
+from frontend.pages.history import HistoryPageController
+from frontend.pages.add import AddPageController
 
 
 class AppModel:
@@ -57,8 +55,8 @@ class AppView(ctk.CTk):
 
     def initialize_app_settings(self):
         print("\n[DEBUG] initializing app...")
-        self.font2 = ("Bodoni MT", BaseStyles.FONT_SIZE_2, "italic")
-        self.font3 = ("Bodoni MT", BaseStyles.FONT_SIZE_3, "italic")
+        self.font2 = ("Arial", BaseStyles.FONT_SIZE_2, "normal")
+        self.font3 = ("Arial", BaseStyles.FONT_SIZE_3, "normal")
 
         x_pos, y_pos = 0, 0
         self._setup_logo()
@@ -104,7 +102,18 @@ class AppView(ctk.CTk):
             enable_frame_blocker=False
         )
         
-        # closing popup
+        # updating
+        self.updating_popup = PopUpWin(
+            title="[App] Update",
+            msg="Updating...",
+            font=self.font2,
+            enable_close=False,
+            master=self,
+            fg_color=AppStyles.UPDATE_POP_UP_FG_COLOR,
+            enable_frame_blocker=False
+        )
+        
+        # closing
         self.closing_popup = PopUpWin(
             title="[App] Exit",
             msg="Exiting...",
@@ -175,15 +184,63 @@ class AppView(ctk.CTk):
         print("[DEBUG] creating main pages...")
         for controller in controller_per_page.values():
             controller.view.create()
-            controller.view.pack()
         print("[DEBUG] main pages created successfully")
         
 
-    def load_pages_gui_to_memory(self):
-        # for name in reversed(self.pages.keys()):
-        #     self.after_idle(lambda: self.sidebar._hideOtherPages(name))
-        #     self.after_idle(lambda: self.sidebar._showPage(name))
-        pass
+    def create_submit_btns(self, controller_per_page: Dict[str, Controller], updating_popup: ctk.CTkFrame):
+        # edit button
+        self.edit_submit_btn = SubmitBTN(
+            controller_per_page=controller_per_page,
+            updating_popup=updating_popup,
+            master=controller_per_page["edit"].view,
+            text="Submit",
+            font=self.font3,
+            text_color=BaseStyles.WHITE,
+            corner_radius=BaseStyles.RAD_2,
+            width=AppStyles.SAVE_BTN_W,
+            height=AppStyles.SAVE_BTN_H, 
+            fg_color=BaseStyles.BLUE,
+            hover_color=BaseStyles.DARK_BLUE
+        )
+        self.edit_submit_btn.grid(row=3, column=0, pady=BaseStyles.PAD_4)
+        
+        # add button
+        self.add_submit_btn = SubmitBTN(
+            controller_per_page=controller_per_page,
+            updating_popup=updating_popup,
+            master=controller_per_page["add"].view,
+            text="Submit",
+            font=self.font3,
+            text_color=BaseStyles.WHITE,
+            corner_radius=BaseStyles.RAD_2,
+            width=AppStyles.SAVE_BTN_W,
+            height=AppStyles.SAVE_BTN_H, 
+            fg_color=BaseStyles.BLUE,
+            hover_color=BaseStyles.DARK_BLUE
+        )
+        self.add_submit_btn.grid(row=3, column=0, pady=BaseStyles.PAD_4)
+
+
+    def load_pages_gui_to_memory(self, controller_per_page: Dict[str, Controller]):
+        for controller in reversed(controller_per_page.values()):
+            controller.view.pack()
+            controller.view.pack_forget()
+        self.update_idletasks()
+
+    
+    def create_sidebar(self, controller_per_page: Dict[str, Controller]):
+        self.sidebar = SidebarTabs(
+            controller_per_page=controller_per_page,
+            master=self,
+            fg_color=AppStyles.SIDEBAR_FG_COLOR,
+            corner_radius=0,
+            height=AppStyles.SIDEBAR_H
+        )
+        self.sidebar.grid(row=0, column=0, sticky="ns")
+        self.update_idletasks() 
+        # display default page
+        self.after_idle(self.sidebar.on_click_profile_page)
+        self.update_idletasks() 
 
 
 class AppController(Controller):
@@ -248,10 +305,28 @@ class AppController(Controller):
             user_id_var=self.model.user_id_var,
             master=self.view.page_frame
         )
+        self.edit_controller = EditPageController(
+            transaction_manager=self.t_man,
+            user_id_var=self.model.user_id_var,
+            master=self.view.page_frame
+        )
+        self.history_controller = HistoryPageController(
+            transaction_manager=self.t_man,
+            user_id_var=self.model.user_id_var,
+            master=self.view.page_frame
+        )
+        self.add_controller = AddPageController(
+            transaction_manager=self.t_man,
+            user_id_var=self.model.user_id_var,
+            master=self.view.page_frame
+        )
 
         self.controller_per_page = {
-            # "profile": self.profile_controller,
-            "home": self.home_controller
+            "profile": self.profile_controller,
+            "home": self.home_controller,
+            "edit": self.edit_controller,
+            "history": self.history_controller,
+            "add": self.add_controller
         }
 
 
@@ -259,21 +334,23 @@ class AppController(Controller):
         print("[DEBUG] setting up main gui...")
         self.view.show_loading_popup()
         self.view.create_main_pages(self.controller_per_page)
-        # self.view.load_pages_gui_to_memory()
+        self.view.create_submit_btns(self.controller_per_page, self.view.updating_popup)
+        self.view.load_pages_gui_to_memory(self.controller_per_page)
+        self.view.create_sidebar(self.controller_per_page)
         self.view.after_idle(self.view.hide_loading_popup)
         self.view.update_idletasks()
-        self.view.after_idle(lambda: print("[DEBUG] main gui setup completed successfully"))
+        print("[DEBUG] main gui setup completed successfully")
 
 
     def on_click_non_entry(self, event: ctk.ctk_tk.tkinter.Event):
-        print(f"[DEBUG] {event.widget.winfo_class() = }")
+        # print(f"[DEBUG] {event.widget.winfo_class() = }")
         if not event.widget.winfo_class() == "Entry":
             self.view.dummy_entry.focus_set() # unfocus entries
-            print("[DEBUG] unfocused entries...")
+            print("\n[DEBUG] unfocused entries")
 
 
     def on_premature_app_close(self):
-        print("[DEBUG] closing app prematurely w/o user...")
+        print("\n[DEBUG] closing app prematurely w/o user...")
         self.view.show_closing_popup()
         self.view.after_idle(self.model.close_managers)
         self.view.after_idle(lambda: print("[DEBUG] app closed successfully"))
@@ -281,7 +358,7 @@ class AppController(Controller):
 
 
     def on_click_app_close(self):
-        print("[DEBUG] closing app...")
+        print("\n[DEBUG] closing app...")
         self.view.show_closing_popup()
         self.view.after(300, self.model.close_managers)
         self.view.after(900, self.view.quit)
@@ -306,8 +383,8 @@ class AppController(Controller):
 #         self.username = ctk.StringVar()
         
 #         # initialize fonts
-#         self.font2 = ("Bodoni MT", BaseStyles.FONT_SIZE_2, "italic")
-#         self.font3 = ("Bodoni MT", BaseStyles.FONT_SIZE_3, "italic")
+#         self.font2 = ("Arial", BaseStyles.FONT_SIZE_2, "normal")
+#         self.font3 = ("Arial", BaseStyles.FONT_SIZE_3, "normal")
         
 #         # initialize app
 #         self.initializeAppSettings(app_title=app_title)

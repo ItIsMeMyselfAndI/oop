@@ -6,58 +6,53 @@ from backend.transaction_manager import Transaction
 from frontend.styles import BaseStyles # paddings, dimensions, colors, etc
 from frontend.components.popup_win import PopUpWin
 
+from typing import Dict
+from controllers.base_controller import Controller
 
 #--------------------------------------------------------------------------------------------------------
 
 
 class SubmitBTN(ctk.CTkButton):
-    def __init__(self, master, user_id, t_man, pages, app, popup_title, popup_text, popup_font, **kwargs):
+    def __init__(self, controller_per_page: Dict[str, Controller], updating_popup, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.app = app
-        self.user_id = user_id
-        self.t_man = t_man
-        self.pages = pages
-        # update popup
+        self.controller_per_page = controller_per_page
+        self.updating_popup = updating_popup
+
         self.configure(command=self.onClickSubmit)
-        self.updatePopUp = PopUpWin(
-            title=popup_title,
-            msg=popup_text,
-            font=popup_font,
-            enable_close=False,
-            master=self.app,
-            fg_color=BaseStyles.WHITE,
-            enable_frame_blocker=False
-        )
-
-    
-    def _updateBackendAndFrontend(self):
-        # save to database
-        for page_name, page in self.pages.items():
-            try:
-                if page_name == "login" and page.is_current_page == True:
-                    pass
-                elif page_name == "edit" and page.is_current_page == True:
-                    self.pages["edit"].saveEditedTransactionToDatabase()
-                elif page_name == "add" and page.is_current_page == True:
-                    self.pages["add"].saveNewTransactionToDatabase()
-            except ValueError:
-                messagebox.showwarning(title="[Invalid] Input", message="Only enter positive decimal number for amount")
-                return
-
-        # update pages
-        self.pages["profile"].updatePageDisplay()
-        self.pages["home"].updatePageDisplay()
-        self.pages["edit"].updatePageDisplay()
-        self.pages["history"].updatePageDisplay()
 
     
     def onClickSubmit(self):
-        # start updatePopUp
-        print("\nstart update")
-        self.updatePopUp.showWin()
-        # w8 for the updatePopUp win to initialize then update
-        self.updatePopUp.after(100, self._updateBackendAndFrontend)
-        # end updatePopUp
-        self.updatePopUp.hideWin()
-        print("\nend update")
+        # start updating_popup
+        self.updating_popup.showWin()
+        # w8 for the updating_popup win to initialize then update
+        self.updating_popup.after(100, self._update_db_and_gui)
+        # end updating_popup
+        self.updating_popup.hideWin()
+        self.update_idletasks()
 
+
+    def _update_db_and_gui(self):
+        print("[DEBUG] updating the app...")
+        # save to database
+        for page_name, controller in self.controller_per_page.items():
+            try:
+                if page_name == "login" and controller.model.is_current_page == True:
+                    pass
+                elif page_name == "edit" and controller.model.is_current_page == True:
+                    self.controller_per_page["edit"].model.save_edited_transaction_to_database(controller.view.form_per_transaction_type)
+                elif page_name == "add" and controller.model.is_current_page == True:
+                    self.controller_per_page["add"].model.save_new_transaction_to_database(controller.view.form_per_transaction_type)
+
+            except ValueError as e:
+                messagebox.showwarning(title="[Invalid] Input", message="Only enter positive decimal number for amount")
+                print(f"[DEBUG] app update failed: {e}")
+                return
+
+        # update pages
+        self.controller_per_page["profile"].update_display()
+        self.controller_per_page["home"].update_display()
+        self.controller_per_page["edit"].update_display()
+        self.controller_per_page["history"].update_display()
+        print("[DEBUG] app updated successfully")
+
+    

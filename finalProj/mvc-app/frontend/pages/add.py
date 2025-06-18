@@ -3,17 +3,181 @@ import customtkinter as ctk
 # our modules/libs
 from frontend.styles import BaseStyles, AddStyles # paddings, dimensions, colors, etc
 from frontend.components import DatePicker
-from backend import Transaction
+from backend import Transaction, TransactionManager
+
+from models.base_model import Model
+from controllers.base_controller import Controller
+
+
+#--------------------------------------------------------------------------------------------------------
+
+
+class AddPageModel:
+    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.StringVar):
+        self.initialize_managers(transaction_manager)
+        self.initialize_vars(user_id_var)
+        self.initialize_categories_by_type()
+
+        self.is_current_page = False
+
+
+    def initialize_managers(self, transaction_manager: TransactionManager):
+        self.t_man = transaction_manager
+    
+
+    def initialize_vars(self, user_id_var: ctk.StringVar):
+        self.user_id_var = user_id_var
+
+
+    def initialize_categories_by_type(self):
+        self.categories_per_type = {
+            "expense": ["Bills", "Education", "Entertainment", "Food & Drinks",
+                        "Grocery", "Healthcare", "House", "Shopping",
+                        "Transportation", "Wellness", "Other"],
+            "savings": ["Monthly Allowance", "Change", "Miscellaneous"],
+            "investment": ["Stocks", "Crypto", "Bonds", "Real Estate"],
+            "income": ["Salary", "Bonus", "Side-hustles", "Tips"]
+        }
+
+
+    def save_new_transaction_to_database(self, form_per_transaction_type):
+        month_2_numeric = {
+            "January":"01", "February":"02", "March":"03", "April":"04",
+            "May":"05", "June":"06", "July":"07", "August":"08",
+            "September":"09", "October":"10", "November":"11", "December":"12"
+        }
+        for transaction_type, form in form_per_transaction_type.items():
+            if form.is_current_form == True:
+                # retrieve user inputs from the UI
+                year = form.dateMenu.year_menu.get()
+                month = month_2_numeric[form.dateMenu.month_menu.get()]
+                day = form.dateMenu.day_menu.get()
+                
+                new_date = f"{year}-{month}-{day}"
+                new_category = form.categoryMenu.get()
+                new_description = form.descriptionEntry.get()
+                new_amount = form.amountEntry.get()
+                
+                if "-" in new_amount:
+                    raise ValueError
+
+                new_amount = float(new_amount)
+                # create new_transaction obj
+                new_transaction = Transaction(
+                    t_date=new_date,
+                    t_type=transaction_type,
+                    t_category=new_category,
+                    t_amount=new_amount,
+                    t_description=new_description
+                )
+
+                # update db with new_transaction
+                result = self.t_man.repo.addTransaction(
+                    user_id=self.user_id_var.get(),
+                    new_transaction=new_transaction
+                )
+
+                # display result for debugging
+                print("\n[DEBUG] update transaction, details:")
+                print(f"\t{result = }")
+                print(f"\t{transaction_type = }")
+                print(f"\t{new_date = }")
+                print(f"\t{new_category = }")
+                print(f"\t{new_description = }")
+                print(f"\t{new_amount = }")
+
+                # reset form
+                form.dateMenu.year_menu.set(form.dateMenu.years[0])
+                form.dateMenu.month_menu.set(form.dateMenu.months[0])
+                form.dateMenu.day_menu.set(form.dateMenu.days[0])
+                form.categoryMenu.set(form.categories[0])
+                form.descriptionEntry.delete(first_index=0, last_index=ctk.END)
+                form.amountEntry.delete(first_index=0, last_index=ctk.END)
+
+
+#--------------------------------------------------------------------------------------------------------
+
+
+class AddPageView(ctk.CTkFrame):
+    def __init__(self, model: Model, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.model = model
+        self.is_current_page = False
+
+
+    def create(self):
+        self._create_header()
+        self._create_form_per_transaction_type()
+        self._create_tabs()
+
+    
+    def _create_header(self):
+        self.header = Header(
+            master=self,
+            fg_color=AddStyles.HEADER_SECTION_FG_COLOR,
+            corner_radius=0
+        )
+        self.header.grid(row=0, column=0, pady=(BaseStyles.PAD_4+BaseStyles.PAD_4,0))
+
+
+    def _create_form_per_transaction_type(self):
+        self.forms_section = ctk.CTkFrame(
+            master=self,
+            fg_color=AddStyles.FORMS_SECTION_FG_COLOR,
+            corner_radius=BaseStyles.RAD_2
+        )
+        self.forms_section.grid(row=2, column=0, pady=(BaseStyles.PAD_3,0))
+
+        self.form_per_transaction_type = dict()
+        for t_type in self.model.categories_per_type.keys():
+            form = TransactionForm(
+                model=self.model,
+                t_type=t_type,
+                categories=self.model.categories_per_type[t_type],
+                master=self.forms_section,
+                fg_color=AddStyles.FORM_FRAME_FG_COLOR,
+                corner_radius=BaseStyles.RAD_2
+            )
+            self.form_per_transaction_type.update({t_type: form})
+
+
+    def _create_tabs(self):
+        self.tabs = Tabs(
+            form_per_transaction_type=self.form_per_transaction_type,
+            master=self,
+            fg_color=AddStyles.TABS_FRAME_FG_COLOR, 
+            corner_radius=0
+        )
+        self.tabs.grid(row=1, column=0, padx=BaseStyles.PAD_3, pady=(BaseStyles.PAD_4,0))
+
+
+#--------------------------------------------------------------------------------------------------------
+
+
+class AddPageController(Controller):
+    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.StringVar, master):
+        self.model = AddPageModel(transaction_manager=transaction_manager, user_id_var=user_id_var)
+        self.view = AddPageView(model=self.model, master=master, fg_color=AddStyles.MAIN_FRAME_FG_COLOR)
+
+
+    def run(self):
+        pass
+
+
+    def update_display(self):
+        # print("[DEBUG] updating edit page display...")
+        # print("[DEBUG] edit page display updated successfully")
+        pass
 
 
 #--------------------------------------------------------------------------------------------------------
 
 
 # header section
-class AddHeader(ctk.CTkFrame):
+class Header(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font6 = ("Bodoni MT", BaseStyles.FONT_SIZE_6, "italic")
+        self.font6 = ("Arial", BaseStyles.FONT_SIZE_6, "normal")
         self.title_label = ctk.CTkLabel(self, text="Add Transaction", font=self.font6, text_color=AddStyles.HEADER_TITLE_TEXT_COLOR,
                                   width=AddStyles.HEADER_TITLE_LABEL_W, fg_color=AddStyles.HEADER_TITLE_LABEL_FG_COLOR, anchor="w")
         self.title_label.pack(anchor="w")
@@ -23,23 +187,31 @@ class AddHeader(ctk.CTkFrame):
 
 
 # same with class selection sa edit
-class AddTransactionForm(ctk.CTkFrame):
-    def __init__(self, t_man, app, t_type, categories, master, **kwargs):
+class TransactionForm(ctk.CTkFrame):
+    def __init__(self, model, t_type, categories, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.t_man = t_man
-        self.app = app
+        self.model = model
         self.t_type = t_type
         self.categories = categories
         
         # initialize state
         self.is_current_form = False
         
-        
         # initialize fonts
-        self.font2 = ("Bodoni MT", BaseStyles.FONT_SIZE_2, "italic")
-        self.font4 = ("Bodoni MT", BaseStyles.FONT_SIZE_4, "italic")
-        
-        # top section
+        self.font2 = ("Arial", BaseStyles.FONT_SIZE_2, "normal")
+        self.font4 = ("Arial", BaseStyles.FONT_SIZE_4, "normal")
+
+        self.create()
+
+
+    def create(self):
+        self._create_sections()
+        self._create_top_section_content()
+        self._create_mid_section_content()
+        self._create_bot_section_content()
+
+
+    def _create_sections(self):
         self.top_section = ctk.CTkFrame(
             master=self,
             fg_color=AddStyles.FORM_TOP_SECTION_FG_COLOR,
@@ -47,10 +219,26 @@ class AddTransactionForm(ctk.CTkFrame):
         )
         self.top_section.pack(fill="both", pady=(BaseStyles.PAD_4,0))
         
+        self.mid_section = ctk.CTkFrame(
+            master=self,
+            fg_color=AddStyles.FORM_MID_SECTION_FG_COLOR,
+            corner_radius=0
+        )
+        self.mid_section.pack(fill="both", pady=(BaseStyles.PAD_4,0))
+        
+        self.bot_section = ctk.CTkFrame(
+            master=self,
+            fg_color=AddStyles.FORM_BOT_SECTION_FG_COLOR,
+            corner_radius=0
+        )
+        self.bot_section.pack(fill="both", pady=BaseStyles.PAD_4)
+
+
+    def _create_top_section_content(self): 
         # date
         self.dateLabel = ctk.CTkLabel(
             master=self.top_section,
-            text="Select Date",
+            text="Select New Date",
             font=self.font4,
             text_color=AddStyles.DATE_LABEL_TEXT_COLOR,
             fg_color=AddStyles.DATE_LABEL_FG_COLOR
@@ -75,18 +263,12 @@ class AddTransactionForm(ctk.CTkFrame):
         self.dateLabel.grid(row=0, column=1, sticky="w", padx=BaseStyles.PAD_3, pady=(0,BaseStyles.PAD_3))
         self.dateMenu.grid(row=1, column=1, sticky="w", padx=BaseStyles.PAD_3, pady=0)
         
-        # middle section
-        self.mid_section = ctk.CTkFrame(
-            master=self,
-            fg_color=AddStyles.FORM_MID_SECTION_FG_COLOR,
-            corner_radius=0
-        )
-        self.mid_section.pack(fill="both", pady=(BaseStyles.PAD_4,0))
-        
+    
+    def _create_mid_section_content(self):
         # category
         self.categoryLabel = ctk.CTkLabel(
             master=self.mid_section,
-            text="Select Category",
+            text="Select New Category",
             font=self.font4,
             text_color=AddStyles.CATEGORY_LABEL_TEXT_COLOR,
             fg_color=AddStyles.CATEGORY_LABEL_FG_COLOR
@@ -111,7 +293,7 @@ class AddTransactionForm(ctk.CTkFrame):
         # description
         self.descriptionLabel = ctk.CTkLabel(
             master=self.mid_section,
-            text="Enter Description",
+            text="Enter New Description",
             font=self.font4,
             text_color=AddStyles.DESCRIPTION_LABEL_TEXT_COLOR,
             fg_color=AddStyles.DESCRIPTION_LABEL_FG_COLOR
@@ -132,18 +314,11 @@ class AddTransactionForm(ctk.CTkFrame):
         self.descriptionLabel.grid(row=0, column=1, sticky="w", padx=BaseStyles.PAD_3, pady=(0,BaseStyles.PAD_3))
         self.descriptionEntry.grid(row=1, column=1, sticky="w", padx=BaseStyles.PAD_3, pady=0)
         
-        # bottom section
-        self.bot_section = ctk.CTkFrame(
-            master=self,
-            fg_color=AddStyles.FORM_BOT_SECTION_FG_COLOR,
-            corner_radius=0
-        )
-        self.bot_section.pack(fill="both", pady=BaseStyles.PAD_4)
-        
-        # create third section components
+
+    def _create_bot_section_content(self):
         self.amountLabel = ctk.CTkLabel(
             master=self.bot_section,
-            text="Enter Amount",
+            text="Enter New Amount",
             font=self.font4,
             text_color=AddStyles.AMOUNT_LABEL_TEXT_COLOR,
             fg_color=AddStyles.AMOUNT_LABEL_FG_COLOR
@@ -168,13 +343,13 @@ class AddTransactionForm(ctk.CTkFrame):
 #--------------------------------------------------------------------------------------------------------
 
 
-class AddPageTabs(ctk.CTkFrame):
-    def __init__(self, transactionForms, master, **kwargs):
+class Tabs(ctk.CTkFrame):
+    def __init__(self, form_per_transaction_type, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.transactionForms = transactionForms
+        self.form_per_transaction_type = form_per_transaction_type
         
         # initialize ctk font
-        self.font3 = ("Bodoni MT", BaseStyles.FONT_SIZE_3, "italic")
+        self.font3 = ("Arial", BaseStyles.FONT_SIZE_3, "normal")
         
         # expense tabs
         self.expenseBTN = self.createTabButton(text="Expense", command=self.onClickExpenseTab)
@@ -185,7 +360,7 @@ class AddPageTabs(ctk.CTkFrame):
         self.savingsBTN.grid(row=0, column=1, padx=(BaseStyles.PAD_3, 0))
         
         # investment tabs
-        self.investmentBTN = self.createTabButton(text="Invest_manent", command=self.onClickInvest_manentTab)
+        self.investmentBTN = self.createTabButton(text="Investment", command=self.onClickInvestmentTab)
         self.investmentBTN.grid(row=0, column=2, padx=(BaseStyles.PAD_3, 0))
         
         # income tabs
@@ -220,7 +395,7 @@ class AddPageTabs(ctk.CTkFrame):
 
     def _hideOtherPages(self, transaction_type):
         # hide other pages
-        for t_type, form in self.transactionForms.items():
+        for t_type, form in self.form_per_transaction_type.items():
             if not t_type == transaction_type:
 
                 try:
@@ -241,16 +416,16 @@ class AddPageTabs(ctk.CTkFrame):
 
     def _showPage(self, transaction_type):
         # open selected page and change fg, hover & text color
-        if not self.transactionForms[transaction_type].is_current_form:
+        if not self.form_per_transaction_type[transaction_type].is_current_form:
 
             try:
-                self.transactionForms[transaction_type].is_current_form = True
+                self.form_per_transaction_type[transaction_type].is_current_form = True
                 self.tab_btns[transaction_type].configure(
                     fg_color=AddStyles.ON_TAB_BTN_FG_COLOR,
                     hover_color=AddStyles.ON_TAB_BTN_HOVER_COLOR,
                     text_color=AddStyles.ON_TAB_TEXT_COLOR
                 )
-                self.transactionForms[transaction_type].pack()
+                self.form_per_transaction_type[transaction_type].pack()
 
             except Exception as e:
                 print(f"[Silent Error] Failed to show: edit-{transaction_type} form")
@@ -269,7 +444,7 @@ class AddPageTabs(ctk.CTkFrame):
         self.after(300, lambda: self._showPage("savings"))
 
 
-    def onClickInvest_manentTab(self):
+    def onClickInvestmentTab(self):
         self.after(100, lambda: self._hideOtherPages("investment"))
         self.after(300, lambda: self._showPage("investment"))
 
@@ -277,135 +452,3 @@ class AddPageTabs(ctk.CTkFrame):
     def onClickIncomeTab(self):
         self.after(100, lambda: self._hideOtherPages("income"))
         self.after(300, lambda: self._showPage("income"))
-    
-    
-#--------------------------------------------------------------------------------------------------------
-
-
-# main add page class
-class AddPage(ctk.CTkFrame):
-    def __init__(self, app, t_man, master, **kwargs):
-        super().__init__(master, **kwargs)
-        self.app = app
-        self.t_man = t_man
-
-        # initialize state
-        self.is_current_page = False
-
-        self.createHeader()
-        self.createEditForms()
-        self.createTabs()
-
-
-    def createHeader(self):
-        self.header_section = AddHeader(
-            master=self,
-            fg_color=AddStyles.HEADER_SECTION_FG_COLOR,
-            corner_radius=0
-        )
-        self.header_section.grid(row=0, column=0, pady=(BaseStyles.PAD_4+BaseStyles.PAD_4,0))
-
-
-    def _createAddTransactionForm(self, transaction_type):
-        # valid categories
-        categories_by_type = {
-            "expense": ["Bills", "Education", "Entertainment", "Food & Drinks",
-                        "Grocery", "Healthcare", "House", "Shopping",
-                        "Transportation", "Wellness", "Other"],
-            "savings": ["Monthly Allowance", "Change", "Miscellaneous"],
-            "investment": ["Stocks", "Crypto", "Bonds", "Real Estate"],
-            "income": ["Salary", "Bonus", "Side-hustles", "Tips"]
-        }
-        # create form
-        form = AddTransactionForm(
-            t_man=self.t_man,
-            app=self.app,
-            t_type=transaction_type,
-            categories=categories_by_type[transaction_type],
-            master=self.forms_section,
-            fg_color=AddStyles.FORM_FRAME_FG_COLOR,
-            corner_radius=BaseStyles.RAD_2
-        )
-        return form
-
-
-    def createEditForms(self):
-        self.forms_section = ctk.CTkFrame(
-            master=self,
-            fg_color=AddStyles.FORMS_SECTION_FG_COLOR,
-            corner_radius=BaseStyles.RAD_2
-        )
-        self.expenseForm = self._createAddTransactionForm("expense")
-        self.savingsForm = self._createAddTransactionForm("savings")
-        self.investmentForm = self._createAddTransactionForm("investment")
-        self.incomeForm = self._createAddTransactionForm("income")
-        self.forms_section.grid(row=2, column=0, pady=(BaseStyles.PAD_3,0))
-
-
-    def createTabs(self):
-        self.transactionForms = {
-            "expense":self.expenseForm, "savings":self.savingsForm,
-            "investment":self.investmentForm, "income":self.incomeForm
-        }
-        
-        # tabs
-        self.tabs = AddPageTabs(
-            transactionForms=self.transactionForms, master=self,
-            fg_color=AddStyles.TABS_FRAME_FG_COLOR, corner_radius=0
-        )
-        self.tabs.grid(row=1, column=0, padx=BaseStyles.PAD_3, pady=(BaseStyles.PAD_4,0))
-
-
-    def saveNewTransactionToDatabase(self):
-        month_2_numeric = {
-            "January":"01", "February":"02", "March":"03", "April":"04",
-            "May":"05", "June":"06", "July":"07", "August":"08",
-            "September":"09", "October":"10", "November":"11", "December":"12"
-        }
-        for transaction_type, form in self.transactionForms.items():
-            if form.is_current_form == True:
-                # retrieve user inputs from the UI
-                year = form.dateMenu.year_menu.get()
-                month = month_2_numeric[form.dateMenu.month_menu.get()]
-                day = form.dateMenu.day_menu.get()
-                
-                new_date = f"{year}-{month}-{day}"
-                new_category = form.categoryMenu.get()
-                new_description = form.descriptionEntry.get()
-                new_amount = form.amountEntry.get()
-                
-                if "-" in new_amount:
-                    raise ValueError
-
-                new_amount = float(new_amount)
-                # create new_transaction obj
-                new_transaction = Transaction(
-                    t_date=new_date,
-                    t_type=transaction_type,
-                    t_category=new_category,
-                    t_amount=new_amount,
-                    t_description=new_description
-                )
-
-                # update db with new_transaction
-                result = self.t_man.repo.addTransaction(
-                    user_id=self.app.user_id,
-                    new_transaction=new_transaction
-                )
-
-                # display result for debugging
-                print("\n", result)
-                print()
-                print(f"{transaction_type = }")
-                print(f"{new_date = }")
-                print(f"{new_category = }")
-                print(f"{new_description = }")
-                print(f"{new_amount = }")
-
-                # reset form
-                form.dateMenu.year_menu.set(form.dateMenu.years[0])
-                form.dateMenu.month_menu.set(form.dateMenu.months[0])
-                form.dateMenu.day_menu.set(form.dateMenu.days[0])
-                form.categoryMenu.set(form.categories[0])
-                form.descriptionEntry.delete(first_index=0, last_index=ctk.END)
-                form.amountEntry.delete(first_index=0, last_index=ctk.END)
