@@ -8,6 +8,149 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from frontend.styles import BaseStyles, HomeStyles # paddings, dimensions, colors, etc
 from frontend.components import TransactionTableHeader, TransactionTableBody 
 
+from backend import TransactionManager # db manager
+
+from models.base_model import Model
+from controllers.base_controller import Controller
+
+
+class HomeModel(Model):
+    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.StringVar):
+        self.initialize_managers(transaction_manager)
+        self.initialize_vars(user_id_var)
+
+        self.balance_amount = 0
+
+
+    def initialize_managers(self, transaction_manager: TransactionManager):
+        self.t_man = transaction_manager
+    
+
+    def initialize_vars(self, user_id_var: ctk.StringVar):
+        self.user_id_var = user_id_var
+
+
+    def load_amounts(self):
+        self.finance = self.t_man.calculateOverallFinance(self.user_id_var.get())
+        self.balance = self.t_man.calculateOverallBalance(self.finance)
+
+
+class HomePageView(ctk.CTkFrame):
+    def __init__(self, model: Model, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.model = model
+        self.is_current_page = False
+
+
+    def create(self):
+        self.model.load_amounts()
+        self._load_icon()
+        self._create_scrollable_frame()
+        self._create_header()
+        self._create_recent_table()
+        self._create_monthly_report()
+        self._create_quarterly_report()
+
+
+    def _load_icon(self):
+        # icon path
+        if hasattr(sys, "_MEIPASS"): # # for .exe: memory resources path
+            ICONS_FOLDER = os.path.join(sys._MEIPASS, "assets/icons")
+        else: # for .py: storage resources path
+            ICONS_FOLDER = "assets/icons"
+        print(ICONS_FOLDER)
+        
+        # load icon
+        self.home_icon = ctk.CTkImage(
+            light_image=Image.open(os.path.join(ICONS_FOLDER, "home1.png")),
+            dark_image=Image.open(os.path.join(ICONS_FOLDER, "home1.png")),
+            size=(HomeStyles.HOME_IMG_H, HomeStyles.HOME_IMG_W)
+        )
+
+
+    def _create_scrollable_frame(self):    
+        self.scroll_frame = ctk.CTkScrollableFrame(
+            master=self,
+            orientation="vertical",
+            corner_radius=0,
+            fg_color=HomeStyles.SCROLL_FRAME_FG_COLOR,
+            width=HomeStyles.SCROLL_FRAME_W,
+            height=HomeStyles.SCROLL_FRAME_H
+        )
+        self.scroll_frame.pack()
+
+
+    def _create_header(self):
+        self.header = HomeHeader(
+            img=self.home_icon,
+            summary_type="Total Balance:",
+            amount=self.model.balance,
+            master=self.scroll_frame,
+            fg_color=HomeStyles.HEADER_SECTION_FG_COLOR,
+            corner_radius=BaseStyles.RAD_2
+        )
+        self.header.pack(pady=(BaseStyles.PAD_5*2,0))
+
+
+    def _create_recent_table(self):
+        transactions_per_filter = {"Recent": self.model.t_man.repo.getRecentTransactions(user_id=self.model.user_id_var.get(), t_count=10)}
+        self.recent_table = RecentTable(
+            transactions_per_filter=transactions_per_filter,
+            master=self.scroll_frame,
+            fg_color=HomeStyles.TABLE_SECTION_FG_COLOR
+        )
+        self.recent_table.pack(pady=(BaseStyles.PAD_2,0))
+
+
+    def _create_monthly_report(self):
+        self.monthly_report = MonthlyReport(
+            model=self.model,
+            master=self.scroll_frame,
+            fg_color=HomeStyles.MONTHLY_SECTION_FG_COLOR
+        )
+        self.monthly_report.pack(pady=(BaseStyles.PAD_2,0))
+
+    
+    def _create_quarterly_report(self):
+        self.quarterly_report = QuarterlyReport(
+            model=self.model,
+            master=self.scroll_frame,
+            fg_color=HomeStyles.QUARTERLY_SECTION_FG_COLOR
+        )
+        self.quarterly_report.pack(pady=(BaseStyles.PAD_2,BaseStyles.PAD_5*3))
+
+
+class HomePageController(Controller):
+    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.StringVar, master):
+        self.model = HomeModel(transaction_manager=transaction_manager, user_id_var=user_id_var)
+        self.view = HomePageView(model=self.model, master=master, fg_color=HomeStyles.SCROLL_FRAME_FG_COLOR)
+
+
+    def run(self):
+        pass
+
+
+    def update_display(self):
+        print("[DEBUG] updating home page display...")
+        # update total balance in header
+        self.model.load_amounts()
+        self.view.header.amount_label.configure(text=f"₱ {self.model.balance:,}")
+
+        # destroy prev ver of the Recent transactions
+        for page in self.view.recent_table.table_body.winfo_children():
+            page.destroy()
+        
+        # refresh history content
+        self.view.recent_table.table_body.transactions_per_filter = {"Recent": self.model.t_man.repo.getRecentTransactions(user_id=self.model.user_id_var.get(), t_count=10)}
+        self.view.recent_table.table_body.filterTransactions()
+        self.view.recent_table.table_body.countFilteredTablePages()
+        self.view.recent_table.table_body.separateFilteredTransactionsPerPage()
+        self.view.recent_table.table_body.updateCurrentTablePage()
+
+        # update graphs 
+        self.view.monthly_report.updateGraphsDisplay()
+        self.view.quarterly_report.updateGraphDisplay()
+        print("[DEBUG] home page display updated successfully")
 
 #--------------------------------------------------------------------------------------------------------
 
@@ -109,10 +252,9 @@ class RecentTable(ctk.CTkFrame):
 
 
 class MonthlyReport(ctk.CTkFrame):
-    def __init__(self, app, t_man, master, **kwargs):
+    def __init__(self, model, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.app = app
-        self.t_man = t_man
+        self.model = model
         
         # initialize font
         self.font3 = ("Bodoni MT", BaseStyles.FONT_SIZE_3, "italic")
@@ -160,8 +302,8 @@ class MonthlyReport(ctk.CTkFrame):
     
     def loadAndDisplayGraphsWidget(self):
         # graph figures
-        income_graph, expense_graph = self.t_man.createMonthlyGraphs(
-            user_id=self.app.user_id,
+        income_graph, expense_graph = self.model.t_man.createMonthlyGraphs(
+            user_id=self.model.user_id_var.get(),
             title_size=HomeStyles.MONTHLY_GRAPH_TITLE_SIZE,
             label_size=HomeStyles.MONTHLY_GRAPH_LABEL_SIZE,
             dpi=BaseStyles.DPI,
@@ -192,10 +334,9 @@ class MonthlyReport(ctk.CTkFrame):
 
 
 class QuarterlyReport(ctk.CTkFrame):
-    def __init__(self, app, t_man, master, **kwargs):
+    def __init__(self, model, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.app = app
-        self.t_man = t_man
+        self.model = model
         
         # initialize font
         self.font3 = ("Bodoni MT", BaseStyles.FONT_SIZE_3, "italic")
@@ -225,8 +366,8 @@ class QuarterlyReport(ctk.CTkFrame):
         
     def loadAndDisplayGraphWidget(self):
         # graph figure
-        graph = self.t_man.createQuarterlyGraph(
-            user_id=self.app.user_id,
+        graph = self.model.t_man.createQuarterlyGraph(
+            user_id=self.model.user_id_var.get(),
             title_size=HomeStyles.QUARTERLY_GRAPH_TITLE_SIZE,
             label_size=HomeStyles.QUARTERLY_GRAPH_LABEL_SIZE,
             dpi=BaseStyles.DPI,
@@ -251,10 +392,9 @@ class QuarterlyReport(ctk.CTkFrame):
 
 
 class HomePage(ctk.CTkFrame):
-    def __init__(self, app, t_man, master, **kwargs):
+    def __init__(self, model, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.app = app
-        self.t_man = t_man
+        self.model = model
 
         # initialize state
         self.is_current_page = False
@@ -279,8 +419,8 @@ class HomePage(ctk.CTkFrame):
 
 
     def _loadOverallBalance(self):
-        finance = self.t_man.calculateOverallFinance(self.app.user_id)
-        balance = self.t_man.calculateOverallBalance(finance)
+        finance = self.model.t_man.calculateOverallFinance(self.model.user_id_var.get())
+        balance = self.model.t_man.calculateOverallBalance(finance)
         return balance
 
 
@@ -304,7 +444,7 @@ class HomePage(ctk.CTkFrame):
     def createHeader(self):
         home_icon = self._loadIcon()
         balance = self._loadOverallBalance()
-        self.header_section = HomeHeader(
+        self.header = HomeHeader(
             img=home_icon,
             summary_type="Total Balance:",
             amount=balance,
@@ -312,55 +452,55 @@ class HomePage(ctk.CTkFrame):
             fg_color=HomeStyles.HEADER_SECTION_FG_COLOR,
             corner_radius=BaseStyles.RAD_2
         )
-        self.header_section.pack(pady=(BaseStyles.PAD_5*2,0))
+        self.header.pack(pady=(BaseStyles.PAD_5*2,0))
 
 
     def createTableSection(self):
-        transactions_per_filter = {"Recent": self.t_man.repo.getRecentTransactions(user_id=self.app.user_id, t_count=10)}
-        self.table_section = RecentTable(
+        transactions_per_filter = {"Recent": self.model.t_man.repo.getRecentTransactions(user_id=self.model.user_id_var.get(), t_count=10)}
+        self.recent_table = RecentTable(
             transactions_per_filter=transactions_per_filter,
             master=self.scroll_frame,
             fg_color=HomeStyles.TABLE_SECTION_FG_COLOR
         )
-        self.table_section.pack(pady=(BaseStyles.PAD_2,0))
+        self.recent_table.pack(pady=(BaseStyles.PAD_2,0))
 
     
     def createMonthlySection(self):
-        self.monthly_section = MonthlyReport(
-            app=self.app,
-            t_man=self.t_man,
+        self.monthly_report = MonthlyReport(
+            app=self.model,
+            t_man=self.model.t_man,
             master=self.scroll_frame,
             fg_color=HomeStyles.MONTHLY_SECTION_FG_COLOR
         )
-        self.monthly_section.pack(pady=(BaseStyles.PAD_2,0))
+        self.monthly_report.pack(pady=(BaseStyles.PAD_2,0))
 
     
     def createQuarterlySection(self):
-        self.quarterly_section = QuarterlyReport(
-            app=self.app,
-            t_man=self.t_man,
+        self.quarterly_report = QuarterlyReport(
+            app=self.model,
+            t_man=self.model.t_man,
             master=self.scroll_frame,
             fg_color=HomeStyles.QUARTERLY_SECTION_FG_COLOR
         )
-        self.quarterly_section.pack(pady=(BaseStyles.PAD_2,BaseStyles.PAD_5*3))
+        self.quarterly_report.pack(pady=(BaseStyles.PAD_2,BaseStyles.PAD_5*2))
 
 
     def updatePageDisplay(self):
         # update total balance in header
         balance = self._loadOverallBalance()
-        self.header_section.amount_label.configure(text=f"₱ {balance:,}")
+        self.header.amount_label.configure(text=f"₱ {balance:,}")
 
         # destroy prev ver of the Recent transactions
-        for page in self.table_section.table_body.winfo_children():
+        for page in self.recent_table.table_body.winfo_children():
             page.destroy()
         
         # refresh history content
-        self.table_section.table_body.transactions_per_filter = {"Recent": self.t_man.repo.getRecentTransactions(user_id=self.app.user_id, t_count=10)}
-        self.table_section.table_body.filterTransactions()
-        self.table_section.table_body.countFilteredTablePages()
-        self.table_section.table_body.separateFilteredTransactionsPerPage()
-        self.table_section.table_body.updateCurrentTablePage()
+        self.recent_table.table_body.transactions_per_filter = {"Recent": self.model.t_man.repo.getRecentTransactions(user_id=self.model.user_id_var.get(), t_count=10)}
+        self.recent_table.table_body.filterTransactions()
+        self.recent_table.table_body.countFilteredTablePages()
+        self.recent_table.table_body.separateFilteredTransactionsPerPage()
+        self.recent_table.table_body.updateCurrentTablePage()
 
         # update graphs 
-        self.monthly_section.updateGraphsDisplay()
-        self.quarterly_section.updateGraphDisplay()
+        self.monthly_report.updateGraphsDisplay()
+        self.quarterly_report.updateGraphDisplay()

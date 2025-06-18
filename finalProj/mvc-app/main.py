@@ -17,8 +17,9 @@ from frontend.components import SubmitBTN # save btn
 from frontend.components import PopUpWin # pop up win
 from backend import UserRepository, TransactionManager # db manager
 
-from frontend.pages.profile import ProfilePageController
 from controllers.base_controller import Controller
+from frontend.pages.profile import ProfilePageController
+from frontend.pages.home import HomePageController
 
 
 class AppModel:
@@ -222,7 +223,9 @@ class AppController(Controller):
         print("[DEBUG] initializing gui...")
         self.view.create_popups()
         self.view.create_dummy_entry()
-        self.view.create_login_form()
+        # self.view.create_login_form()
+        self.view.after(500, lambda: self.model.user_id_var.set(2))
+        self.view.after(500, lambda: self.model.username_var.set("mirasol"))
         print("[DEBUG] gui initialized successfully")
 
 
@@ -240,9 +243,15 @@ class AppController(Controller):
             username_var=self.model.username_var,
             master=self.view.page_frame
         )
+        self.home_controller = HomePageController(
+            transaction_manager=self.t_man,
+            user_id_var=self.model.user_id_var,
+            master=self.view.page_frame
+        )
 
         self.controller_per_page = {
-            "profile": self.profile_controller
+            # "profile": self.profile_controller,
+            "home": self.home_controller
         }
 
 

@@ -6,7 +6,8 @@ import sys
 # our modules/libs
 from frontend.styles import BaseStyles, ProfileStyles # paddings, dimensions, colors, etc
 
-from backend import UserRepository, TransactionManager # db manager
+from backend import TransactionManager # db manager
+
 from models.base_model import Model
 from controllers.base_controller import Controller
 
@@ -20,11 +21,11 @@ class ProfilePageModel(Model):
         self.balance = 0
 
 
-    def initialize_managers(self, transaction_manager):
+    def initialize_managers(self, transaction_manager: TransactionManager):
         self.t_man = transaction_manager
     
 
-    def initialize_vars(self, user_id_var, username_var):
+    def initialize_vars(self, user_id_var: ctk.StringVar, username_var: ctk.StringVar):
         self.user_id_var = user_id_var
         self.username_var = username_var
 
@@ -43,8 +44,8 @@ class ProfilePageView(ctk.CTkFrame):
 
     def create(self):
         print("[DEBUG] creating profile page...")
-        self._load_icons()
         self.model.load_amounts()
+        self._load_icons()
         self._create_header()
         self._create_summaries()
         self.update_idletasks()
