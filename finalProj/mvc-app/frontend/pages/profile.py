@@ -6,6 +6,187 @@ import sys
 # our modules/libs
 from frontend.styles import BaseStyles, ProfileStyles # paddings, dimensions, colors, etc
 
+from backend import UserRepository, TransactionManager # db manager
+from models.base_model import Model
+from controllers.base_controller import Controller
+
+
+class ProfilePageModel(Model):
+    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.StringVar, username_var: ctk.StringVar):
+        self.initialize_managers(transaction_manager)
+        self.initialize_vars(user_id_var, username_var)        
+        
+        self.finance = 0
+        self.balance = 0
+
+
+    def initialize_managers(self, transaction_manager):
+        self.t_man = transaction_manager
+    
+
+    def initialize_vars(self, user_id_var, username_var):
+        self.user_id_var = user_id_var
+        self.username_var = username_var
+
+
+    def load_amounts(self):
+        self.finance = self.t_man.calculateOverallFinance(self.user_id_var.get())
+        self.balance = self.t_man.calculateOverallBalance(self.finance)
+    
+
+class ProfilePageView(ctk.CTkFrame):
+    def __init__(self, model, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.model = model
+        self.is_current_page = False
+        
+
+    def create(self):
+        print("[DEBUG] creating profile page...")
+        self._load_icons()
+        self.model.load_amounts()
+        self._create_header()
+        self._create_summaries()
+        self.update_idletasks()
+        print("[DEBUG] profile page created successfully")
+
+
+    def _load_icons(self):
+        print("[DEBUG] loading profile page icons...")
+        # icon path
+        if hasattr(sys, "_MEIPASS"): # for .py: memory resources
+            ICONS_FOLDER = os.path.join(sys._MEIPASS, "assets/icons")
+        else: # for .py: true path resources
+            ICONS_FOLDER = "assets/icons"
+
+        # load images
+        self.profile_icon = ctk.CTkImage(
+            light_image=Image.open(os.path.join(ICONS_FOLDER, "profile1.png")),
+            dark_image=Image.open(os.path.join(ICONS_FOLDER, "profile1.png")),
+            size=(ProfileStyles.PROFILE_IMG_H, ProfileStyles.PROFILE_IMG_W)
+        )
+        self.income_icon = ctk.CTkImage(
+            light_image=Image.open(os.path.join(ICONS_FOLDER, "income.png")),
+            dark_image=Image.open(os.path.join(ICONS_FOLDER, "income.png")),
+            size=(ProfileStyles.SUMMARY_IMG_H, ProfileStyles.SUMMARY_IMG_W)
+        )
+        self.savings_icon = ctk.CTkImage(
+            light_image=Image.open(os.path.join(ICONS_FOLDER, "savings.png")),
+            dark_image=Image.open(os.path.join(ICONS_FOLDER, "savings.png")),
+            size=(ProfileStyles.SUMMARY_IMG_H, ProfileStyles.SUMMARY_IMG_W)
+        )
+        self.expense_icon = ctk.CTkImage(
+            light_image=Image.open(os.path.join(ICONS_FOLDER, "expense.png")),
+            dark_image=Image.open(os.path.join(ICONS_FOLDER, "expense.png")),
+            size=(ProfileStyles.SUMMARY_IMG_H, ProfileStyles.SUMMARY_IMG_W)
+        )
+        self.investment_icon = ctk.CTkImage(
+            light_image=Image.open(os.path.join(ICONS_FOLDER, "investment.png")),
+            dark_image=Image.open(os.path.join(ICONS_FOLDER, "investment.png")),
+            size=(ProfileStyles.SUMMARY_IMG_H, ProfileStyles.SUMMARY_IMG_W)
+        )
+        print("[DEBUG] profile page icons loaded successfully")
+
+
+    def _create_header(self):
+        print("[DEBUG] loading icons...")
+        self.header_section = ProfileHeader(
+            img=self.profile_icon,
+            uname=self.model.username_var.get().title(), 
+            summary_type="Total Balance:",
+            amount=self.model.balance,
+            master=self,
+            fg_color=ProfileStyles.HEADER_SECTION_COLOR,
+            corner_radius=BaseStyles.RAD_2
+        )
+        self.header_section.pack(pady=(BaseStyles.PAD_5+BaseStyles.PAD_5,0))
+        self.update_idletasks()
+        print("[DEBUG] icons loaded successfully")
+
+
+    def _create_summaries(self):
+        print("[DEBUG] creating transaction summaries...")
+        # summaries section
+        self.summary_section = ctk.CTkFrame(
+            master=self,
+            fg_color=ProfileStyles.SUMMARY_SECTION_COLOR,
+            corner_radius=BaseStyles.RAD_2
+        )
+        self.summary_section.pack(pady=(BaseStyles.PAD_2,0))
+
+        # income summary
+        self.income_frame = SummarySection(
+            img=self.income_icon,
+            img_bg_color=ProfileStyles.INCOME_IMG_BG_COLOR,
+            summary_type="Total Income:",
+            amount=self.model.finance.total_income,
+            master=self.summary_section,
+            fg_color=ProfileStyles.INCOME_FRAME_FG_COLOR,
+            corner_radius=BaseStyles.RAD_2
+        )
+        self.income_frame.grid(row=0, column=0, padx=(BaseStyles.PAD_4,0), pady=(BaseStyles.PAD_4,0), sticky="nsew")
+
+        # expense summary
+        self.expense_frame = SummarySection(
+            img=self.expense_icon,
+            img_bg_color=ProfileStyles.EXPENSE_IMG_BG_COLOR,
+            summary_type="Total Expenses:",
+            amount=self.model.finance.total_expenses,
+            master=self.summary_section,
+            fg_color=ProfileStyles.EXPENSE_FRAME_FG_COLOR,
+            corner_radius=BaseStyles.RAD_2
+        )
+        self.expense_frame.grid(row=0, column=1, padx=BaseStyles.PAD_4, pady=(BaseStyles.PAD_4,0), sticky="nsew")
+
+        # savings summary
+        self.savings_frame = SummarySection(
+            img=self.savings_icon,
+            img_bg_color=ProfileStyles.SAVINGS_IMG_BG_COLOR,
+            summary_type="Total Savings:",
+            amount=self.model.finance.total_savings,
+            master=self.summary_section,
+            fg_color=ProfileStyles.SAVINGS_FRAME_FG_COLOR,
+            corner_radius=BaseStyles.RAD_2
+        )
+        self.savings_frame.grid(row=1, column=0, padx=(BaseStyles.PAD_4,0), pady=BaseStyles.PAD_4, sticky="nsew")
+
+        # investment summary
+        self.investment_frame = SummarySection(
+            img=self.investment_icon,
+            img_bg_color=ProfileStyles.INVESt_manENT_IMG_BG_COLOR, 
+            summary_type="Total Invest_manent:",
+            amount=self.model.finance.total_investment,
+            master=self.summary_section,
+            fg_color=ProfileStyles.INVESt_manENT_FRAME_FG_COLOR,
+            corner_radius=BaseStyles.RAD_2
+        )
+        self.investment_frame.grid(row=1, column=1, pady=BaseStyles.PAD_4, padx=BaseStyles.PAD_4, sticky="nsew")
+        self.update_idletasks()
+        print("[DEBUG] transaction summaries created successfully")
+
+
+class ProfilePageController(Controller):
+    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.StringVar, username_var: ctk.StringVar, master):
+        self.model = ProfilePageModel(transaction_manager=transaction_manager, user_id_var=user_id_var, username_var=username_var)
+        self.view = ProfilePageView(model=self.model, master=master, fg_color=ProfileStyles.MAIN_FRAME_FG_COLOR)
+
+
+    def run(self):
+        pass
+
+
+    def update_display(self):
+        print("[DEBUG] updating profile page display...")
+        self.model.load_amounts()
+        self.view.header_section.balance_amount_label.configure(text=f"₱ {self.model.balance:,}")
+        self.view.income_frame.summary_amount_label.configure(text=f"₱ {self.model.finance.total_income:,}")
+        self.view.expense_frame.summary_amount_label.configure(text=f"₱ {self.model.finance.total_expenses:,}")
+        self.view.savings_frame.summary_amount_label.configure(text=f"₱ {self.model.finance.total_savings:,}")
+        self.view.investment_frame.summary_amount_label.configure(text=f"₱ {self.model.finance.total_investment:,}")
+        self.view.update_idletasks()
+        print("[DEBUG] profile page display updated successfully")
+ 
+
 
 #--------------------------------------------------------------------------------------------------------
 
@@ -144,7 +325,7 @@ class ProfilePage(ctk.CTkFrame):
         self.is_current_page = False
 
         # icons
-        self.load_icons()
+        self._load_icons()
 
         # calculate summaries
         finance = self.t_man.calculateOverallFinance(self.app.user_id_var.get())
@@ -154,7 +335,7 @@ class ProfilePage(ctk.CTkFrame):
         self.createSummaries(finance)
 
 
-    def load_icons(self):
+    def _load_icons(self):
         # icon path
         if hasattr(sys, "_MEIPASS"): # for .py: memory resources
             ICONS_FOLDER = os.path.join(sys._MEIPASS, "assets/icons")

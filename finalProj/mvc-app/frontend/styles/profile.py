@@ -46,6 +46,8 @@ class ProfileStyles:
 
 
     # main page
+    MAIN_FRAME_FG_COLOR = BaseStyles.TRANSPARENT
+
     HEADER_SECTION_COLOR = BaseStyles.BLUE
     SUMMARY_SECTION_COLOR = BaseStyles.WHITE
 

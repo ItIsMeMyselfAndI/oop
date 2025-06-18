@@ -3,6 +3,7 @@ import customtkinter as ctk
 from customtkinter import StringVar
 import os
 import sys
+from typing import List, Dict
 # our modules/libs
 from frontend.styles import BaseStyles, AppStyles # paddings, dimensions, colors, etc
 from frontend.components import SidebarTabs # navigation page-tabs
@@ -14,13 +15,19 @@ from frontend.pages import HistoryPage # history page
 from frontend.pages import AddPage # edit page
 from frontend.components import SubmitBTN # save btn
 from frontend.components import PopUpWin # pop up win
-from backend import UserRepository # db manager
-from backend import TransactionManager # db manager
+from backend import UserRepository, TransactionManager # db manager
+
+from frontend.pages.profile import ProfilePageController
+from controllers.base_controller import Controller
 
 
 class AppModel:
     def __init__(self, app_title: str, user_repository: UserRepository, transaction_manager: TransactionManager):
         self.app_title = app_title
+        self.initialize_managers(user_repository, transaction_manager)
+
+
+    def initialize_managers(self, user_repository: UserRepository, transaction_manager: TransactionManager):
         self.u_repo = user_repository
         self.t_man = transaction_manager
 
@@ -40,7 +47,7 @@ class AppModel:
 
 
 class AppView(ctk.CTk):
-    def __init__(self, model, fg_color=None, **kwargs):
+    def __init__(self, model: AppModel, fg_color=None, **kwargs):
         super().__init__(fg_color, **kwargs)
         self.model = model
 
@@ -135,7 +142,6 @@ class AppView(ctk.CTk):
     def show_loading_popup(self):
         self.loading_popup.showWin()
         self.update()
-
         print("[DEBUG] show loading popup")
 
 
@@ -150,55 +156,27 @@ class AppView(ctk.CTk):
         print("\n[DEBUG] show closing popup")
 
 
-    def create_app_pages(self):
-        print("[DEBUG] creating app pages...")
+    def create_main_page_frame(self):
+        print("[DEBUG] creating main page frame...")
         self.page_frame = ctk.CTkFrame(
             master=self,
             corner_radius=0, 
             fg_color=AppStyles.WIN_FG_COLOR,
-            width=1830,
-            height=1080
+            width=AppStyles.MAIN_PAGE_FRAME_W,
+            height=AppStyles.MAIN_PAGE_FRAME_H
         )
-        self.after_idle(lambda: self.page_frame.grid(row=0, column=1, sticky="nesw"))
-        
-        self.profile_page = ProfilePage(
-            model=self.model,
-            master=self.page_frame,
-            fg_color=AppStyles.WIN_FG_COLOR,
-            corner_radius=0
-        )
-        self.profile_page.pack()
-        # self.home_page = HomePage(
-        #     app=self,
-        #     t_man=self.t_man,
-        #     master=self.page_frame,
-        #     fg_color=AppStyles.WIN_FG_COLOR,
-        #     corner_radius=0
-        # ) 
-        # self.edit_page = EditPage(
-        #     app=self,
-        #     t_man=self.t_man,
-        #     master=self.page_frame,
-        #     fg_color=AppStyles.WIN_FG_COLOR,
-        #     corner_radius=0
-        # ) 
-        # self.history_page = HistoryPage(
-        #     app=self,
-        #     t_man=self.t_man,
-        #     master=self.page_frame,
-        #     fg_color=AppStyles.WIN_FG_COLOR,
-        #     corner_radius=0
-        # ) 
-        # self.add_page = AddPage(
-        #     app=self,
-        #     t_man=self.t_man,
-        #     master=self.page_frame,
-        #     fg_color=AppStyles.WIN_FG_COLOR,
-        #     corner_radius=0
-        # ) 
+        self.page_frame.grid(row=0, column=1, sticky="nesw")
         self.update_idletasks()
-        print("[DEBUG] app pages created successfully")
+        print("[DEBUG] main page frame created successfully")
 
+
+    def create_main_pages(self, controller_per_page: Dict[str, Controller]):
+        print("[DEBUG] creating main pages...")
+        for controller in controller_per_page.values():
+            controller.view.create()
+            controller.view.pack()
+        print("[DEBUG] main pages created successfully")
+        
 
     def load_pages_gui_to_memory(self):
         # for name in reversed(self.pages.keys()):
@@ -207,14 +185,14 @@ class AppView(ctk.CTk):
         pass
 
 
-class AppController:
-    def __init__(self, app_title, db_folder, db_name):
+class AppController(Controller):
+    def __init__(self, app_title: str, db_folder: str, db_name: str):
         self.initialize_db(db_folder=db_folder, db_name=db_name)
         self.model = AppModel(app_title=app_title, user_repository=self.u_repo, transaction_manager=self.t_man)
         self.view = AppView(model=self.model, fg_color="blue")
 
 
-    def initialize_db(self, db_folder, db_name):
+    def initialize_db(self, db_folder: str, db_name: str):
         print("\n[DEBUG] initializing database...")
         try:
             self.u_repo = UserRepository(db_folder, db_name)
@@ -233,6 +211,8 @@ class AppController:
         self.view.bind("<Button-1>", self.on_click_non_entry)
         self.view.protocol("WM_DELETE_WINDOW", self.on_premature_app_close)
         self._authenticate_user()
+        self.view.create_main_page_frame()
+        self._initialize_controller_per_page()
         self._setup_main_gui()
         self.view.protocol("WM_DELETE_WINDOW", self.on_click_app_close)
         self.view.mainloop()
@@ -250,23 +230,33 @@ class AppController:
         print("[DEBUG] authenticating user...")
         self.view.update()
         self.view.wait_variable(self.model.user_id_var) # gets modified only when valid user
-        # # convert str var to str
-        # self.user_id = self.user_id_var.get()
-        # self.username = self.username_var.get()
         print("[DEBUG] user authenticated successfully")
+
+
+    def _initialize_controller_per_page(self):
+        self.profile_controller = ProfilePageController(
+            transaction_manager=self.t_man,
+            user_id_var=self.model.user_id_var,
+            username_var=self.model.username_var,
+            master=self.view.page_frame
+        )
+
+        self.controller_per_page = {
+            "profile": self.profile_controller
+        }
 
 
     def _setup_main_gui(self):
         print("[DEBUG] setting up main gui...")
         self.view.show_loading_popup()
-        self.view.create_app_pages()
+        self.view.create_main_pages(self.controller_per_page)
         # self.view.load_pages_gui_to_memory()
         self.view.after_idle(self.view.hide_loading_popup)
         self.view.update_idletasks()
         self.view.after_idle(lambda: print("[DEBUG] main gui setup completed successfully"))
 
 
-    def on_click_non_entry(self, event):
+    def on_click_non_entry(self, event: ctk.ctk_tk.tkinter.Event):
         print(f"[DEBUG] {event.widget.winfo_class() = }")
         if not event.widget.winfo_class() == "Entry":
             self.view.dummy_entry.focus_set() # unfocus entries
@@ -274,22 +264,25 @@ class AppController:
 
 
     def on_premature_app_close(self):
+        print("[DEBUG] closing app prematurely w/o user...")
         self.view.show_closing_popup()
-        print("[DEBUG] closing app prematurely w/o user validation...")
         self.view.after_idle(self.model.close_managers)
         self.view.after_idle(lambda: print("[DEBUG] app closed successfully"))
         self.view.after_idle(lambda: os._exit(0))
 
 
     def on_click_app_close(self):
-        self.view.show_closing_popup()
         print("[DEBUG] closing app...")
+        self.view.show_closing_popup()
         self.view.after(300, self.model.close_managers)
         self.view.after(900, self.view.quit)
         self.view.after(1200, self.view.destroy)
         self.view.after(1500, print("[DEBUG] app closed successfully"))
 
 
+    def update_display(self):
+        pass
+        
         
 #--------------------------------------------------------------------------------------------------------
 
