@@ -3,7 +3,7 @@ import customtkinter as ctk
 from customtkinter import StringVar, IntVar
 # our modules/libs
 from ui.styles import BaseStyles, EditStyles # paddings, dimensions, colors, etc
-from ui.components import DatePicker
+from ui.widgets import DatePicker
 from backend import TransactionManager
 
 from core.models import Model

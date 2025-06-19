@@ -8,7 +8,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from typing import List, Dict, Tuple
 # our modules/libs
 from ui.styles import BaseStyles, HomeStyles # paddings, dimensions, colors, etc
-from ui.components.table import TransactionTableHeader, TransactionTableBody 
+from ui.widgets.table import TransactionTableHeader, TransactionTableBody 
 
 from backend import Transaction
 

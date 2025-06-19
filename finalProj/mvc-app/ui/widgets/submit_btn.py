@@ -2,7 +2,7 @@
 import customtkinter as ctk
 from tkinter import messagebox
 # our modules/libs
-# from ui.components import PopUpWin
+# from ui.widgets import PopUpWin
 
 from typing import Dict
 

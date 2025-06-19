@@ -2,7 +2,7 @@
 import customtkinter as ctk
 # our modules/libs
 from ui.styles import BaseStyles, EditStyles # paddings, dimensions, colors, etc
-from ui.components import DatePicker
+from ui.widgets import DatePicker
 
 from core.models import EditPageModel
 

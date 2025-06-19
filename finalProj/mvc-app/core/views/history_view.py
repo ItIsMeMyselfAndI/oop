@@ -4,7 +4,7 @@ from typing import Dict, List
 # our modules/libs
 from backend import Transaction
 from ui.styles import BaseStyles, HistoryStyles # paddings, dimensions, colors, etc
-from ui.components.table import TransactionTableFilters, TransactionTableHeader, TransactionTableBody, TransactionTableNavigation
+from ui.widgets.table import TransactionTableFilters, TransactionTableHeader, TransactionTableBody, TransactionTableNavigation
 from backend import Transaction
 
 from core.models import HistoryPageModel

@@ -7,7 +7,7 @@ from typing import List, Dict
 
 # our modules/libs
 from ui.styles import BaseStyles, AppStyles # paddings, dimensions, colors, etc
-from ui.components import PopUpWin ,SubmitBTN, SidebarTabs
+from ui.widgets import PopUpWin ,SubmitBTN, SidebarTabs
 
 from backend import UserRepository, TransactionManager # db manager
 from core.models import Model
