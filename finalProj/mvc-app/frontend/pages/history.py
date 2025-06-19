@@ -16,7 +16,7 @@ from controllers.base_controller import Controller
 
 
 class HistoryPageModel(Model):
-    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.StringVar):
+    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.IntVar):
         self.initialize_managers(transaction_manager)
         self.initialize_vars(user_id_var)
 
@@ -27,44 +27,44 @@ class HistoryPageModel(Model):
         self.t_man = transaction_manager
     
 
-    def initialize_vars(self, user_id_var: ctk.StringVar):
+    def initialize_vars(self, user_id_var: ctk.IntVar):
         self.user_id_var = user_id_var
     
     
     def load_transactions_per_filter(self) -> Dict[str, List[Transaction]]:
         print("\n[DEBUG] loading transactions per filter...")
         transactions_per_filter = {
-            "All Types": self.t_man.repo.getAllTransactions(self.user_id_var.get()),
-            "Income": self.t_man.repo.getTransactionsByType(self.user_id_var.get(), "income"),
-            "Savings": self.t_man.repo.getTransactionsByType(self.user_id_var.get(), "savings"),
-            "Expenses": self.t_man.repo.getTransactionsByType(self.user_id_var.get(), "expense"),
-            "Investment": self.t_man.repo.getTransactionsByType(self.user_id_var.get(), "investment"),
+            "All Types": self.t_man.repo.getAllTransactions(int(self.user_id_var.get())),
+            "Income": self.t_man.repo.getTransactionsByType(int(self.user_id_var.get()), "income"),
+            "Savings": self.t_man.repo.getTransactionsByType(int(self.user_id_var.get()), "savings"),
+            "Expenses": self.t_man.repo.getTransactionsByType(int(self.user_id_var.get()), "expense"),
+            "Investment": self.t_man.repo.getTransactionsByType(int(self.user_id_var.get()), "investment"),
             # income
-            "Salary":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Salary"),
-            "Bonus":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Bonus"),
-            "Side-hustles":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Side-hustles"),
-            "Tips":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Tips"),
+            "Salary":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Salary"),
+            "Bonus":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Bonus"),
+            "Side-hustles":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Side-hustles"),
+            "Tips":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Tips"),
             # expenses
-            "Bills":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Bills"),
-            "Education":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Education"),
-            "Entertainment":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Entertainment"),
-            "Food & Drinks":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Food & Drinks"),
-            "Grocery":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Grocery"),
-            "Healthcare":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Healthcare"),
-            "House":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "House"),
-            "Shopping":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Shopping"),
-            "Transportation":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Transportation"),
-            "Wellness":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Wellness"),
-            "Other":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Other"),
+            "Bills":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Bills"),
+            "Education":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Education"),
+            "Entertainment":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Entertainment"),
+            "Food & Drinks":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Food & Drinks"),
+            "Grocery":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Grocery"),
+            "Healthcare":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Healthcare"),
+            "House":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "House"),
+            "Shopping":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Shopping"),
+            "Transportation":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Transportation"),
+            "Wellness":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Wellness"),
+            "Other":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Other"),
             # savings
-            "Monthly Allowance":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Monthly Allowance"),
-            "Change":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Change"),
-            "Miscellaneous":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Miscellaneous"),
+            "Monthly Allowance":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Monthly Allowance"),
+            "Change":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Change"),
+            "Miscellaneous":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Miscellaneous"),
             # investment
-            "Stocks":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Stocks"),
-            "Crypto":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Crypto"),
-            "Bonds":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Bonds"),
-            "Real Estate":self.t_man.repo.getTransactionsByCategory(self.user_id_var.get(), "Real Estate")
+            "Stocks":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Stocks"),
+            "Crypto":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Crypto"),
+            "Bonds":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Bonds"),
+            "Real Estate":self.t_man.repo.getTransactionsByCategory(int(self.user_id_var.get()), "Real Estate")
         }
         print("\n[DEBUG] transactions per filter loaded successfully...")
         return transactions_per_filter
@@ -74,7 +74,7 @@ class HistoryPageModel(Model):
 
 
 class HistoryPageView(ctk.CTkFrame):
-    def __init__(self, model: Model, master, **kwargs):
+    def __init__(self, model: HistoryPageModel, master, **kwargs):
         super().__init__(master, **kwargs)
         self.model = model
 
@@ -100,7 +100,7 @@ class HistoryPageView(ctk.CTkFrame):
 
     def _create_table(self):
         print("[DEBUG] creating table...")
-        transactions_per_filter = self.model.load_transactions_per_filter()
+        transactions_per_filter: Dict[str, List[Transaction]] = self.model.load_transactions_per_filter()
         self.table = TransactionTable(
             transactions_per_filter=transactions_per_filter,
             filter_master=self.header,
@@ -116,7 +116,7 @@ class HistoryPageView(ctk.CTkFrame):
 
 
 class HistoryPageController(Controller):
-    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.StringVar, master):
+    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.IntVar, master):
         self.model = HistoryPageModel(transaction_manager=transaction_manager, user_id_var=user_id_var)
         self.view = HistoryPageView(model=self.model, master=master, fg_color=HistoryStyles.MAIN_FRAME_FG_COLOR)
 

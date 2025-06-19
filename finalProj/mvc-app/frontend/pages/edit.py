@@ -13,7 +13,7 @@ from controllers.base_controller import Controller
 
 
 class EditPageModel:
-    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.StringVar):
+    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.IntVar):
         self.initialize_managers(transaction_manager)
         self.initialize_vars(user_id_var)
         self.initialize_categories_by_type()
@@ -25,7 +25,7 @@ class EditPageModel:
         self.t_man = transaction_manager
     
 
-    def initialize_vars(self, user_id_var: ctk.StringVar):
+    def initialize_vars(self, user_id_var: ctk.IntVar):
         self.user_id_var = user_id_var
 
 
@@ -77,7 +77,7 @@ class EditPageModel:
 
                 # update db with updated_transaction
                 result = self.t_man.repo.modifyTransaction(
-                    user_id=self.user_id_var.get(),
+                    user_id=int(self.user_id_var.get()),
                     t_id=transaction_id,
                     updated_transaction=updated_transaction
                 )
@@ -107,7 +107,7 @@ class EditPageModel:
 
 
 class EditPageView(ctk.CTkFrame):
-    def __init__(self, model: Model, master, **kwargs):
+    def __init__(self, model: EditPageModel, master, **kwargs):
         super().__init__(master, **kwargs)
         self.model = model
 
@@ -162,7 +162,7 @@ class EditPageView(ctk.CTkFrame):
 
 
 class EditPageController(Controller):
-    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.StringVar, master):
+    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.IntVar, master):
         self.model = EditPageModel(transaction_manager=transaction_manager, user_id_var=user_id_var)
         self.view = EditPageView(model=self.model, master=master, fg_color=EditStyles.MAIN_FRAME_FG_COLOR)
 
@@ -388,7 +388,7 @@ class TransactionForm(ctk.CTkFrame):
         self.amountEntry.pack(anchor="w", padx=BaseStyles.PAD_3, pady=0)
     
     
-    def update_transaction_menu_options_per_type(self) -> list[str]:
+    def update_transaction_menu_options_per_type(self):
         transactions = self.model.t_man.repo.getTransactionsByType(self.model.user_id_var.get(), self.t_type)
         transaction_options = []
         for t in transactions:
@@ -514,149 +514,3 @@ class Tabs(ctk.CTkFrame):
         self.after(100, lambda: self._hideOtherPages("income"))
         self.after(300, lambda: self._showPage("income"))
     
-    
-#--------------------------------------------------------------------------------------------------------
-
-
-# main edit page
-class EditPage(ctk.CTkFrame):
-    def __init__(self, app, t_man, master, **kwargs):
-        super().__init__(master, **kwargs)
-        self.app = app
-        self.model.t_man = t_man
-
-        # initialize state
-        self.is_current_page = False
-
-        self.createHeader()
-        self._create_forms()
-        self.createTabs()
-
-
-    def createHeader(self):
-        self.header = Header(
-            master=self,
-            fg_color=EditStyles.HEADER_SECTION_FG_COLOR,
-            corner_radius=0
-        )
-        self.header.grid(row=0, column=0, pady=(BaseStyles.PAD_4+BaseStyles.PAD_4,0))
-
-
-    def _create_form(self, transaction_type):
-        # valid categories
-        self.model.categories_per_type = {
-            "expense": ["Bills", "Education", "Entertainment", "Food & Drinks",
-                        "Grocery", "Healthcare", "House", "Shopping",
-                        "Transportation", "Wellness", "Other"],
-            "savings": ["Monthly Allowance", "Change", "Miscellaneous"],
-            "investment": ["Stocks", "Crypto", "Bonds", "Real Estate"],
-            "income": ["Salary", "Bonus", "Side-hustles", "Tips"]
-        }
-        # create form
-        form = TransactionForm(
-            t_man=self.model.t_man,
-            app=self.app,
-            t_type=transaction_type,
-            categories=self.model.categories_per_type[transaction_type],
-            master=self.forms_section,
-            fg_color=EditStyles.FORM_FRAME_FG_COLOR,
-            corner_radius=BaseStyles.RAD_2
-        )
-        return form
-    
-
-    def _create_forms(self):
-        self.forms_section = ctk.CTkFrame(
-            master=self,
-            fg_color=EditStyles.FORMS_SECTION_FG_COLOR,
-            corner_radius=BaseStyles.RAD_2
-        )
-        self.expenseForm = self._create_form("expense")
-        self.savingsForm = self._create_form("savings")
-        self.investmentForm = self._create_form("investment")
-        self.incomeForm = self._create_form("income")
-        self.forms_section.grid(row=2, column=0, pady=(BaseStyles.PAD_3,0))
-
-
-    def createTabs(self):
-        self.form_per_transaction_type = {
-            "expense":self.expenseForm, "savings":self.savingsForm,
-            "investment":self.investmentForm, "income":self.incomeForm
-        }
-
-        self.tabs = Tabs(
-            form_per_transaction_type=self.form_per_transaction_type, master=self,
-            fg_color=EditStyles.TABS_FRAME_FG_COLOR, corner_radius=0
-        )
-        self.tabs.grid(row=1, column=0, padx=BaseStyles.PAD_3, pady=(BaseStyles.PAD_4,0))
-
-
-    def saveEditedTransactionToDatabase(self):
-        month_2_numeric = {
-            "January":"01", "February":"02", "March":"03", "April":"04",
-            "May":"05", "June":"06", "July":"07", "August":"08",
-            "September":"09", "October":"10", "November":"11", "December":"12"
-        }
-        for transaction_type, form in self.form_per_transaction_type.items():
-            if form.is_current_form == True:
-                # retrieve user inputs from the UI
-                original_transaction = form.transactionMenu.get().strip()
-                if original_transaction == "No Available Transaction":
-                    return
-                year = form.dateMenu.year_menu.get()
-                month = month_2_numeric[form.dateMenu.month_menu.get()]
-                day = form.dateMenu.day_menu.get()
-                
-                transaction_id = int(original_transaction.split()[0])
-                new_date = f"{year}-{month}-{day}"
-                new_category = form.categoryMenu.get()
-                new_description = form.descriptionEntry.get()
-                new_amount = form.amountEntry.get()
-                
-                if "-" in new_amount:
-                    raise ValueError
-
-                new_amount = float(new_amount)
-                # create updated_transaction obj
-                updated_transaction = Transaction(
-                    t_date=new_date,
-                    t_type=transaction_type,
-                    t_category=new_category,
-                    t_amount=new_amount,
-                    t_description=new_description
-                )
-
-                # update db with updated_transaction
-                result = self.model.t_man.repo.modifyTransaction(
-                    user_id=self.app.user_id,
-                    t_id=transaction_id,
-                    updated_transaction=updated_transaction
-                )
-
-                # display result for debugging
-                print("\n", f"{result = }")
-                print(f"{len(original_transaction)+3} = ")
-                print(f"{original_transaction = }")
-                print(f"{transaction_type = }")
-                print(f"{transaction_id = }")
-                print(f"{new_date = }")
-                print(f"{new_category = }")
-                print(f"{new_description = }")
-                print(f"{new_amount = }")
-
-                # reset form
-                form.transactionMenu.set(form.transaction_options[0])
-                form.dateMenu.year_menu.set(form.dateMenu.years[0])
-                form.dateMenu.month_menu.set(form.dateMenu.months[0])
-                form.dateMenu.day_menu.set(form.dateMenu.days[0])
-                form.categoryMenu.set(form.categories[0])
-                form.descriptionEntry.delete(first_index=0, last_index=ctk.END)
-                form.amountEntry.delete(first_index=0, last_index=ctk.END)
-
-
-    # update edit transaction form_per_transaction_type
-    def updatePageDisplay(self):
-        for form in self.form_per_transaction_type.values():
-            form.update_transaction_menu_options_per_type()
-            form.transactionMenu.configure(values=form.transaction_options)
-            form.transactionMenu.set(form.transaction_options[0])

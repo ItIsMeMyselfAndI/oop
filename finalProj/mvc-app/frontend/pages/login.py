@@ -16,9 +16,6 @@ from backend import Account
 class LoginForm(ctk.CTkFrame):
     def __init__(self, model, master, **kwargs):
         super().__init__(master, **kwargs)
-        # self.model.user_id_var: ctk.StringVar = user_id
-        # self.model.username_var: ctk.StringVar = username
-        # self.model.u_repo = u_repo
         self.model = model
 
         self.initializePageState()
@@ -35,9 +32,10 @@ class LoginForm(ctk.CTkFrame):
         self.isCurrentPage = False
 
 
-    def _loadIcon(self):
+    def _loadIcon(self) -> ctk.CTkImage:
         if hasattr(sys, "_MEIPASS"): # # for .exe: memory resources path
-            ICONS_FOLDER = os.path.join(sys._MEIPASS, "assets/icons")
+            _MEIPASS: str = getattr(sys, "_MEIPASS")
+            ICONS_FOLDER: str = os.path.join(_MEIPASS, "assets/icons")
         else: # for .py: storage resources path
             ICONS_FOLDER = "assets/icons"
         

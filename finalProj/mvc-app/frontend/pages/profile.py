@@ -6,7 +6,7 @@ import sys
 # our modules/libs
 from frontend.styles import BaseStyles, ProfileStyles # paddings, dimensions, colors, etc
 
-from backend import TransactionManager # db manager
+from backend import TransactionManager, Finance # db manager
 
 from models.base_model import Model
 from controllers.base_controller import Controller
@@ -16,12 +16,12 @@ from controllers.base_controller import Controller
 
 
 class ProfilePageModel(Model):
-    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.StringVar, username_var: ctk.StringVar):
+    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.IntVar, username_var: ctk.StringVar):
         self.initialize_managers(transaction_manager)
         self.initialize_vars(user_id_var, username_var)        
         
         self.is_current_page = False
-        self.finance = 0
+        self.finance = Finance(0, 0, 0, 0)
         self.balance = 0
 
 
@@ -29,13 +29,13 @@ class ProfilePageModel(Model):
         self.t_man = transaction_manager
     
 
-    def initialize_vars(self, user_id_var: ctk.StringVar, username_var: ctk.StringVar):
+    def initialize_vars(self, user_id_var: ctk.IntVar, username_var: ctk.StringVar):
         self.user_id_var = user_id_var
         self.username_var = username_var
 
 
     def load_amounts(self):
-        self.finance = self.t_man.calculateOverallFinance(self.user_id_var.get())
+        self.finance = self.t_man.calculateOverallFinance(int(self.user_id_var.get()))
         self.balance = self.t_man.calculateOverallBalance(self.finance)
 
 
@@ -62,7 +62,8 @@ class ProfilePageView(ctk.CTkFrame):
         print("[DEBUG] loading profile page icons...")
         # icon path
         if hasattr(sys, "_MEIPASS"): # for .py: memory resources
-            ICONS_FOLDER = os.path.join(sys._MEIPASS, "assets/icons")
+            _MEIPASS: str = getattr(sys, "_MEIPASS")
+            ICONS_FOLDER = os.path.join(_MEIPASS, "assets/icons")
         else: # for .py: true path resources
             ICONS_FOLDER = "assets/icons"
 
@@ -176,7 +177,7 @@ class ProfilePageView(ctk.CTkFrame):
 
 
 class ProfilePageController(Controller):
-    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.StringVar, username_var: ctk.StringVar, master):
+    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.IntVar, username_var: ctk.StringVar, master):
         self.model = ProfilePageModel(transaction_manager=transaction_manager, user_id_var=user_id_var, username_var=username_var)
         self.view = ProfilePageView(model=self.model, master=master, fg_color=ProfileStyles.MAIN_FRAME_FG_COLOR)
 
@@ -201,7 +202,7 @@ class ProfilePageController(Controller):
 
 
 class Header(ctk.CTkFrame):
-    def __init__(self, img: Image, uname: str, summary_type: str, amount: float, master, **kwargs):
+    def __init__(self, img: ctk.CTkImage, uname: str, summary_type: str, amount: float, master, **kwargs):
         super().__init__(master, ** kwargs)
         self.font4 = ("Arial", BaseStyles.FONT_SIZE_4, "normal")
         self.font6 = ("Arial", BaseStyles.FONT_SIZE_6, "normal")
@@ -209,13 +210,13 @@ class Header(ctk.CTkFrame):
         self.create(img, uname, summary_type, amount)
 
 
-    def create(self, img: Image, uname: str, summary_type: str, amount: float):
+    def create(self, img: ctk.CTkImage, uname: str, summary_type: str, amount: float):
         self._create_icon(img)
         self._create_username(uname)
         self._create_balance(summary_type, amount)
         
 
-    def _create_icon(self, img: Image):
+    def _create_icon(self, img: ctk.CTkImage):
         print("[DEBUG] creating icon...")
         self.img = img
         self.img_bg = ctk.CTkLabel(
@@ -293,7 +294,7 @@ class Header(ctk.CTkFrame):
 
 
 class SummarySection(ctk.CTkFrame):
-    def __init__(self, img: Image, img_bg_color: str, summary_type: str, amount: float, master, **kwargs):
+    def __init__(self, img: ctk.CTkImage, img_bg_color: str, summary_type: str, amount: float, master, **kwargs):
         super().__init__(master, ** kwargs)
         self.font4 = ("Arial", BaseStyles.FONT_SIZE_4, "normal")
         self.font6 = ("Arial", BaseStyles.FONT_SIZE_6, "normal")
@@ -301,12 +302,12 @@ class SummarySection(ctk.CTkFrame):
         self.create(img, img_bg_color, summary_type, amount)
 
 
-    def create(self, img: Image, img_bg_color: str, summary_type: str, amount: float):
+    def create(self, img: ctk.CTkImage, img_bg_color: str, summary_type: str, amount: float):
         self._create_icon(img, img_bg_color)
         self._create_summary(summary_type, amount)
         
         
-    def _create_icon(self, img: Image, img_bg_color: str):
+    def _create_icon(self, img: ctk.CTkImage, img_bg_color: str):
         print("[DEBUG] creating icon...")
         self.img = img
         self.img_bg = ctk.CTkLabel(

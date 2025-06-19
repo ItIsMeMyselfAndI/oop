@@ -13,7 +13,7 @@ from controllers.base_controller import Controller
 
 
 class AddPageModel:
-    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.StringVar):
+    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.IntVar):
         self.initialize_managers(transaction_manager)
         self.initialize_vars(user_id_var)
         self.initialize_categories_by_type()
@@ -25,7 +25,7 @@ class AddPageModel:
         self.t_man = transaction_manager
     
 
-    def initialize_vars(self, user_id_var: ctk.StringVar):
+    def initialize_vars(self, user_id_var: ctk.IntVar):
         self.user_id_var = user_id_var
 
 
@@ -73,7 +73,7 @@ class AddPageModel:
 
                 # update db with new_transaction
                 result = self.t_man.repo.addTransaction(
-                    user_id=self.user_id_var.get(),
+                    user_id=int(self.user_id_var.get()),
                     new_transaction=new_transaction
                 )
 
@@ -99,7 +99,7 @@ class AddPageModel:
 
 
 class AddPageView(ctk.CTkFrame):
-    def __init__(self, model: Model, master, **kwargs):
+    def __init__(self, model: AddPageModel, master, **kwargs):
         super().__init__(master, **kwargs)
         self.model = model
         self.is_current_page = False
@@ -155,7 +155,7 @@ class AddPageView(ctk.CTkFrame):
 
 
 class AddPageController(Controller):
-    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.StringVar, master):
+    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.IntVar, master):
         self.model = AddPageModel(transaction_manager=transaction_manager, user_id_var=user_id_var)
         self.view = AddPageView(model=self.model, master=master, fg_color=AddStyles.MAIN_FRAME_FG_COLOR)
 

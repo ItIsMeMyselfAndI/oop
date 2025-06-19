@@ -19,7 +19,7 @@ from controllers.base_controller import Controller
 
 
 class HomePageModel(Model):
-    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.StringVar):
+    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.IntVar):
         self.initialize_managers(transaction_manager)
         self.initialize_vars(user_id_var)
 
@@ -31,19 +31,19 @@ class HomePageModel(Model):
         self.t_man = transaction_manager
     
 
-    def initialize_vars(self, user_id_var: ctk.StringVar):
+    def initialize_vars(self, user_id_var: ctk.IntVar):
         self.user_id_var = user_id_var
 
 
     def load_amounts(self):
-        self.finance = self.t_man.calculateOverallFinance(self.user_id_var.get())
+        self.finance = self.t_man.calculateOverallFinance(int(self.user_id_var.get()))
         self.balance = self.t_man.calculateOverallBalance(self.finance)
     
     
     def load_transactions_per_filter(self) -> Dict[str, List[Transaction]]:
         print("\n[DEBUG] loading transactions per filter...")
         transactions_per_filter = {
-            "Recent": self.t_man.repo.getRecentTransactions(user_id=self.user_id_var.get(), t_count=10)
+            "Recent": self.t_man.repo.getRecentTransactions(user_id=int(self.user_id_var.get()), t_count=10)
         }
         print("\n[DEBUG] transactions per filter loaded successfully...")
         return transactions_per_filter
@@ -53,7 +53,7 @@ class HomePageModel(Model):
 
 
 class HomePageView(ctk.CTkFrame):
-    def __init__(self, model: Model, master, **kwargs):
+    def __init__(self, model: HomePageModel, master, **kwargs):
         super().__init__(master, **kwargs)
         self.model = model
 
@@ -75,7 +75,8 @@ class HomePageView(ctk.CTkFrame):
         print("[DEBUG] loading home page icon...")
         # icon path
         if hasattr(sys, "_MEIPASS"): # # for .exe: memory resources path
-            ICONS_FOLDER = os.path.join(sys._MEIPASS, "assets/icons")
+            _MEIPASS: str = getattr(sys, "_MEIPASS")
+            ICONS_FOLDER = os.path.join(_MEIPASS, "assets/icons")
         else: # for .py: storage resources path
             ICONS_FOLDER = "assets/icons"
         print(ICONS_FOLDER)
@@ -160,7 +161,7 @@ class HomePageView(ctk.CTkFrame):
 
 
 class HomePageController(Controller):
-    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.StringVar, master):
+    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.IntVar, master):
         self.model = HomePageModel(transaction_manager=transaction_manager, user_id_var=user_id_var)
         self.view = HomePageView(model=self.model, master=master, fg_color=HomeStyles.SCROLL_FRAME_FG_COLOR)
 
@@ -226,12 +227,12 @@ class Header(ctk.CTkFrame):
         self.create(img, summary_type, amount)
 
 
-    def create(self, img:Image, summary_type: str, amount: float):
+    def create(self, img: ctk.CTkImage, summary_type: str, amount: float):
         self._create_icon(img)
         self._create_balance(summary_type, amount)
 
 
-    def _create_icon(self, img: Image):
+    def _create_icon(self, img: ctk.CTkImage):
         print("[DEBUG] creating icon...")
         self.img = img
         self.img_bg = ctk.CTkLabel(
