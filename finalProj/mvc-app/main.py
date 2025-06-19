@@ -1,22 +1,20 @@
 # built-in/external modules/libs
 import customtkinter as ctk
+from customtkinter import StringVar, IntVar
 import os
 import sys
 from typing import List, Dict
 # our modules/libs
 from frontend.styles import BaseStyles, AppStyles # paddings, dimensions, colors, etc
-from frontend.components import SidebarTabs # navigation page-tabs
 from frontend.pages import LoginForm # login form
-from frontend.components import SubmitBTN # save btn
-from frontend.components import PopUpWin # pop up win
 from backend import UserRepository, TransactionManager # db manager
 
-from controllers.base_controller import Controller
-from frontend.pages.profile import ProfilePageController
-from frontend.pages.home import HomePageController
-from frontend.pages.edit import EditPageController
-from frontend.pages.history import HistoryPageController
-from frontend.pages.add import AddPageController
+from frontend.gui_components import PopUpWin ,SubmitBTN, SidebarTabs
+
+from models import Model
+from controllers import Controller, ProfilePageController, EditPageController, AddPageController, HomePageController, HistoryPageController
+# from frontend.pages.home import HomePageController
+# from frontend.pages.history import HistoryPageController
 
 
 class AppModel:
@@ -24,7 +22,7 @@ class AppModel:
         self.app_title = app_title
         self.initialize_managers(user_repository, transaction_manager)
 
-
+    
     def initialize_managers(self, user_repository: UserRepository, transaction_manager: TransactionManager):
         self.u_repo = user_repository
         self.t_man = transaction_manager
@@ -32,8 +30,8 @@ class AppModel:
 
     def initialize_vars(self):
         print("\n[DEBUG] initializing strVars...")
-        self.user_id_var = ctk.IntVar()
-        self.username_var = ctk.StringVar()
+        self.user_id_var = IntVar()
+        self.username_var = StringVar()
         print("[DEBUG] strVars initialized successfully")
 
 
@@ -180,17 +178,14 @@ class AppView(ctk.CTk):
         print("[DEBUG] main page frame created successfully")
 
 
-    def create_main_pages(self,
-                          controller_per_page: Dict[str, ProfilePageController | HomePageController | EditPageController | HistoryPageController | AddPageController]):
+    def create_main_pages(self, controller_per_page: Dict[str, Controller]):
         print("[DEBUG] creating main pages...")
         for controller in controller_per_page.values():
             controller.view.create()
         print("[DEBUG] main pages created successfully")
         
 
-    def create_submit_btns(self,
-                           controller_per_page: Dict[str, ProfilePageController | HomePageController | EditPageController | HistoryPageController | AddPageController],
-                           updating_popup: PopUpWin):
+    def create_submit_btns(self, controller_per_page: Dict[str, Controller], updating_popup: PopUpWin):
         # edit button
         self.edit_submit_btn = SubmitBTN(
             controller_per_page=controller_per_page,
@@ -224,16 +219,14 @@ class AppView(ctk.CTk):
         self.add_submit_btn.grid(row=3, column=0, pady=BaseStyles.PAD_4)
 
 
-    def load_pages_gui_to_memory(self,
-                                 controller_per_page: Dict[str, ProfilePageController | HomePageController | EditPageController | HistoryPageController | AddPageController]):
+    def load_pages_gui_to_memory(self, controller_per_page: Dict[str, Controller]): 
         for controller in reversed(controller_per_page.values()):
             controller.view.pack()
             controller.view.pack_forget()
         self.update_idletasks()
 
     
-    def create_sidebar(self,
-                       controller_per_page: Dict[str, ProfilePageController | HomePageController | EditPageController | HistoryPageController | AddPageController]):
+    def create_sidebar(self, controller_per_page: Dict[str, Controller]):
         self.sidebar = SidebarTabs(
             controller_per_page=controller_per_page,
             master=self,
@@ -253,6 +246,16 @@ class AppController(Controller):
         self.initialize_db(db_folder=db_folder, db_name=db_name)
         self.model = AppModel(app_title=app_title, user_repository=self.u_repo, transaction_manager=self.t_man)
         self.view = AppView(model=self.model, fg_color="blue")
+
+
+    @property
+    def model(self) -> Model:
+        return self.__model
+    
+    
+    @model.setter
+    def model(self, value: Model):
+        self.__model = value
 
 
     def initialize_db(self, db_folder: str, db_name: str):

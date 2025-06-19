@@ -1,5 +1,6 @@
 # external/built-in modules/libs
 import customtkinter as ctk
+from customtkinter import StringVar, IntVar
 from PIL import Image
 import os
 import sys
@@ -9,48 +10,9 @@ from typing import List, Dict, Tuple
 from frontend.styles import BaseStyles, HomeStyles # paddings, dimensions, colors, etc
 from frontend.table import TransactionTableHeader, TransactionTableBody 
 
-from backend import Transaction, TransactionManager # db manager
+from backend import Transaction
 
-from models.base_model import Model
-from controllers.base_controller import Controller
-
-
-#--------------------------------------------------------------------------------------------------------
-
-
-class HomePageModel(Model):
-    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.IntVar):
-        self.initialize_managers(transaction_manager)
-        self.initialize_vars(user_id_var)
-
-        self.is_current_page = False
-        self.balance_amount = 0
-
-
-    def initialize_managers(self, transaction_manager: TransactionManager):
-        self.t_man = transaction_manager
-    
-
-    def initialize_vars(self, user_id_var: ctk.IntVar):
-        self.user_id_var = user_id_var
-
-
-    def load_amounts(self):
-        self.finance = self.t_man.calculateOverallFinance(int(self.user_id_var.get()))
-        self.balance = self.t_man.calculateOverallBalance(self.finance)
-    
-    
-    def load_transactions_per_filter(self) -> Dict[str, List[Transaction]]:
-        print("\n[DEBUG] loading transactions per filter...")
-        transactions_per_filter = {
-            "Recent": self.t_man.repo.getRecentTransactions(user_id=int(self.user_id_var.get()), t_count=10)
-        }
-        print("\n[DEBUG] transactions per filter loaded successfully...")
-        return transactions_per_filter
-
-
-    def save_user_inputs_to_database(self):
-        pass
+from models import HomePageModel
 
 
 #--------------------------------------------------------------------------------------------------------
@@ -159,74 +121,6 @@ class HomePageView(ctk.CTkFrame):
         self.quarterly_report.pack(pady=(BaseStyles.PAD_2,BaseStyles.PAD_5*3))
         self.update_idletasks()
         print("[DEBUG] quarterly report created successfully")
-
-
-#--------------------------------------------------------------------------------------------------------
-
-
-class HomePageController(Controller):
-    def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.IntVar, master):
-        self.model = HomePageModel(transaction_manager=transaction_manager, user_id_var=user_id_var)
-        self.view = HomePageView(model=self.model, master=master, fg_color=HomeStyles.SCROLL_FRAME_FG_COLOR)
-
-
-    @property
-    def model(self) -> Model:
-        return self.__model
-    
-    
-    @model.setter
-    def model(self, value: Model):
-        self.__model = value
-
-
-    def run(self):
-        pass
-
-
-    def update_display(self):
-        print("\n[DEBUG] updating home page display...")
-        # update total balance in header
-        self.model.load_amounts()
-        self.view.header.amount_label.configure(text=f"₱ {self.model.balance:,}")
-        
-        self._update_table()
-        self._update_monthly_report()
-        self._update_quarterly_report()
-        print("[DEBUG] home page display updated successfully")
-
-    
-    def _update_table(self):
-        print("[DEBUG] updating recent transaction table...")
-        # destroy prev ver of the table
-        for page in self.view.recent_table.body.winfo_children():
-            page.destroy()
-
-        self.view.recent_table.body.transactions_per_filter = self.model.load_transactions_per_filter()
-        self.view.recent_table.body.filterTransactions()
-        self.view.recent_table.body.countFilteredTablePages()
-        self.view.recent_table.body.separateFilteredTransactionsPerPage()
-        self.view.recent_table.body.updateCurrentTablePage()
-        self.view.update_idletasks()
-        print("[DEBUG] recent transaction table updated successfully")
-
-    
-    def _update_monthly_report(self):
-        print("[DEBUG] updating monthly report graphs...")
-        self.view.monthly_report.income_canvas.get_tk_widget().destroy()
-        self.view.monthly_report.expense_canvas.get_tk_widget().destroy()
-        self.view.monthly_report.income_canvas, self.view.monthly_report.expense_canvas = self.view.monthly_report.display_graphs_section()
-        self.view.update_idletasks()
-        print("[DEBUG] monthly report graphs updated successfully")
-
-    
-    def _update_quarterly_report(self):
-        print("[DEBUG] updating quarterly report graph...")
-        self.view.quarterly_report.graph_canvas.get_tk_widget().destroy()
-        self.view.quarterly_report.graph_canvas = self.view.quarterly_report.display_graphs_section()
-        self.view.update_idletasks()
-        print("[DEBUG] quarterly report graph updated successfully")
-
 
 
 #--------------------------------------------------------------------------------------------------------
@@ -525,4 +419,3 @@ class QuarterlyReport(ctk.CTkFrame):
         print("[DEBUG] quarterly graphs displayed successfully")
         
         return graph_canvas
-    

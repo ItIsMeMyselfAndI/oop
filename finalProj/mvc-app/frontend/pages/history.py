@@ -4,7 +4,7 @@ from typing import Dict, List
 # our modules/libs
 from backend import Transaction
 from frontend.styles import BaseStyles, HistoryStyles # paddings, dimensions, colors, etc
-from frontend.components import TransactionTableFilters, TransactionTableHeader, TransactionTableBody, TransactionTableNavigation
+from frontend.table import TransactionTableFilters, TransactionTableHeader, TransactionTableBody, TransactionTableNavigation
 
 from backend import Transaction, TransactionManager # db manager
 
@@ -68,6 +68,14 @@ class HistoryPageModel(Model):
         }
         print("\n[DEBUG] transactions per filter loaded successfully...")
         return transactions_per_filter
+    
+    
+    def save_user_inputs_to_database(self):
+        pass
+
+
+    def load_amounts(self):
+        pass
 
 
 #--------------------------------------------------------------------------------------------------------
@@ -119,6 +127,16 @@ class HistoryPageController(Controller):
     def __init__(self, transaction_manager: TransactionManager, user_id_var: ctk.IntVar, master):
         self.model = HistoryPageModel(transaction_manager=transaction_manager, user_id_var=user_id_var)
         self.view = HistoryPageView(model=self.model, master=master, fg_color=HistoryStyles.MAIN_FRAME_FG_COLOR)
+
+
+    @property
+    def model(self) -> Model:
+        return self.__model
+    
+    
+    @model.setter
+    def model(self, value: Model):
+        self.__model = value
 
 
     def run(self):

@@ -1,6 +1,5 @@
 # external/built-in modules/libs
 import customtkinter as ctk
-import tkinter as tk
 from tkinter import messagebox
 from PIL import Image
 import os

@@ -23,7 +23,8 @@ class SidebarTabs(ctk.CTkFrame):
     def load_icons(self):
         # icon path
         if hasattr(sys, "_MEIPASS"): # # for .exe: memory resources path
-            ICONS_FOLDER = os.path.join(sys._MEIPASS, "assets/icons")
+            _MEIPASS: str = getattr(sys, "_MEIPASS")
+            ICONS_FOLDER = os.path.join(_MEIPASS, "assets/icons")
         else: # for .py: storage resources path
             ICONS_FOLDER = "assets/icons"
         print(ICONS_FOLDER)

@@ -2,26 +2,18 @@
 import customtkinter as ctk
 from tkinter import messagebox
 # our modules/libs
-from backend.transaction_manager import Transaction
-from frontend.styles import BaseStyles # paddings, dimensions, colors, etc
-from frontend.components.popup_win import PopUpWin
+# from frontend.components import PopUpWin
 
 from typing import Dict
-from controllers.base_controller import Controller
-from frontend.pages.profile import ProfilePageController
-from frontend.pages.home import HomePageController
-from frontend.pages.edit import EditPageController
-from frontend.pages.history import HistoryPageController
-from frontend.pages.add import AddPageController
+
+from controllers import Controller
 
 
 #--------------------------------------------------------------------------------------------------------
 
 
 class SubmitBTN(ctk.CTkButton):
-    def __init__(self,
-                 controller_per_page: Dict[str, ProfilePageController | HomePageController | EditPageController | HistoryPageController | AddPageController],
-                 updating_popup: PopUpWin, master, **kwargs):
+    def __init__(self, controller_per_page: Dict[str, Controller], updating_popup, master, **kwargs):
         super().__init__(master, **kwargs)
         self.controller_per_page = controller_per_page
         self.updating_popup = updating_popup
@@ -44,10 +36,10 @@ class SubmitBTN(ctk.CTkButton):
         # save to database
         for page_name, controller in self.controller_per_page.items():
             try:
-                if page_name == "edit" and isinstance(controller, EditPageController) and controller.model.is_current_page == True:
-                    controller.model.save_edited_transaction_to_database(controller.view.form_per_transaction_type)
-                elif page_name == "add"  and isinstance(controller, AddPageController)and controller.model.is_current_page == True:
-                    controller.model.save_new_transaction_to_database(controller.view.form_per_transaction_type)
+                if page_name == "edit" and controller.model.is_current_page == True:
+                    controller.model.save_user_inputs_to_database(controller.view.form_per_transaction_type)
+                elif page_name == "add" and controller.model.is_current_page == True:
+                    controller.model.save_user_inputs_to_database(controller.view.form_per_transaction_type)
 
             except ValueError as e:
                 messagebox.showwarning(title="[Invalid] Input", message="Only enter positive decimal number for amount")

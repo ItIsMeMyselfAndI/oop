@@ -215,7 +215,7 @@ class TransactionTableBody(ctk.CTkScrollableFrame):
         # self.filtered_table_pages = []
         self.pages_count = 0
         self.transactions_per_page = dict()
-        self.current_table_page = None
+        self.current_table_page = TablePage(transactions=[], master=self)
 
         self.filterTransactions()
         self.countFilteredTablePages()
