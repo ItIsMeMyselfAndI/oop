@@ -6,12 +6,12 @@ import sys
 from typing import List, Dict
 
 # our modules/libs
-from gui_styles import BaseStyles, AppStyles # paddings, dimensions, colors, etc
-from gui_components import PopUpWin ,SubmitBTN, SidebarTabs
+from ui.styles import BaseStyles, AppStyles # paddings, dimensions, colors, etc
+from ui.components import PopUpWin ,SubmitBTN, SidebarTabs
 
 from backend import UserRepository, TransactionManager # db manager
-from models import Model
-from controllers import Controller, ProfilePageController, EditPageController, AddPageController, HomePageController, HistoryPageController, LoginPageController
+from core.models import Model
+from core.controllers import Controller, ProfilePageController, EditPageController, AddPageController, HomePageController, HistoryPageController, LoginPageController
 
 
 #--------------------------------------------------------------------------------------------------------
