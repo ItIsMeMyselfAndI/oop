@@ -63,7 +63,7 @@ class LoginPageView(ctk.CTkFrame):
             width=LoginStyles.LOGO_IMG_BG_W,
             height=LoginStyles.LOGO_IMG_BG_H
         )
-        self.logo_img_bg.pack(pady=(BaseStyles.PAD_4*2,BaseStyles.PAD_1))
+        self.logo_img_bg.pack(pady=(BaseStyles.PAD_4*2,BaseStyles.PAD_2))
         
         # title
         self.title_label = ctk.CTkLabel(
@@ -73,7 +73,7 @@ class LoginPageView(ctk.CTkFrame):
             text_color=LoginStyles.TITLE_TEXT_COLOR,
             fg_color=LoginStyles.TITLE_LABEL_FG_COLOR
         )
-        self.title_label.pack(padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_5))
+        self.title_label.pack(padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_3))
 
 
     def _create_entries(self):

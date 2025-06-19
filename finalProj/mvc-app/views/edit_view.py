@@ -103,7 +103,7 @@ class TransactionForm(ctk.CTkFrame):
         
         # initialize fonts
         self.font2 = ("Arial", BaseStyles.FONT_SIZE_2, "normal")
-        self.font4 = ("Arial", BaseStyles.FONT_SIZE_4, "normal")
+        self.font3 = ("Arial", BaseStyles.FONT_SIZE_3, "bold")
 
         self.create()
 
@@ -143,7 +143,7 @@ class TransactionForm(ctk.CTkFrame):
         self.transactionLabel = ctk.CTkLabel(
             master=self.top_section,
             text="Select Transaction",
-            font=self.font4,
+            font=self.font3,
             text_color=EditStyles.TRANSACTION_LABEL_TEXT_COLOR,
             fg_color=EditStyles.TRANSACTION_LABEL_FG_COLOR
         )
@@ -171,7 +171,7 @@ class TransactionForm(ctk.CTkFrame):
         self.dateLabel = ctk.CTkLabel(
             master=self.top_section,
             text="Select New Date",
-            font=self.font4,
+            font=self.font3,
             text_color=EditStyles.DATE_LABEL_TEXT_COLOR,
             fg_color=EditStyles.DATE_LABEL_FG_COLOR
         )
@@ -203,7 +203,7 @@ class TransactionForm(ctk.CTkFrame):
         self.categoryLabel = ctk.CTkLabel(
             master=self.mid_section,
             text="Select New Category",
-            font=self.font4,
+            font=self.font3,
             text_color=EditStyles.CATEGORY_LABEL_TEXT_COLOR,
             fg_color=EditStyles.CATEGORY_LABEL_FG_COLOR
         )
@@ -230,7 +230,7 @@ class TransactionForm(ctk.CTkFrame):
         self.descriptionLabel = ctk.CTkLabel(
             master=self.mid_section,
             text="Enter New Description",
-            font=self.font4,
+            font=self.font3,
             text_color=EditStyles.DESCRIPTION_LABEL_TEXT_COLOR,
             fg_color=EditStyles.DESCRIPTION_LABEL_FG_COLOR
         )
@@ -255,7 +255,7 @@ class TransactionForm(ctk.CTkFrame):
         self.amountLabel = ctk.CTkLabel(
             master=self.bot_section,
             text="Enter New Amount",
-            font=self.font4,
+            font=self.font3,
             text_color=EditStyles.AMOUNT_LABEL_TEXT_COLOR,
             fg_color=EditStyles.AMOUNT_LABEL_FG_COLOR
         )

@@ -1,8 +1,8 @@
-from frontend.styles.base import BaseStyles, scale
+from frontend.styles.base_style import BaseStyles, scale
 
 
-# ---- exclusive for edit page ----
-class EditStyles:
+# ---- exclusive for add page ----
+class AddStyles:
     # header
     HEADER_TITLE_LABEL_W = scale(1630)
     HEADER_TITLE_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
@@ -12,23 +12,10 @@ class EditStyles:
     # transaction form
     FORM_TOP_SECTION_FG_COLOR = BaseStyles.WHITE
     
-    TRANSACTION_MENU_W = scale(800)
-    TRANSACTION_MENU_H = scale(60)
-    TRANSACTION_LABEL_TEXT_COLOR = BaseStyles.BLACK
-    TRANSACTION_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
-    TRANSACTION_MENU_TEXT_COLOR = BaseStyles.BLACK
-    TRANSACTION_MENU_FG_COLOR = BaseStyles.GREY
-    TRANSACTION_MENU_HOVER_COLOR = BaseStyles.DARK_BLUE
-    TRANSACTION_DROPDOWN_TEXT_COLOR = BaseStyles.DARK_GREY
-    TRANSACTION_DROPDOWN_FG_COLOR = BaseStyles.WHITE
-    TRANSACTION_DROPDOWN_HOVER_COLOR = BaseStyles.GREY
-    TRANSACTION_BTN_FG_COLOR = BaseStyles.GREY
-    TRANSACTION_BTN_HOVER_COLOR = BaseStyles.DARK_BLUE
-
     DATE_MENU_H = scale(60)
-    YEAR_MENU_W = scale(180)
-    MONTH_MENU_W = scale(220)
-    DAY_MENU_W = scale(180)
+    YEAR_MENU_W = scale(450)
+    MONTH_MENU_W = scale(500) 
+    DAY_MENU_W = scale(450)
     DATE_LABEL_TEXT_COLOR = BaseStyles.BLACK
     DATE_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
     DATE_MENU_TEXT_COLOR = BaseStyles.BLACK
@@ -39,7 +26,7 @@ class EditStyles:
     DATE_DROPDOWN_HOVER_COLOR = BaseStyles.GREY
     DATE_DROPDOWN_TEXT_COLOR = BaseStyles.DARK_GREY
     DATE_BTN_FG_COLOR = BaseStyles.GREY
-    DATE_BTN_HOVER_COLOR = BaseStyles.DARK_BLUE
+    DATE_BTN_HOVER_COLOR = BaseStyles.DARK_YELLOW
 
     FORM_MID_SECTION_FG_COLOR = BaseStyles.WHITE
 
@@ -54,7 +41,7 @@ class EditStyles:
     CATEGORY_DROPDOWN_FG_COLOR = BaseStyles.WHITE
     CATEGORY_DROPDOWN_HOVER_COLOR = BaseStyles.GREY
     CATEGORY_BTN_FG_COLOR = BaseStyles.GREY
-    CATEGORY_BTN_HOVER_COLOR = BaseStyles.DARK_BLUE
+    CATEGORY_BTN_HOVER_COLOR = BaseStyles.DARK_YELLOW
 
     DESCRIPTION_ENTRY_W = scale(600)
     DESCRIPTION_ENTRY_H = scale(60)

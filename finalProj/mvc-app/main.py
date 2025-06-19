@@ -98,6 +98,9 @@ class AppView(ctk.CTk):
             msg="Loading...",
             font=self.font2,
             enable_close=False,
+            text_color=AppStyles.POPUP_TEXT_COLOR,
+            width=AppStyles.POPUP_WIN_W,
+            height=AppStyles.POPUP_WIN_H,
             master=self,
             fg_color=AppStyles.LOAD_POP_UP_FG_COLOR,
             enable_frame_blocker=False
@@ -109,6 +112,9 @@ class AppView(ctk.CTk):
             msg="Updating...",
             font=self.font2,
             enable_close=False,
+            text_color=AppStyles.POPUP_TEXT_COLOR,
+            width=AppStyles.POPUP_WIN_W,
+            height=AppStyles.POPUP_WIN_H,
             master=self,
             fg_color=AppStyles.UPDATE_POP_UP_FG_COLOR,
             enable_frame_blocker=False
@@ -120,6 +126,9 @@ class AppView(ctk.CTk):
             msg="Exiting...",
             font=self.font2,
             enable_close=False,
+            text_color=AppStyles.POPUP_TEXT_COLOR,
+            width=AppStyles.POPUP_WIN_W,
+            height=AppStyles.POPUP_WIN_H,
             master=self,
             fg_color=AppStyles.CLOSE_APP_POP_UP_FG_COLOR,
             enable_frame_blocker=False

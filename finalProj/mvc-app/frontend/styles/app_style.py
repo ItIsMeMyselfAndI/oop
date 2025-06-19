@@ -1,10 +1,14 @@
-from frontend.styles.base import BaseStyles, scale
+from frontend.styles.base_style import BaseStyles, scale
 
 class AppStyles:
     WIN_W = BaseStyles.SCREEN_W
     WIN_H = BaseStyles.SCREEN_H
 
     WIN_FG_COLOR = BaseStyles.GREY
+    
+    POPUP_WIN_W = scale(400)
+    POPUP_WIN_H = scale(200)
+    POPUP_TEXT_COLOR = BaseStyles.BLACK
 
     LOGIN_PAGE_FG_COLOR = BaseStyles.TRANSPARENT
     LOGIN_FORM_FG_COLOR = BaseStyles.WHITE
