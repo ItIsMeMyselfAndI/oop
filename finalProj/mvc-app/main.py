@@ -6,8 +6,8 @@ import sys
 from typing import List, Dict
 
 # our modules/libs
-from frontend.styles import BaseStyles, AppStyles # paddings, dimensions, colors, etc
-from frontend.gui_components import PopUpWin ,SubmitBTN, SidebarTabs
+from gui_styles import BaseStyles, AppStyles # paddings, dimensions, colors, etc
+from gui_components import PopUpWin ,SubmitBTN, SidebarTabs
 
 from backend import UserRepository, TransactionManager # db manager
 from models import Model

@@ -1,7 +1,7 @@
 # external/built-in modules/libs
 import customtkinter as ctk
 # our modules/libs
-from frontend.styles import BaseStyles # paddings, dimensions, colors, etc
+from gui_styles import BaseStyles # paddings, dimensions, colors, etc
 
 
 class PopUpWin(ctk.CTkToplevel):

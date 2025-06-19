@@ -3,8 +3,8 @@ import customtkinter as ctk
 from typing import Dict, List
 # our modules/libs
 from backend import Transaction
-from frontend.styles import BaseStyles, HistoryStyles # paddings, dimensions, colors, etc
-from frontend.gui_components.table import TransactionTableFilters, TransactionTableHeader, TransactionTableBody, TransactionTableNavigation
+from gui_styles import BaseStyles, HistoryStyles # paddings, dimensions, colors, etc
+from gui_components.table import TransactionTableFilters, TransactionTableHeader, TransactionTableBody, TransactionTableNavigation
 from backend import Transaction
 
 from models import HistoryPageModel

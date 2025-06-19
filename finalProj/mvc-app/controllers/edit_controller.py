@@ -2,8 +2,8 @@
 import customtkinter as ctk
 from customtkinter import StringVar, IntVar
 # our modules/libs
-from frontend.styles import BaseStyles, EditStyles # paddings, dimensions, colors, etc
-from frontend.gui_components import DatePicker
+from gui_styles import BaseStyles, EditStyles # paddings, dimensions, colors, etc
+from gui_components import DatePicker
 from backend import TransactionManager
 
 from models import Model

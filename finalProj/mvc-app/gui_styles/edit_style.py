@@ -1,8 +1,8 @@
-from frontend.styles.base_style import BaseStyles, scale
+from gui_styles.base_style import BaseStyles, scale
 
 
-# ---- exclusive for add page ----
-class AddStyles:
+# ---- exclusive for edit page ----
+class EditStyles:
     # header
     HEADER_TITLE_LABEL_W = scale(1630)
     HEADER_TITLE_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
@@ -12,10 +12,23 @@ class AddStyles:
     # transaction form
     FORM_TOP_SECTION_FG_COLOR = BaseStyles.WHITE
     
+    TRANSACTION_MENU_W = scale(800)
+    TRANSACTION_MENU_H = scale(60)
+    TRANSACTION_LABEL_TEXT_COLOR = BaseStyles.BLACK
+    TRANSACTION_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
+    TRANSACTION_MENU_TEXT_COLOR = BaseStyles.BLACK
+    TRANSACTION_MENU_FG_COLOR = BaseStyles.GREY
+    TRANSACTION_MENU_HOVER_COLOR = BaseStyles.DARK_BLUE
+    TRANSACTION_DROPDOWN_TEXT_COLOR = BaseStyles.BLACK
+    TRANSACTION_DROPDOWN_FG_COLOR = BaseStyles.WHITE
+    TRANSACTION_DROPDOWN_HOVER_COLOR = BaseStyles.GREY
+    TRANSACTION_BTN_FG_COLOR = BaseStyles.GREY
+    TRANSACTION_BTN_HOVER_COLOR = BaseStyles.DARK_YELLOW
+
     DATE_MENU_H = scale(60)
-    YEAR_MENU_W = scale(450)
-    MONTH_MENU_W = scale(500) 
-    DAY_MENU_W = scale(450)
+    YEAR_MENU_W = scale(180)
+    MONTH_MENU_W = scale(220)
+    DAY_MENU_W = scale(180)
     DATE_LABEL_TEXT_COLOR = BaseStyles.BLACK
     DATE_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
     DATE_MENU_TEXT_COLOR = BaseStyles.BLACK
@@ -24,7 +37,7 @@ class AddStyles:
     DATE_MENU_FRAME_FG_COLOR = BaseStyles.TRANSPARENT
     DATE_DROPDOWN_FG_COLOR = BaseStyles.WHITE
     DATE_DROPDOWN_HOVER_COLOR = BaseStyles.GREY
-    DATE_DROPDOWN_TEXT_COLOR = BaseStyles.DARK_GREY
+    DATE_DROPDOWN_TEXT_COLOR = BaseStyles.BLACK
     DATE_BTN_FG_COLOR = BaseStyles.GREY
     DATE_BTN_HOVER_COLOR = BaseStyles.DARK_YELLOW
 
@@ -37,7 +50,7 @@ class AddStyles:
     CATEGORY_MENU_TEXT_COLOR = BaseStyles.BLACK
     CATEGORY_MENU_FG_COLOR = BaseStyles.GREY
     CATEGORY_MENU_HOVER_COLOR = BaseStyles.DARK_BLUE
-    CATEGORY_DROPDOWN_TEXT_COLOR = BaseStyles.DARK_GREY
+    CATEGORY_DROPDOWN_TEXT_COLOR = BaseStyles.BLACK
     CATEGORY_DROPDOWN_FG_COLOR = BaseStyles.WHITE
     CATEGORY_DROPDOWN_HOVER_COLOR = BaseStyles.GREY
     CATEGORY_BTN_FG_COLOR = BaseStyles.GREY
@@ -50,7 +63,7 @@ class AddStyles:
     DESCRIPTION_ENTRY_TEXT_COLOR = BaseStyles.BLACK
     DESCRIPTION_ENTRY_FG_COLOR = BaseStyles.GREY
     DESCRIPTION_ENTRY_BG_COLOR = BaseStyles.TRANSPARENT
-    DESCRIPTION_PLACEHOLDER_TEXT_COLOR = BaseStyles.DARK_GREY
+    DESCRIPTION_PLACEHOLDER_TEXT_COLOR = BaseStyles.BLACK
     
     FORM_BOT_SECTION_FG_COLOR = BaseStyles.WHITE
 
@@ -61,7 +74,7 @@ class AddStyles:
     AMOUNT_ENTRY_TEXT_COLOR = BaseStyles.BLACK
     AMOUNT_ENTRY_FG_COLOR = BaseStyles.GREY
     AMOUNT_ENTRY_BG_COLOR = BaseStyles.TRANSPARENT
-    AMOUNT_PLACEHOLDER_TEXT_COLOR = BaseStyles.DARK_GREY
+    AMOUNT_PLACEHOLDER_TEXT_COLOR = BaseStyles.BLACK
     
 
     # page tabs

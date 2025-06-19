@@ -3,7 +3,7 @@ import customtkinter as ctk
 from customtkinter import StringVar, IntVar
 from typing import Dict, List
 # our modules/libs
-from frontend.styles import BaseStyles, HistoryStyles # paddings, dimensions, colors, etc
+from gui_styles import BaseStyles, HistoryStyles # paddings, dimensions, colors, etc
 
 from backend import TransactionManager # db manager
 

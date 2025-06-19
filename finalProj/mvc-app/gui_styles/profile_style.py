@@ -1,4 +1,4 @@
-from frontend.styles.base_style import BaseStyles, scale
+from gui_styles.base_style import BaseStyles, scale
 
 
 # ---- exclusive for profile page ----
@@ -33,11 +33,11 @@ class ProfileStyles:
 
     SUMMARY_DETAILS_FRAME_FG_COLOR = BaseStyles.TRANSPARENT
     SUMMARY_TITLE_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
-    SUMMARY_TITLE_TEXT_COLOR = BaseStyles.DARK_GREY
+    SUMMARY_TITLE_TEXT_COLOR = BaseStyles.BLACK
     
     SUMMARY_AMOUNT_LABEL_W = scale(500)
     SUMMARY_AMOUNT_LABEL_FG_COLOR = BaseStyles.TRANSPARENT
-    SUMMARY_AMOUNT_TEXT_COLOR = BaseStyles.DARK_GREY
+    SUMMARY_AMOUNT_TEXT_COLOR = BaseStyles.BLACK
 
     INCOME_IMG_BG_COLOR = BaseStyles.LIGHT_BLUE
     EXPENSE_IMG_BG_COLOR = BaseStyles.LIGHT_RED

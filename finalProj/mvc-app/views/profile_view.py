@@ -4,7 +4,7 @@ from PIL import Image
 import os
 import sys
 # our modules/libs
-from frontend.styles import BaseStyles, ProfileStyles # paddings, dimensions, colors, etc
+from gui_styles import BaseStyles, ProfileStyles # paddings, dimensions, colors, etc
 
 
 from models import ProfilePageModel

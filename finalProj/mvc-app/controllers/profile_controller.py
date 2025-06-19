@@ -2,7 +2,7 @@
 import customtkinter as ctk
 from customtkinter import StringVar, IntVar
 # our modules/libs
-from frontend.styles import ProfileStyles # paddings, dimensions, colors, etc
+from gui_styles import ProfileStyles # paddings, dimensions, colors, etc
 
 from backend import TransactionManager, Finance # db manager
 

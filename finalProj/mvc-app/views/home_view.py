@@ -7,8 +7,8 @@ import sys
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from typing import List, Dict, Tuple
 # our modules/libs
-from frontend.styles import BaseStyles, HomeStyles # paddings, dimensions, colors, etc
-from frontend.gui_components.table import TransactionTableHeader, TransactionTableBody 
+from gui_styles import BaseStyles, HomeStyles # paddings, dimensions, colors, etc
+from gui_components.table import TransactionTableHeader, TransactionTableBody 
 
 from backend import Transaction
 

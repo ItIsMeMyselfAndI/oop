@@ -1,8 +1,8 @@
 # external/built-in modules/libs
 import customtkinter as ctk
 # our modules/libs
-from frontend.styles import BaseStyles, AddStyles # paddings, dimensions, colors, etc
-from frontend.gui_components import DatePicker
+from gui_styles import BaseStyles, AddStyles # paddings, dimensions, colors, etc
+from gui_components import DatePicker
 
 from models import AddPageModel
 

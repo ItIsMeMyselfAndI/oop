@@ -4,7 +4,7 @@ import os
 import sys
 from PIL import Image
 # our modules/libs
-from frontend.styles import BaseStyles, SidebarStyles # paddings, dimensions, colors, etc
+from gui_styles import BaseStyles, SidebarStyles # paddings, dimensions, colors, etc
 
 
 #--------------------------------------------------------------------------------------------------------

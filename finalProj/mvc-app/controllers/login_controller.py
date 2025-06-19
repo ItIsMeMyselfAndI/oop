@@ -2,11 +2,7 @@
 import customtkinter as ctk
 from customtkinter import StringVar, IntVar
 from tkinter import messagebox
-from PIL import Image
-import os
-import sys
 # our modules/libs
-from frontend.styles import BaseStyles, LoginStyles # paddings, dimensions, colors, etc
 from backend import Account, UserRepository
 
 from models import Model

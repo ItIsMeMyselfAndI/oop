@@ -2,7 +2,7 @@
 import customtkinter as ctk
 from typing import Dict, List
 # our modules/libs
-from frontend.styles import BaseStyles, TransactionTableStyles # paddings, dimensions, colors, etc
+from gui_styles import BaseStyles, TransactionTableStyles # paddings, dimensions, colors, etc
 from backend import Transaction
 
 

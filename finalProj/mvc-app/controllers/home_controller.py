@@ -3,7 +3,7 @@ from customtkinter import StringVar, IntVar
 from PIL import Image
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 # our modules/libs
-from frontend.styles import HomeStyles # paddings, dimensions, colors, etc
+from gui_styles import HomeStyles # paddings, dimensions, colors, etc
 
 from backend import TransactionManager # db manager
 

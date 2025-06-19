@@ -1,4 +1,4 @@
-from frontend.styles.base_style import BaseStyles, scale
+from gui_styles.base_style import BaseStyles, scale
 
 
 # ---- exclusive for sidebar ----
