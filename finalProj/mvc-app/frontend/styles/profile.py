@@ -48,7 +48,7 @@ class ProfileStyles:
     # main page
     MAIN_FRAME_FG_COLOR = BaseStyles.TRANSPARENT
 
-    HEADER_SECTION_COLOR = BaseStyles.BLUE
+    HEADER_SECTION_COLOR = BaseStyles.DARKEST_BLUE
     SUMMARY_SECTION_COLOR = BaseStyles.WHITE
 
     INCOME_FRAME_FG_COLOR = BaseStyles.WHITE_BLUE

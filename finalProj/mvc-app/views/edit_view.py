@@ -69,7 +69,7 @@ class EditPageView(ctk.CTkFrame):
 class Header(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font6 = ("Arial", BaseStyles.FONT_SIZE_6, "normal")
+        self.font6 = ("Arial", BaseStyles.FONT_SIZE_6, "bold")
         # page title
         self.title_label = ctk.CTkLabel(
             master=self,
@@ -160,7 +160,8 @@ class TransactionForm(ctk.CTkFrame):
             dropdown_text_color=EditStyles.TRANSACTION_DROPDOWN_TEXT_COLOR,
             width=EditStyles.TRANSACTION_MENU_W,
             height=EditStyles.TRANSACTION_MENU_H,
-            # button_color=
+            button_color=EditStyles.TRANSACTION_BTN_FG_COLOR,
+            button_hover_color=EditStyles.TRANSACTION_BTN_HOVER_COLOR
 
         )
         self.transactionLabel.grid(row=0, column=0, sticky="w", padx=(BaseStyles.PAD_3,0), pady=(0,BaseStyles.PAD_3))
@@ -189,7 +190,9 @@ class TransactionForm(ctk.CTkFrame):
             dropdown_ctk_font=self.font2,
             dropdown_text_color=EditStyles.DATE_DROPDOWN_TEXT_COLOR,
             dropdown_fg_color=EditStyles.DATE_DROPDOWN_FG_COLOR,
-            dropdown_hover_color=EditStyles.DATE_DROPDOWN_HOVER_COLOR
+            dropdown_hover_color=EditStyles.DATE_DROPDOWN_HOVER_COLOR,
+            btn_fg_color=EditStyles.DATE_BTN_FG_COLOR,
+            btn_hover_color=EditStyles.DATE_BTN_HOVER_COLOR
         )
         self.dateLabel.grid(row=0, column=1, sticky="w", padx=BaseStyles.PAD_3, pady=(0,BaseStyles.PAD_3))
         self.dateMenu.grid(row=1, column=1, sticky="w", padx=BaseStyles.PAD_3, pady=0)
@@ -216,7 +219,9 @@ class TransactionForm(ctk.CTkFrame):
             dropdown_hover_color=EditStyles.CATEGORY_DROPDOWN_HOVER_COLOR,
             dropdown_text_color=EditStyles.CATEGORY_DROPDOWN_TEXT_COLOR,
             width=EditStyles.CATEGORY_MENU_W,
-            height=EditStyles.CATEGORY_MENU_H
+            height=EditStyles.CATEGORY_MENU_H,
+            button_color=EditStyles.CATEGORY_BTN_FG_COLOR,
+            button_hover_color=EditStyles.CATEGORY_BTN_HOVER_COLOR,
         )
         self.categoryLabel.grid(row=0, column=0, sticky="w", padx=(BaseStyles.PAD_3,0), pady=(0,BaseStyles.PAD_3))
         self.categoryMenu.grid(row=1, column=0, sticky="w", padx=(BaseStyles.PAD_3,0), pady=0)

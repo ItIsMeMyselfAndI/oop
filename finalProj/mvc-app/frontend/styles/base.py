@@ -73,12 +73,16 @@ class BaseStyles:
     WHITE_BLUE = "#ebf2fe"
     SKY_BLUE = "#cef2ff"
     LIGHT_BLUE = "#bcd4fe"
-    BLUE = "#559eef"
-    DARK_BLUE = "#427cbd"
+    BLUE = "#427cbd"
+    DARK_BLUE = "#041d56"
+    DARKEST_BLUE = "#050a30"
     # greys
     LIGHT_GREY = "#c4c4c4"
     GREY = "#e1e4e8"
     DARK_GREY = "#545454"
+
+    DARK_YELLOW = "#e6b400"
+    YELLOW = "#e6cc00"
 
     BLACK = "black"
 

@@ -207,12 +207,12 @@ class AppView(ctk.CTk):
             master=controller_per_page["edit"].view,
             text="Submit",
             font=self.font3,
-            text_color=BaseStyles.WHITE,
             corner_radius=BaseStyles.RAD_2,
             width=AppStyles.SAVE_BTN_W,
             height=AppStyles.SAVE_BTN_H, 
-            fg_color=BaseStyles.BLUE,
-            hover_color=BaseStyles.DARK_BLUE
+            text_color=AppStyles.SAVE_BTN_TEXT_COLOR,
+            fg_color=AppStyles.SAVE_BTN_FG_COLOR,
+            hover_color=AppStyles.SAVE_BTN_HOVER_COLOR
         )
         self.edit_submit_btn.grid(row=3, column=0, pady=BaseStyles.PAD_4)
         
@@ -223,12 +223,12 @@ class AppView(ctk.CTk):
             master=controller_per_page["add"].view,
             text="Submit",
             font=self.font3,
-            text_color=BaseStyles.WHITE,
             corner_radius=BaseStyles.RAD_2,
             width=AppStyles.SAVE_BTN_W,
             height=AppStyles.SAVE_BTN_H, 
-            fg_color=BaseStyles.BLUE,
-            hover_color=BaseStyles.DARK_BLUE
+            text_color=AppStyles.SAVE_BTN_TEXT_COLOR,
+            fg_color=AppStyles.SAVE_BTN_FG_COLOR,
+            hover_color=AppStyles.SAVE_BTN_HOVER_COLOR
         )
         self.add_submit_btn.grid(row=3, column=0, pady=BaseStyles.PAD_4)
 

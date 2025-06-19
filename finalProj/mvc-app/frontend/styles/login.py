@@ -26,15 +26,15 @@ class LoginStyles:
     PASS_ENTRY_H = scale(60)
 
     LOGIN_BTN_FONT = ("Arial", scale(20), "bold")
-    LOGIN_BTN_TEXT_COLOR = "#ffffff"
-    LOGIN_BTN_FG_COLOR = BaseStyles.BLUE
+    LOGIN_BTN_TEXT_COLOR = BaseStyles.WHITE
+    LOGIN_BTN_FG_COLOR = BaseStyles.DARKEST_BLUE
     LOGIN_BTN_HOVER_COLOR = BaseStyles.DARK_BLUE
     LOGIN_BTN_W = scale(350)
     LOGIN_BTN_H = scale(60)
     
     SIGNUP_BTN_FONT = ("Arial", scale(20), "bold")
-    SIGNUP_BTN_TEXT_COLOR = "#ffffff"
-    SIGNUP_BTN_FG_COLOR = "#7ed957"
-    SIGNUP_BTN_HOVER_COLOR = BaseStyles.GREEN
+    SIGNUP_BTN_TEXT_COLOR = BaseStyles.WHITE
+    SIGNUP_BTN_FG_COLOR = BaseStyles.DARK_YELLOW
+    SIGNUP_BTN_HOVER_COLOR = BaseStyles.YELLOW
     SIGNUP_BTN_W = scale(350)
     SIGNUP_BTN_H = scale(60)

@@ -70,9 +70,16 @@ class AddPageView(ctk.CTkFrame):
 class Header(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font6 = ("Arial", BaseStyles.FONT_SIZE_6, "normal")
-        self.title_label = ctk.CTkLabel(self, text="Add Transaction", font=self.font6, text_color=AddStyles.HEADER_TITLE_TEXT_COLOR,
-                                  width=AddStyles.HEADER_TITLE_LABEL_W, fg_color=AddStyles.HEADER_TITLE_LABEL_FG_COLOR, anchor="w")
+        self.font6 = ("Arial", BaseStyles.FONT_SIZE_6, "bold")
+        self.title_label = ctk.CTkLabel(
+            master=self,
+            text="Add Transaction",
+            font=self.font6,
+            text_color=AddStyles.HEADER_TITLE_TEXT_COLOR,
+            width=AddStyles.HEADER_TITLE_LABEL_W,
+            fg_color=AddStyles.HEADER_TITLE_LABEL_FG_COLOR,
+            anchor="w"
+        )
         self.title_label.pack(anchor="w")
 
 
@@ -131,7 +138,7 @@ class TransactionForm(ctk.CTkFrame):
         # date
         self.dateLabel = ctk.CTkLabel(
             master=self.top_section,
-            text="Select New Date",
+            text="Select Date",
             font=self.font4,
             text_color=AddStyles.DATE_LABEL_TEXT_COLOR,
             fg_color=AddStyles.DATE_LABEL_FG_COLOR
@@ -151,7 +158,9 @@ class TransactionForm(ctk.CTkFrame):
             dropdown_ctk_font=self.font2,
             dropdown_text_color=AddStyles.DATE_DROPDOWN_TEXT_COLOR,
             dropdown_fg_color=AddStyles.DATE_DROPDOWN_FG_COLOR,
-            dropdown_hover_color=AddStyles.DATE_DROPDOWN_HOVER_COLOR
+            dropdown_hover_color=AddStyles.DATE_DROPDOWN_HOVER_COLOR,
+            btn_fg_color=AddStyles.DATE_BTN_FG_COLOR,
+            btn_hover_color=AddStyles.DATE_BTN_HOVER_COLOR
         )
         self.dateLabel.grid(row=0, column=1, sticky="w", padx=BaseStyles.PAD_3, pady=(0,BaseStyles.PAD_3))
         self.dateMenu.grid(row=1, column=1, sticky="w", padx=BaseStyles.PAD_3, pady=0)
@@ -161,7 +170,7 @@ class TransactionForm(ctk.CTkFrame):
         # category
         self.categoryLabel = ctk.CTkLabel(
             master=self.mid_section,
-            text="Select New Category",
+            text="Select Category",
             font=self.font4,
             text_color=AddStyles.CATEGORY_LABEL_TEXT_COLOR,
             fg_color=AddStyles.CATEGORY_LABEL_FG_COLOR
@@ -178,7 +187,9 @@ class TransactionForm(ctk.CTkFrame):
             dropdown_hover_color=AddStyles.CATEGORY_DROPDOWN_HOVER_COLOR,
             dropdown_text_color=AddStyles.CATEGORY_DROPDOWN_TEXT_COLOR,
             width=AddStyles.CATEGORY_MENU_W,
-            height=AddStyles.CATEGORY_MENU_H
+            height=AddStyles.CATEGORY_MENU_H,
+            button_color=AddStyles.CATEGORY_BTN_FG_COLOR,
+            button_hover_color=AddStyles.CATEGORY_BTN_HOVER_COLOR,
         )
         self.categoryLabel.grid(row=0, column=0, sticky="w", padx=(BaseStyles.PAD_3,0), pady=(0,BaseStyles.PAD_3))
         self.categoryMenu.grid(row=1, column=0, sticky="w", padx=(BaseStyles.PAD_3,0), pady=0)
@@ -186,7 +197,7 @@ class TransactionForm(ctk.CTkFrame):
         # description
         self.descriptionLabel = ctk.CTkLabel(
             master=self.mid_section,
-            text="Enter New Description",
+            text="Enter Description",
             font=self.font4,
             text_color=AddStyles.DESCRIPTION_LABEL_TEXT_COLOR,
             fg_color=AddStyles.DESCRIPTION_LABEL_FG_COLOR
@@ -211,7 +222,7 @@ class TransactionForm(ctk.CTkFrame):
     def _create_bot_section_content(self):
         self.amountLabel = ctk.CTkLabel(
             master=self.bot_section,
-            text="Enter New Amount",
+            text="Enter Amount",
             font=self.font4,
             text_color=AddStyles.AMOUNT_LABEL_TEXT_COLOR,
             fg_color=AddStyles.AMOUNT_LABEL_FG_COLOR

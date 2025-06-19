@@ -12,8 +12,7 @@ from backend import Transaction
 class TransactionTableHeader(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font3 = ("Arial", BaseStyles.FONT_SIZE_3, "normal")
-        self.font4 = ("Arial", BaseStyles.FONT_SIZE_4, "normal")
+        self.font3 = ("Arial", BaseStyles.FONT_SIZE_3, "bold")
         
         # date
         self.date_header = ctk.CTkLabel(

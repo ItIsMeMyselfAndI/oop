@@ -7,7 +7,7 @@ from datetime import datetime
 class DatePicker(ctk.CTkFrame):
     def __init__(self, picker_height, spacing, rad, day_width, month_width, year_width, ctk_font,
                  menu_fg_color, menu_text_color, dropdown_ctk_font, dropdown_text_color, dropdown_fg_color,
-                 dropdown_hover_color, master, **kwargs):
+                 dropdown_hover_color, btn_fg_color, btn_hover_color, master, **kwargs):
         super().__init__(master, **kwargs)
         # initialize fonts
         # create date options
@@ -24,7 +24,8 @@ class DatePicker(ctk.CTkFrame):
                                       dropdown_fg_color=dropdown_fg_color,
                                       dropdown_hover_color=dropdown_hover_color,
                                       dropdown_text_color=dropdown_text_color, corner_radius=rad,
-                                      width=year_width, height=picker_height,
+                                      button_color=btn_fg_color, button_hover_color=btn_hover_color,
+                                      width=year_width, height=picker_height, 
                                       command=self.updateDaysFromYear)
         self.month_menu = ctk.CTkOptionMenu(self, values=self.months,
                                        font=ctk_font, text_color=menu_text_color,
@@ -32,6 +33,7 @@ class DatePicker(ctk.CTkFrame):
                                        dropdown_fg_color=dropdown_fg_color,
                                        dropdown_hover_color=dropdown_hover_color,
                                        dropdown_text_color=dropdown_text_color, corner_radius=rad,
+                                      button_color=btn_fg_color, button_hover_color=btn_hover_color,
                                        width=month_width, height=picker_height,
                                        command=self.updateDaysFromMonth)
         self.day_menu = ctk.CTkOptionMenu(self, values=self.days,
@@ -40,6 +42,7 @@ class DatePicker(ctk.CTkFrame):
                                      dropdown_fg_color=dropdown_fg_color,
                                      dropdown_hover_color=dropdown_hover_color,
                                      dropdown_text_color=dropdown_text_color,
+                                      button_color=btn_fg_color, button_hover_color=btn_hover_color,
                                      corner_radius=rad, width=day_width, height=picker_height)
         # display date menu
         self.year_menu.grid(row=0, column=0, padx=(0,spacing))

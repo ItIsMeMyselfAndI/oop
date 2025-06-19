@@ -21,3 +21,6 @@ class AppStyles:
     
     SAVE_BTN_W = scale(350)
     SAVE_BTN_H = scale(60)
+    SAVE_BTN_TEXT_COLOR = BaseStyles.WHITE
+    SAVE_BTN_FG_COLOR= BaseStyles.DARKEST_BLUE
+    SAVE_BTN_HOVER_COLOR = BaseStyles.DARK_BLUE

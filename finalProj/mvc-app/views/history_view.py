@@ -58,7 +58,7 @@ class HistoryPageView(ctk.CTkFrame):
 class Header(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.font6 = ("Arial", BaseStyles.FONT_SIZE_6, "normal")
+        self.font6 = ("Arial", BaseStyles.FONT_SIZE_6, "bold")
         # title
         self.title_label = ctk.CTkLabel(
             master=self,
