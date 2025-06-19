@@ -8,9 +8,8 @@ from frontend.styles import HomeStyles # paddings, dimensions, colors, etc
 from backend import TransactionManager # db manager
 
 from models import Model
-# from models import  HomePageModel
-# from views import HomePageView
-from frontend.pages.home import HomePageModel, HomePageView
+from models import  HomePageModel
+from views import HomePageView
 from controllers import Controller
 
 #--------------------------------------------------------------------------------------------------------
