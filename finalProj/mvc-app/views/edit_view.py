@@ -159,7 +159,9 @@ class TransactionForm(ctk.CTkFrame):
             dropdown_hover_color=EditStyles.TRANSACTION_DROPDOWN_HOVER_COLOR,
             dropdown_text_color=EditStyles.TRANSACTION_DROPDOWN_TEXT_COLOR,
             width=EditStyles.TRANSACTION_MENU_W,
-            height=EditStyles.TRANSACTION_MENU_H
+            height=EditStyles.TRANSACTION_MENU_H,
+            # button_color=
+
         )
         self.transactionLabel.grid(row=0, column=0, sticky="w", padx=(BaseStyles.PAD_3,0), pady=(0,BaseStyles.PAD_3))
         self.transactionMenu.grid(row=1, column=0, sticky="w", padx=(BaseStyles.PAD_3,0), pady=0)

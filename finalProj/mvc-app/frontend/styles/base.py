@@ -77,8 +77,10 @@ class BaseStyles:
     DARK_BLUE = "#427cbd"
     # greys
     LIGHT_GREY = "#c4c4c4"
-    GREY = "grey"
+    GREY = "#e1e4e8"
     DARK_GREY = "#545454"
+
+    BLACK = "black"
 
 
     # ---- sidebar ----

@@ -1,37 +1,39 @@
 # external/built-in modules/libs
 import customtkinter as ctk
-from tkinter import messagebox
 from PIL import Image
 import os
 import sys
 # our modules/libs
 from frontend.styles import BaseStyles, LoginStyles # paddings, dimensions, colors, etc
-from backend import Account
 
 
 #--------------------------------------------------------------------------------------------------------
 
 
-class LoginForm(ctk.CTkFrame):
-    def __init__(self, model, master, **kwargs):
+class LoginPageView(ctk.CTkFrame):
+    def __init__(self, model, page_fg_color, form_fg_color, master, **kwargs):
         super().__init__(master, **kwargs)
         self.model = model
-
-        self.initializePageState()
-
-        self.createHeader()
-        self.createEntries()
-        self.createBTNs()
-        self.bindKey()
+        self.initialize_page_state()
+        self.page_fg_color = page_fg_color
+        self.form_fg_color = form_fg_color
+        self.create() 
 
 
-    def initializePageState(self):
+    def initialize_page_state(self):
         self.mask_id = None
         self.actual_password = ""
-        self.isCurrentPage = False
 
 
-    def _loadIcon(self) -> ctk.CTkImage:
+    def create(self):
+        self._load_icon()
+        self._create_form_frame()
+        self._create_header()
+        self._create_entries()
+        self._create_btns()
+
+
+    def _load_icon(self) -> ctk.CTkImage:
         if hasattr(sys, "_MEIPASS"): # # for .exe: memory resources path
             _MEIPASS: str = getattr(sys, "_MEIPASS")
             ICONS_FOLDER: str = os.path.join(_MEIPASS, "assets/icons")
@@ -39,19 +41,23 @@ class LoginForm(ctk.CTkFrame):
             ICONS_FOLDER = "assets/icons"
         
         # load image
-        logo_icon = ctk.CTkImage(
+        self.logo_icon = ctk.CTkImage(
             light_image=Image.open(os.path.join(ICONS_FOLDER, "logo.png")),
             dark_image=Image.open(os.path.join(ICONS_FOLDER, "logo.png")),
             size=(LoginStyles.LOGO_IMG_W, LoginStyles.LOGO_IMG_H)
         )
-        return logo_icon
 
 
-    def createHeader(self):
+    def _create_form_frame(self):
+        self.configure(fg_color=self.page_fg_color)
+        self.form = ctk.CTkFrame(master=self, fg_color=self.form_fg_color, corner_radius=BaseStyles.RAD_5)
+        self.form.place(relx=0.5, rely=0.5, anchor="center")
+
+
+    def _create_header(self):
         # logo
-        self.logo_icon = self._loadIcon()
         self.logo_img_bg = ctk.CTkLabel(
-            master=self, text="",
+            master=self.form, text="",
             image=self.logo_icon,
             fg_color=LoginStyles.LOGO_IMG_BG_COLOR,
             width=LoginStyles.LOGO_IMG_BG_W,
@@ -61,7 +67,7 @@ class LoginForm(ctk.CTkFrame):
         
         # title
         self.title_label = ctk.CTkLabel(
-            master=self,
+            master=self.form,
             text="Welcome!",
             font=LoginStyles.TITLE_LABEL_FONT,
             text_color=LoginStyles.TITLE_TEXT_COLOR,
@@ -70,10 +76,10 @@ class LoginForm(ctk.CTkFrame):
         self.title_label.pack(padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_5))
 
 
-    def createEntries(self):
+    def _create_entries(self):
         # username entry
         self.uname_entry = ctk.CTkEntry(
-            master=self,
+            master=self.form,
             fg_color=LoginStyles.uname_entry_FG_COLOR,
             font=LoginStyles.uname_entry_FONT,
             text_color=LoginStyles.uname_entry_TEXT_COLOR,
@@ -88,7 +94,7 @@ class LoginForm(ctk.CTkFrame):
 
         # password entry
         self.pass_entry = ctk.CTkEntry(
-            master=self,
+            master=self.form,
             fg_color=LoginStyles.PASS_ENTRY_FG_COLOR,
             font=LoginStyles.PASS_ENTRY_FONT,
             text_color=LoginStyles.PASS_ENTRY_TEXT_COLOR,
@@ -102,10 +108,10 @@ class LoginForm(ctk.CTkFrame):
         self.pass_entry.pack( padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_3))
 
 
-    def createBTNs(self):
+    def _create_btns(self):
         # login button 
         self.login_button = ctk.CTkButton(
-            master=self,
+            master=self.form,
             text="LOGIN",
             font=LoginStyles.LOGIN_BTN_FONT,
             corner_radius=BaseStyles.RAD_5,
@@ -114,13 +120,12 @@ class LoginForm(ctk.CTkFrame):
             fg_color=LoginStyles.LOGIN_BTN_FG_COLOR,
             width=LoginStyles.LOGIN_BTN_W,
             height=LoginStyles.LOGIN_BTN_H,
-            command=self.onClickLogin
         )
         self.login_button.pack(padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_1))
         
         # signin button 
         self.signup_button = ctk.CTkButton(
-            master=self,
+            master=self.form,
             text="SIGN UP",
             font=LoginStyles.SIGNUP_BTN_FONT,
             corner_radius=BaseStyles.RAD_5,
@@ -129,88 +134,5 @@ class LoginForm(ctk.CTkFrame):
             fg_color=LoginStyles.SIGNUP_BTN_FG_COLOR,
             width=LoginStyles.SIGNUP_BTN_W,
             height=LoginStyles.SIGNUP_BTN_H,
-            command=self.onClickSignUp
         )
         self.signup_button.pack(padx=BaseStyles.PAD_4*2, pady=(0,BaseStyles.PAD_4*2))
-
-        
-    def onClickLogin(self):
-        print("\n[User] LoginStyles")
-        username = self.uname_entry.get()
-        password = self.actual_password
-
-        account = Account(username=username, password=password)
-        user_id = self.model.u_repo.getAccountID(account)
-        if not (account.username and account.password):
-            messagebox.showwarning(title="[Invalid] Input", message="Empty field is not allowed")
-            print("[Input] Empty field is not allowed")
-
-        elif user_id:
-            self.model.user_id_var.set(user_id)
-            self.model.username_var.set(username)
-            print("\tUsername:", username)
-            print("\tPassword:", password)
-            self.place_forget()
-            self.update_idletasks()
-
-        else:
-            messagebox.showwarning(title="[DB] No Match Found", message="Incorrect Username or Password")
-            print("[DB] No Match Found")
-
-
-    def onClickSignUp(self):
-        print("\n[User] Sign Up")
-        username = self.uname_entry.get()
-        password = self.actual_password
-        account = Account(username=username, password=password)
-
-        # verify action
-        is_continue = messagebox.askyesno(title="[Sign Up] New Account",message="Do you want to create a new account?") 
-        if not is_continue:
-            return
-        
-        # create new account
-        was_added = self.model.u_repo.addAccount(account)
-        if not (account.username and account.password):
-            messagebox.showwarning(title="[Invalid] Input", message="Empty field is not allowed")
-            print("[Input] Empty field is not allowed")
-
-        elif was_added:
-            user_id = self.model.u_repo.getAccountID(account)
-            self.model.user_id_var.set(user_id)
-            self.model.username_var.set(username)
-            print("\tUsername:", username)
-            print("\tPassword:", password)
-            self.place_forget()
-            self.update_idletasks()
-
-        else:
-            messagebox.showwarning(title="[Invalid] Input", message="Username is already taken")
-            print("[Input] Username is already taken")
-
-
-    def _maskPassword(self):
-        # hide pass display
-        self.pass_entry.delete(0, ctk.END)
-        self.pass_entry.insert(0, self.actual_password)
-        self.pass_entry.configure(show="*")
-
-
-    def onPasswordKeyRelease(self, event):
-        # cancel masking
-        if self.mask_id:
-            self.after_cancel(self.mask_id)
-            self.mask_id = None
-        # update pass
-        self.actual_password = self.pass_entry.get()
-        # temporarily show the actual password
-        self.pass_entry.delete(0, ctk.END)
-        self.pass_entry.insert(0, self.actual_password)
-        self.pass_entry.configure(show="")
-        # mask pass after 1 secs
-        self.mask_id = self.after(1000, self._maskPassword)
-    
-    
-    def bindKey(self):
-        self.pass_entry.bind("<KeyRelease>", self.onPasswordKeyRelease)
-

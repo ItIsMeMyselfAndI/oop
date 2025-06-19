@@ -4,8 +4,9 @@ class AppStyles:
     WIN_W = BaseStyles.SCREEN_W
     WIN_H = BaseStyles.SCREEN_H
 
-    WIN_FG_COLOR = BaseStyles.SKY_BLUE
+    WIN_FG_COLOR = BaseStyles.GREY
 
+    LOGIN_PAGE_FG_COLOR = BaseStyles.TRANSPARENT
     LOGIN_FORM_FG_COLOR = BaseStyles.WHITE
 
     SIDEBAR_FG_COLOR = BaseStyles.WHITE

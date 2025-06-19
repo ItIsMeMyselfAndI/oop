@@ -4,17 +4,17 @@ from customtkinter import StringVar, IntVar
 import os
 import sys
 from typing import List, Dict
+
 # our modules/libs
 from frontend.styles import BaseStyles, AppStyles # paddings, dimensions, colors, etc
-from frontend.pages import LoginForm # login form
-from backend import UserRepository, TransactionManager # db manager
-
 from frontend.gui_components import PopUpWin ,SubmitBTN, SidebarTabs
 
+from backend import UserRepository, TransactionManager # db manager
 from models import Model
-from controllers import Controller, ProfilePageController, EditPageController, AddPageController, HomePageController, HistoryPageController
-# from frontend.pages.home import HomePageController
-# from frontend.pages.history import HistoryPageController
+from controllers import Controller, ProfilePageController, EditPageController, AddPageController, HomePageController, HistoryPageController, LoginPageController
+
+
+#--------------------------------------------------------------------------------------------------------
 
 
 class AppModel:
@@ -40,6 +40,9 @@ class AppModel:
         self.t_man.repo.connection.close()
         self.u_repo.connection.close()
         print("[DEBUG] database managers closed successfully")
+
+
+#--------------------------------------------------------------------------------------------------------
 
 
 class AppView(ctk.CTk):
@@ -136,14 +139,25 @@ class AppView(ctk.CTk):
 
     def create_login_form(self):
         print("\n[DEBUG] creating login form...")
-        self.login = LoginForm(
-            model=self.model,
-            master=self,
-            fg_color=AppStyles.LOGIN_FORM_FG_COLOR,
-            corner_radius=BaseStyles.RAD_5
+        self.login_controller = LoginPageController(
+            user_repository=self.model.u_repo,
+            user_id_var=self.model.user_id_var,
+            username_var=self.model.username_var,
+            page_fg_color=AppStyles.LOGIN_PAGE_FG_COLOR,
+            form_fg_color=AppStyles.LOGIN_FORM_FG_COLOR,
+            corner_radius=0,
+            master=self
         )
-        self.login.place(relx=0.5, rely=0.5, anchor="center")
-        self.update_idletasks()
+        # self.login = LoginPage(
+        #     model=self.model,
+        #     master=self,
+        #     page_fg_color=AppStyles.LOGIN_PAGE_FG_COLOR,
+        #     form_fg_color=AppStyles.LOGIN_FORM_FG_COLOR,
+        #     corner_radius=0
+        # )
+        self.login_controller.view.pack(fill="both", expand=True)
+        # self.login.place(relx=0.5, rely=0.5, anchor="center")
+        self.login_controller.view.update_idletasks()
         print("[DEBUG] login form created successfully")
 
 
@@ -241,6 +255,9 @@ class AppView(ctk.CTk):
         self.update_idletasks() 
 
 
+#--------------------------------------------------------------------------------------------------------
+
+
 class AppController(Controller):
     def __init__(self, app_title: str, db_folder: str, db_name: str):
         self.initialize_db(db_folder=db_folder, db_name=db_name)
@@ -288,9 +305,10 @@ class AppController(Controller):
         print("[DEBUG] initializing gui...")
         self.view.create_popups()
         self.view.create_dummy_entry()
-        # self.view.create_login_form()
-        self.view.after(500, lambda: self.model.user_id_var.set(2))
-        self.view.after(500, lambda: self.model.username_var.set("mirasol"))
+        self.view.create_login_form()
+        self.view.login_controller.run()
+        # self.view.after(500, lambda: self.model.user_id_var.set(2))
+        # self.view.after(500, lambda: self.model.username_var.set("mirasol"))
         print("[DEBUG] gui initialized successfully")
 
 
