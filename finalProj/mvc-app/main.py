@@ -6,12 +6,12 @@ import sys
 from typing import List, Dict
 
 # our modules/libs
-from ui.styles import BaseStyles, AppStyles # paddings, dimensions, colors, etc
-from ui.widgets import PopUpWin ,SubmitBTN, SidebarTabs
+from views.styles import BaseStyles, AppStyles # paddings, dimensions, colors, etc
+from views.widgets import PopUpWin ,SubmitBTN, SidebarTabs
 
 from backend import UserRepository, TransactionManager # db manager
-from core.models import Model
-from core.controllers import Controller, ProfilePageController, EditPageController, AddPageController, HomePageController, HistoryPageController, LoginPageController
+from models import Model
+from controllers import Controller, ProfilePageController, EditPageController, AddPageController, HomePageController, HistoryPageController, LoginPageController
 
 
 #--------------------------------------------------------------------------------------------------------
@@ -78,9 +78,9 @@ class AppView(ctk.CTk):
         try:
             if hasattr(sys, "_MEIPASS"): # # for .exe: memory resources path
                 _MEIPASS: str = getattr(sys, "_MEIPASS")
-                LOGO_FOLDER = os.path.join(_MEIPASS, "assets/logo")
+                LOGO_FOLDER = os.path.join(_MEIPASS, "views/assets/logo")
             else: # for .py: storage resources path
-                LOGO_FOLDER = "assets/logo"
+                LOGO_FOLDER = "views/assets/logo"
             logo_path = os.path.join(LOGO_FOLDER, "app.ico")
             self.iconbitmap(logo_path)
             self.update_idletasks()
@@ -157,13 +157,6 @@ class AppView(ctk.CTk):
             corner_radius=0,
             master=self
         )
-        # self.login = LoginPage(
-        #     model=self.model,
-        #     master=self,
-        #     page_fg_color=AppStyles.LOGIN_PAGE_FG_COLOR,
-        #     form_fg_color=AppStyles.LOGIN_FORM_FG_COLOR,
-        #     corner_radius=0
-        # )
         self.login_controller.view.pack(fill="both", expand=True)
         # self.login.place(relx=0.5, rely=0.5, anchor="center")
         self.login_controller.view.update_idletasks()
@@ -420,6 +413,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         app_controller.on_click_app_close()
     
-    # except Exception as e:
-    #     print(f"[ERROR] app: {e}")
+    except Exception as e:
+        print(f"[ERROR] app: {e}")
 
