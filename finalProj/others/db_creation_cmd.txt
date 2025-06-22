@@ -1,0 +1,44 @@
+-- creates users table
+CREATE TABLE IF NOT EXISTS "users" (
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- creates transaction table
+CREATE TABLE IF NOT EXISTS "transactions"(
+    transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    transaction_date TEXT,
+    transaction_type TEXT,
+    transaction_category TEXT,
+    transaction_amount REAL,
+    transaction_description TEXT,
+    user_id INTEGER,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+
+-- makes sure that user_ids in (transactions, savings, investments, and income)
+-- exists in the users table
+PRAGMA foreign_keys = ON;
+
+-- inserts sample users rows in users table
+INSERT INTO users(username, password) 
+VALUES 
+    ('azcarraga', 'azcarraga123'),
+    ('mirasol', 'mirasol123'),
+    ('nicolas', 'nicolas123');
+
+
+-- inserts sample data for transactions table
+INSERT INTO transactions(transaction_date, transaction_type, transaction_category,
+                        transaction_amount, transaction_description, user_id)
+VALUES
+    ('2024-10-10', 'expense', 'Transportation', 270.00, 'Jeepney', 2),
+    ('2024-10-13', 'expense', 'Bills', 1750.00, 'Internet', 2),
+    ...
+    ...

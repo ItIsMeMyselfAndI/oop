@@ -223,97 +223,12 @@ class TransactionRepository:
         self.connection.commit()
         return values
 
-    # def deleteTransaction(self, user_id: int, t_id: int) -> None:
-    #     pass
-
-
-    # ------------------------------- Tests ------------------------------------------
-
-    
-    def testGetAllTransactions(self):
-        all_transactions = self.getAllTransactions(user_id=self.user_id)
-        # display results
-        print("\n[All Transactions]\n")
-        for t in all_transactions:
-            print(f" {t.t_id:<10} | {t.t_date:<12} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description} | {t.created_at} | {t.created_at}")
-    
-    
-    def testGetTransactionByType(self):
-        type_transactions = self.getTransactionsByType(user_id=self.user_id, t_type='expense')
-        # display results
-        print("\n\n[Type (expense) Transactions]\n")
-        for t in type_transactions:
-            print(f" {t.t_id:<10} | {t.t_date:<12} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description} | {t.created_at} | {t.created_at}")
-    
-    
-    def testGetTransactionsByCategory(self):
-        category_transactions = self.getTransactionsByCategory(user_id=self.user_id, t_category='Salary')
-        print(f'\n{category_transactions = }')
-        # display results
-        print("\n[Category (Salary) Transactions]\n")
-        for t in category_transactions:
-            print(f" {t.t_id:<10} | {t.t_date:<13} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} | {t.t_description} | {t.created_at} | {t.created_at}")
-    
-    
-    def testGetRecentTransactions(self):
-        recent_transactions = self.getRecentTransactions(user_id=self.user_id, t_count=5)
-        # display results
-        print("\n[Five Recent Transactions]\n")
-        for t in recent_transactions:
-            print(f" {t.t_id:<10} | {t.t_date:<13} | {t.t_type:<12} | {t.t_category:<20} | {t.t_amount:<10} |{t.t_description} | {t.created_at} | {t.created_at}")
-    
-    
-    def testAddTransaction(self):
-        # new Transaction obj sample
-        new_transaction = Transaction(t_date='2025-05-19', t_type='Expense', t_category='gasta',
-                                      t_amount=5500.0, t_description='sample description')
-        transaction_tuple = self.addTransaction(user_id=self.user_id, new_transaction=new_transaction)
-        # check if reflected in db
-        print("\n\n[Recently Added Transaction Row]\n")
-        command = """
-            SELECT * FROM transactions
-            WHERE user_id = ?
-            ORDER BY created_at DESC
-            LIMIT ?
-        """
-        values = (self.user_id, 1)
-        result = self.cursor.execute(command, values).fetchone()
-        print(f"\t{result = }")
-        
-        
-    def testModifyTransaction(self):
-        # updated Transaction obj sample
-        updated_transaction = Transaction(
-            t_date='2025-05-15',
-            t_type='expense',
-            t_category='Education',
-            t_amount=3000.0,
-            t_description='sample description'
-        )
-        transaction_tuple = self.modifyTransaction(user_id=self.user_id, t_id=149, updated_transaction=updated_transaction)
-        # check if reflected in db
-        print("\n\n[Recently Modified Transaction Row]\n")
-        command = """
-            SELECT * FROM transactions
-            WHERE user_id = ?
-            ORDER BY updated_at DESC
-            LIMIT ?
-        """
-        values = (self.user_id, 1)
-        result = self.cursor.execute(command, values).fetchone()
-        print(f"\t{result = }")
-
-    # def testDeleteTransaction(self):
-    #     # delete last row
-    #     self.deleteTransaction(user_id=self.user_id, t_id=1445)
-
 
 #--------------------------------------------------------------------------------------------------------
 
 
 class TransactionManager:
     def __init__(self, db_path):
-        self.user_id = 1 # dummy
         self.repo = TransactionRepository(db_path)
 
 
@@ -534,109 +449,6 @@ class TransactionManager:
         return fig
 
 
-    # ------------------------------- Tests ------------------------------------------
-
-
-    def testCalculateOverallFinance(self):
-        overall_finance = self.calculateOverallFinance(user_id=self.user_id)
-        # display result
-        print("\n\n[Overall Finance]\n")
-        print(f"\ttotal_income: {overall_finance.total_income}")
-        print(f"\ttotal_expenses: {overall_finance.total_expenses}")
-        print(f"\ttotal_savings: {overall_finance.total_savings}")
-        print(f"\ttotal_investment: {overall_finance.total_investment}\n")
-
-
-    def testCalculateOverallBalance(self):
-        overall_finance = self.calculateOverallFinance(user_id=self.user_id)
-        overall_balance = self.calculateOverallBalance(overall_finance=overall_finance)
-        # display result
-        print("\n\n[Overall Balance]\n")
-        print(overall_balance)
-
-
-    def testCalculateMonthlyFinances(self):
-        monthly_finances = self.calculateMonthlyFinances(user_id=self.user_id)
-        # display result
-        print("\n\n[Monthly Finances]\n")
-        for year_month, finance in monthly_finances.items():
-            print(f"\t{year_month}")
-            print(f"\t\ttotal_income: {finance.total_income}")
-            print(f"\t\ttotal_expenses: {finance.total_expenses}")
-            print(f"\t\ttotal_savings: {finance.total_savings}")
-            print(f"\t\ttotal_investment: {finance.total_investment}\n")
-
-
-    def testCalculateQuarterlyFinances(self):
-        quarterly_finances = self.calculateQuarterlyFinances(user_id=self.user_id)
-        # display result
-        print("\n\n[Quarterly Finances]\n")
-        for year_quarter, finance in quarterly_finances.items():
-            print(f"\t{year_quarter}")
-            print(f"\t\ttotal_income: {finance.total_income}")
-            print(f"\t\ttotal_expenses: {finance.total_expenses}")
-            print(f"\t\ttotal_savings: {finance.total_savings}")
-            print(f"\t\ttotal_investment: {finance.total_investment}\n")
-
-
-    def testCreateMonthlyGraph(self):
-        # display result
-        root = ctk.CTk()
-        root.title("Monthly Graph")
-        root.geometry("1630x1000")
-        dpi = root.winfo_fpixels("1i") # px per in
-        print(dpi)
-        width_in = 780 / dpi
-        height_in = 500 / dpi
-        graph_income, graph_expenses = self.createMonthlyGraphs(
-            user_id=self.user_id,
-            width_in=width_in,
-            height_in=height_in,
-            dpi=dpi,
-            title_size=15,
-            label_size=10
-        )
-
-        income_frame = ctk.CTkFrame(root) 
-        canvas_income = FigureCanvasTkAgg(graph_income, master=income_frame)
-        canvas_income.draw()
-        canvas_income.get_tk_widget().pack()
-        
-        expense_frame = ctk.CTkFrame(root) 
-        canvas_expenses = FigureCanvasTkAgg(graph_expenses, master=expense_frame)
-        canvas_expenses.draw()
-        canvas_expenses.get_tk_widget().pack()
-        
-        income_frame.pack(side="left")
-        expense_frame.pack()
-       
-        root.mainloop()
-
-
-    def testCreateQuarterlyGraph(self):
-        # display result
-        root = ctk.CTk()
-        root.title("Monthly Graph")
-        root.geometry("1630x1000")
-        dpi = root.winfo_fpixels("1i") # px per in
-        print(dpi)
-        width_in = 1630 / dpi
-        height_in = 500 / dpi
-        graph = self.createQuarterlyGraph(
-            user_id=self.user_id,
-            width_in=width_in,
-            height_in=height_in,
-            dpi=dpi,
-            title_size=15,
-            label_size=10
-        )
-        # display result
-        canvas = FigureCanvasTkAgg(graph, master=root)
-        canvas.draw()
-        canvas.get_tk_widget().pack(fill="both", expand=True)
-        root.mainloop()
-
-        
 #--------------------------------------------------------------------------------------------------------
 
 
@@ -647,24 +459,24 @@ if __name__ == "__main__":
     print(db_path)
 
 
-    tm = TransactionManager(db_path)
+    t_man = TransactionManager(db_path)
     
     # --- TRANSACTION REPOSITORY tests ---
-    # tm.repo.testGetAllTransactions()
-    # tm.repo.testGetTransactionByType()
-    # tm.repo.testGetTransactionsByCategory()
-    # tm.repo.testGetRecentTransactions()
-    # tm.repo.testAddTransaction()
-    # tm.repo.testModifyTransaction()
-    # tm.repo.testDeleteTransaction()
+    # t_man.repo.testGetAllTransactions()
+    # t_man.repo.testGetTransactionByType()
+    # t_man.repo.testGetTransactionsByCategory()
+    # t_man.repo.testGetRecentTransactions()
+    # t_man.repo.testAddTransaction()
+    # t_man.repo.test_manodifyTransaction()
+    # t_man.repo.testDeleteTransaction()
 
     # --- TRANSACTION MANAGER tests ---
-    # tm.testCalculateOverallFinance()
-    # tm.testCalculateOverallBalance()
-    # tm.testCalculateMonthlyFinances()
-    # tm.testCalculateQuarterlyFinances()
-    # tm.testCreateMonthlyGraph()
-    # tm.testCreateQuarterlyGraph()
+    # t_man.testCalculateOverallFinance()
+    # t_man.testCalculateOverallBalance()
+    # t_man.testCalculateMonthlyFinances()
+    # t_man.testCalculateQuarterlyFinances()
+    # t_man.testCreateMonthlyGraph()
+    # t_man.testCreateQuarterlyGraph()
 
-    tm.repo.connection.close()
+    t_man.repo.connection.close()
     exit(0)

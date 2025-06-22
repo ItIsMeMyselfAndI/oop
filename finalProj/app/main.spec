@@ -6,8 +6,8 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[
-        ('./assets/icons/', 'assets/icons/'),
-        ('./assets/logo/', 'assets/logo/'),
+        ('./views/assets/icons/', 'views/assets/icons/'),
+        ('./views/assets/logo/', 'views/assets/logo/'),
     ],
     hiddenimports=[],
     hookspath=[],
@@ -31,12 +31,12 @@ exe = EXE(
     strip=False,
     upx=True,
     upx_exclude=[],
-    runtime_tmpdir=None,
-    console=True,
+    runtime_t_manpdir=None,
+    console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='./assets/logo/app.ico'
+    icon='./views/assets/logo/app.ico'
 )

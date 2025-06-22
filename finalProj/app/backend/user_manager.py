@@ -132,11 +132,11 @@ if __name__ == "__main__":
     db_path = Path(__file__).parent.parent / "db/transactions.db"
     print(db_path)
    
-    userRepo = UserRepository(db_path)
+    u_repo = UserRepository(db_path)
 
     # --- USER REPOSITORY TESTS ---
-    # userRepo.testAddAccount()
-    # userRepo.testGetAccountID()
+    # u_repo.testAddAccount()
+    # u_repo.testGetAccountID()
     
-    userRepo.connection.close()
+    u_repo.connection.close()
     exit(0)
